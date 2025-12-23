@@ -377,6 +377,48 @@
                                  </li>
                              @endcanany
 
+                             {{-- HOTEL MASTER  --}}
+                             <li class="mb-1">
+                                     <a class="has-arrow text-white" href="javascript:;">
+                                         <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                             <i class="lni lni-cart"></i>
+                                         </div>
+                                         <div class="menu-title">
+                                             <span>Hotel Master</span>
+                                         </div>
+                                     </a>
+                                     <ul class="mm-collapse ps-3 list-unstyled border-0">
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-type') }}" class="text-white ps-4">
+                                                     <i class="bx bx-cog me-2"></i>Hotel Type
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-categories') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Hotel Categories
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.rate-type') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Rate Type
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.ocupancy') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Ocupancy
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.meal-type') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Meal Type
+                                                 </a>
+                                             </li>
+                                     </ul>
+                            </li>
+
 
 
                              @can('calculator view')
