@@ -13,6 +13,7 @@ use App\Livewire\Common\EstimatePdf;
 use App\Livewire\Common\InvoicePdf;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoicePortal;
 use App\Livewire\Common\ProformaInvoicePdf;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/generate-demo-leads', [LeadSeederController::class, 'generate']);
 

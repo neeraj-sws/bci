@@ -73,13 +73,13 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/vendor-type', VendorType::class)->name('vendor-type');
         // Route::get('/vendor-service-area', ServiceLocation::class)->name('vendor-service-area');
     });
-    
+
     Route::prefix('park-master')->group(function () {
         Route::get('/parks', Park::class)->name('park');
         Route::get('/zones', Zones::class)->name('zone');
         Route::get('/gates', Gates::class)->name('gates');
     });
-    
+
     Route::prefix('vendor-master')->group(function () {
           Route::get('/vehicle', Vehicles::class)->name('vehicles');
         Route::get('/vendors', Vendors::class)->name('vendors');
@@ -95,7 +95,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/edit-tour/{id}', TourForm::class)->name('tour-edit');
         // Route::get('/copy-tour/{copy_id}', TourForm::class)->name('tour-copy');
     });
-    
+
         // Resorts & Tours
     Route::prefix('tour-master')->group(function () {
         Route::get('/', TourList::class)->name('tour');
@@ -123,7 +123,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/expense', Expense::class)->name('expense');
         Route::get('/calculator', Calculator::class)->name('calculator');
     });
-    
+
     // Expenses & Calculator
     Route::prefix('income-expenses')->group(function () {
         Route::get('/expenses', Expense::class)->name('expense');
@@ -188,7 +188,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/edit/{id}', AddCompanies::class)->name('edit-company');
         Route::get('/tax', Tax::class)->name('tax');
     });
-    
+
     Route::prefix('other-settings')->group(function () {
         Route::get('/lead-setting', Type::class)->name('leads-pipeline');
         Route::get('/lead-tag', LeadTag::class)->name('lead-tags');
