@@ -10,6 +10,11 @@ use App\Livewire\Common\Dashboard;
 use App\Livewire\Common\Calculator\Calculator;
 use App\Livewire\Common\Companies\AddCompanies;
 use App\Livewire\Common\Companies\CompaniesList;
+use App\Livewire\Common\HotelMaster\HotelCategories;
+use App\Livewire\Common\HotelMaster\HotelType;
+use App\Livewire\Common\HotelMaster\RateType;
+use App\Livewire\Common\HotelMaster\MealType;
+use App\Livewire\Common\HotelMaster\Occupancy;
 use App\Livewire\Common\Tourists\TouristForm;
 use App\Livewire\Common\Tourists\TouristList;
 use App\Livewire\Common\Tourists\TouristView;
@@ -196,6 +201,15 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/income-expense-sub-category', IncomeExpenseSubCategorey::class)->name('income-expense-sub-categorey');
     });
 
+    // HOTEL MASTER 
+    Route::prefix('hotel-master')->group(function () {
+        Route::get('/type', HotelType::class)->name('hotel-type');
+        Route::get('/categories', HotelCategories::class)->name('hotel-categories');
+        Route::get('/rate-type', RateType::class)->name('rate-type');
+
+        Route::get('ocupancy', Occupancy::class)->name('ocupancy');
+        Route::get('meal-type', MealType::class)->name('meal-type');
+    });
 
     // Logout
     Route::get('/logout', [LoginComponent::class, 'logout'])->name('logout');
