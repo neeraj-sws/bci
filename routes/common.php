@@ -16,6 +16,7 @@ use App\Livewire\Common\HotelMaster\Hotel\HotelList;
 use App\Livewire\Common\HotelMaster\HotelCategories;
 use App\Livewire\Common\HotelMaster\HotelRates;
 use App\Livewire\Common\HotelMaster\HotelType;
+use App\Livewire\Common\HotelMaster\MarketingCompanies;
 use App\Livewire\Common\HotelMaster\RateType;
 use App\Livewire\Common\HotelMaster\MealType;
 use App\Livewire\Common\HotelMaster\Occupancy;
@@ -216,6 +217,8 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/rate-type', RateType::class)->name('rate-type');
 
         Route::get('ocupancy', Occupancy::class)->name('ocupancy');
+        Route::get('meal-type', MealType::class)->name('meal-type');
+        Route::get('marketing-companies', MarketingCompanies::class)->name('marketing-companies');
         Route::get('meal-plans', MealType::class)->name('meal-type');
         Route::get('hotels', HotelList::class)->name('hotels');
         Route::get('create-hotel', HotelForm::class)->name('create-hotel');
