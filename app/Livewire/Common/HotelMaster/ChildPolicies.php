@@ -1,0 +1,162 @@
+<?php
+
+namespace App\Livewire\Common\HotelMaster;
+
+use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\Attributes\{Layout, On};
+
+use App\Models\ChildPolicy;
+use App\Models\Hotel;
+
+#[Layout('components.layouts.common-app')]
+class ChildPolicies extends Component
+{
+    use WithPagination;
+
+    public $itemId;
+    public $hotel_id;
+    public $free_child_age;
+    public $child_with_bed_rate;
+    public $child_without_bed_rate;
+    public $status = 1;
+
+    public $search = '';
+    public $isEditing = false;
+    public $pageTitle = 'Child Policies';
+
+    public $hotels = [];
+
+    protected function rules()
+    {
+        return [
+            'hotel_id' => 'required|exists:hotels,hotels_id',
+            'free_child_age' => 'required|integer|min:0',
+            'child_with_bed_rate' => 'required|numeric|min:0',
+            'child_without_bed_rate' => 'required|numeric|min:0',
+            'status' => 'required|in:0,1',
+        ];
+    }
+
+    protected $validationAttributes = [
+        'hotel_id' => 'Hotel',
+        'free_child_age' => 'Free Child Age',
+        'child_with_bed_rate' => 'Child With Bed Rate',
+        'child_without_bed_rate' => 'Child Without Bed Rate',
+    ];
+
+    public function mount()
+    {
+        $this->hotels = Hotel::where('status', 1)
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function render()
+    {
+        $items = ChildPolicy::with('hotel')
+            ->whereHas('hotel', function ($q) {
+                $q->where('name', 'like', "%{$this->search}%");
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        return view('livewire.common.hotel-master.child-policies', compact('items'));
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        ChildPolicy::create($this->payload());
+
+        $this->resetForm();
+        $this->toast('Added Successfully');
+    }
+
+    public function edit($id)
+    {
+        $item = ChildPolicy::findOrFail($id);
+
+        $this->itemId = $item->id;
+        $this->hotel_id = $item->hotel_id;
+        $this->free_child_age = $item->free_child_age;
+        $this->child_with_bed_rate = $item->child_with_bed_rate;
+        $this->child_without_bed_rate = $item->child_without_bed_rate;
+        $this->status = $item->status;
+
+        $this->isEditing = true;
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        ChildPolicy::findOrFail($this->itemId)->update($this->payload());
+
+        $this->resetForm();
+        $this->toast('Updated Successfully');
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->itemId = $id;
+
+        $this->dispatch('swal:confirm', [
+            'title' => 'Are you sure?',
+            'text' => 'This action cannot be undone.',
+            'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonText' => 'Yes, delete it!',
+            'cancelButtonText' => 'Cancel',
+            'action' => 'delete'
+        ]);
+    }
+
+    #[On('delete')]
+    public function delete()
+    {
+        ChildPolicy::destroy($this->itemId);
+        $this->toast('Deleted Successfully');
+    }
+
+    public function toggleStatus($id)
+    {
+        $item = ChildPolicy::findOrFail($id);
+        $item->update(['status' => !$item->status]);
+        $this->toast('Status Changed');
+    }
+
+    private function payload(): array
+    {
+        return [
+            'hotel_id' => $this->hotel_id,
+            'free_child_age' => $this->free_child_age,
+            'child_with_bed_rate' => $this->child_with_bed_rate,
+            'child_without_bed_rate' => $this->child_without_bed_rate,
+            'status' => $this->status,
+        ];
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'itemId',
+            'hotel_id',
+            'free_child_age',
+            'child_with_bed_rate',
+            'child_without_bed_rate',
+            'status',
+            'isEditing',
+        ]);
+        $this->resetValidation();
+    }
+
+    private function toast($msg)
+    {
+        $this->dispatch('swal:toast', [
+            'type' => 'success',
+            'message' => $this->pageTitle . ' ' . $msg
+        ]);
+    }
+}
