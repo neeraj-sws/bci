@@ -12,6 +12,7 @@ use App\Livewire\Common\Companies\AddCompanies;
 use App\Livewire\Common\Companies\CompaniesList;
 use App\Livewire\Common\HotelMaster\HotelCategories;
 use App\Livewire\Common\HotelMaster\HotelType;
+use App\Livewire\Common\HotelMaster\MarketingCompanies;
 use App\Livewire\Common\HotelMaster\RateType;
 use App\Livewire\Common\HotelMaster\MealType;
 use App\Livewire\Common\HotelMaster\Occupancy;
@@ -209,6 +210,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
 
         Route::get('ocupancy', Occupancy::class)->name('ocupancy');
         Route::get('meal-type', MealType::class)->name('meal-type');
+        Route::get('marketing-companies', MarketingCompanies::class)->name('marketing-companies');
     });
 
     // Logout
