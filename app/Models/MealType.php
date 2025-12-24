@@ -11,15 +11,15 @@ class MealType extends Model
 
     protected $dates = ['soft_delete'];
 
-    protected $table = 'meal_types';
+    protected $table = 'meal_plans';
     const DELETED_AT = 'soft_delete';
-    protected $primaryKey = 'meal_type_id';
+    protected $primaryKey = 'meal_plans_id';
 
     protected $fillable = ['title', 'short_description','status'];
 
     // ID ALIAS
     public function getIdAttribute()
     {
-        return $this->meal_type_id;
+        return $this->meal_plans_id;
     }
 }

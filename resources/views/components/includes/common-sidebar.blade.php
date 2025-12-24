@@ -413,7 +413,49 @@
                                              <li class="mt-1">
                                                  <a href="{{ route('common.meal-type') }}"
                                                      class="text-white ps-4">
-                                                     <i class="lni lni-agenda"></i>Meal Type
+                                                     <i class="lni lni-agenda"></i>Meal Plans
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotels') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Hotels
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.room-category') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Room Category
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.seasons') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Seasons
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.peak-dates') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Peak Dates
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-rates') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Hotel Rates
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.supplements') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Supplements
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.child-policies') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Child Policies
                                                  </a>
                                              </li>
                                      </ul>
@@ -445,7 +487,7 @@
                                  </li>
                              @endcan
 
-                                
+
                          </ul>
 
 

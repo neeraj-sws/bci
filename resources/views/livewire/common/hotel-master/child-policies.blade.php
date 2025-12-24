@@ -1,0 +1,171 @@
+<div class="container mt-sm-0 mt-3">
+
+    <!-- Breadcrumb -->
+    <div class="page-breadcrumb d-flex align-items-center mb-3">
+        <h6 class="breadcrumb-title fs-24 fw-600 text-black">{{ $pageTitle }}</h6>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ================= FORM ================= -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
+
+                        <!-- Hotel -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Hotel <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select @error('hotel_id') is-invalid @enderror"
+                                wire:model.defer="hotel_id">
+                                <option value="">Select Hotel</option>
+                                @foreach ($hotels as $hotel)
+                                    <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('hotel_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Free Child Age -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Free Child Age (Years) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" class="form-control @error('free_child_age') is-invalid @enderror"
+                                wire:model.defer="free_child_age" placeholder="e.g. 5">
+                            @error('free_child_age')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Child With Bed -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Child With Bed Rate <span class="text-danger">*</span>
+                            </label>
+                            <input type="number"
+                                class="form-control @error('child_with_bed_rate') is-invalid @enderror"
+                                wire:model.defer="child_with_bed_rate" placeholder="Amount">
+                            @error('child_with_bed_rate')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Child Without Bed -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Child Without Bed Rate <span class="text-danger">*</span>
+                            </label>
+                            <input type="number"
+                                class="form-control @error('child_without_bed_rate') is-invalid @enderror"
+                                wire:model.defer="child_without_bed_rate" placeholder="Amount">
+                            @error('child_without_bed_rate')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Status -->
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" wire:model.defer="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
+                                {{ $isEditing ? 'Update Policy' : 'Save Policy' }}
+                                <i class="spinner-border spinner-border-sm ms-1" wire:loading
+                                    wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
+                            </button>
+
+                            <button type="button" wire:click="resetForm" class="btn btn-secondary greygradientbtn">
+                                Reset
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= LIST ================= -->
+        <div class="col-md-7">
+            <div class="card">
+
+                <!-- Search -->
+                <div class="card-header d-flex justify-content-end">
+                    <input type="text" class="form-control w-50" placeholder="Search by hotel..."
+                        wire:model.debounce.300ms="search">
+                </div>
+
+                <!-- Table -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="lightgradient">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Hotel</th>
+                                    <th>Free Age</th>
+                                    <th>With Bed</th>
+                                    <th>Without Bed</th>
+                                    <th>Status</th>
+                                    <th width="80">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($items as $index => $item)
+                                    <tr wire:key="{{ $item->id }}">
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $item->hotel->name ?? '-' }}</td>
+                                        <td>{{ $item->free_child_age }} yrs</td>
+                                        <td>₹{{ number_format($item->child_with_bed_rate, 2) }}</td>
+                                        <td>₹{{ number_format($item->child_without_bed_rate, 2) }}</td>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input"
+                                                wire:change="toggleStatus({{ $item->id }})"
+                                                @checked($item->status)>
+                                        </td>
+                                        <td class="text-center">
+                                            <a wire:click="edit({{ $item->id }})">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
+                                            <a wire:click="confirmDelete({{ $item->id }})">
+                                                <i class="bx bx-trash text-danger"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            No Child Policies Found
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if ($items->hasPages())
+                        <div class="d-flex justify-content-between mt-3">
+                            <small class="text-muted">
+                                Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of
+                                {{ $items->total() }}
+                            </small>
+                            {{ $items->links('livewire::bootstrap') }}
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
