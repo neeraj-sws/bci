@@ -10,12 +10,20 @@ use App\Livewire\Common\Dashboard;
 use App\Livewire\Common\Calculator\Calculator;
 use App\Livewire\Common\Companies\AddCompanies;
 use App\Livewire\Common\Companies\CompaniesList;
+use App\Livewire\Common\HotelMaster\ChildPolicies;
+use App\Livewire\Common\HotelMaster\Hotel\HotelForm;
+use App\Livewire\Common\HotelMaster\Hotel\HotelList;
 use App\Livewire\Common\HotelMaster\HotelCategories;
+use App\Livewire\Common\HotelMaster\HotelRates;
 use App\Livewire\Common\HotelMaster\HotelType;
 use App\Livewire\Common\HotelMaster\MarketingCompanies;
 use App\Livewire\Common\HotelMaster\RateType;
 use App\Livewire\Common\HotelMaster\MealType;
 use App\Livewire\Common\HotelMaster\Occupancy;
+use App\Livewire\Common\HotelMaster\PeakDates;
+use App\Livewire\Common\HotelMaster\RoomCategory;
+use App\Livewire\Common\HotelMaster\Seasons;
+use App\Livewire\Common\HotelMaster\Supplements;
 use App\Livewire\Common\Tourists\TouristForm;
 use App\Livewire\Common\Tourists\TouristList;
 use App\Livewire\Common\Tourists\TouristView;
@@ -87,7 +95,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
     });
 
     Route::prefix('vendor-master')->group(function () {
-          Route::get('/vehicle', Vehicles::class)->name('vehicles');
+        Route::get('/vehicle', Vehicles::class)->name('vehicles');
         Route::get('/vendors', Vendors::class)->name('vendors');
         Route::get('/vendor-type', VendorType::class)->name('vendor-type');
         Route::get('/vendor-service-location', ServiceLocation::class)->name('vendor-service-location');
@@ -102,7 +110,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/copy-tour/{copy_id}', TourForm::class)->name('tour-copy');
     });
 
-        // Resorts & Tours
+    // Resorts & Tours
     Route::prefix('tour-master')->group(function () {
         Route::get('/', TourList::class)->name('tour');
         Route::get('/add', TourForm::class)->name('tour-create');
@@ -202,7 +210,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/income-expense-sub-category', IncomeExpenseSubCategorey::class)->name('income-expense-sub-categorey');
     });
 
-    // HOTEL MASTER 
+    // HOTEL MASTER
     Route::prefix('hotel-master')->group(function () {
         Route::get('/type', HotelType::class)->name('hotel-type');
         Route::get('/categories', HotelCategories::class)->name('hotel-categories');
@@ -211,6 +219,17 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('ocupancy', Occupancy::class)->name('ocupancy');
         Route::get('meal-type', MealType::class)->name('meal-type');
         Route::get('marketing-companies', MarketingCompanies::class)->name('marketing-companies');
+        Route::get('meal-plans', MealType::class)->name('meal-type');
+        Route::get('hotels', HotelList::class)->name('hotels');
+        Route::get('create-hotel', HotelForm::class)->name('create-hotel');
+        Route::get('update-hotel/{id}', HotelForm::class)->name('update-hotel');
+
+        Route::get('room-categories', RoomCategory::class)->name('room-category');
+        Route::get('seasons', Seasons::class)->name('seasons');
+        Route::get('peak-dates', PeakDates::class)->name('peak-dates');
+        Route::get('hotel-rates', HotelRates::class)->name('hotel-rates');
+        Route::get('supplements', Supplements::class)->name('supplements');
+        Route::get('child-policies', ChildPolicies::class)->name('child-policies');
     });
 
     // Logout

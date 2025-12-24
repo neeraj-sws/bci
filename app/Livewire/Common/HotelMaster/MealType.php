@@ -13,9 +13,9 @@ class MealType extends Component
 
     public $itemId;
     public $status = 1;
-    public $title,$short_description, $search = '';
+    public $title, $short_description, $search = '';
     public $isEditing = false;
-    public $pageTitle = 'Meal-Type';
+    public $pageTitle = 'Meal-Plans';
 
     public $model = Model::class;
     public $view = 'livewire.common.hotel-master.meal-type';
@@ -30,7 +30,7 @@ class MealType extends Component
             'title' => $this->isEditing
                 ? 'required|string|max:255|unique:' . $table . ',title,' . $this->itemId . ',meal_type_id'
                 : 'required|string|max:255|unique:' . $table . ',title',
-            'short_description' =>"required|string|max:255",
+            'short_description' => "required|string|max:255",
         ];
     }
 
@@ -125,7 +125,7 @@ class MealType extends Component
 
     public function resetForm()
     {
-        $this->reset(['title','short_description', 'itemId', 'isEditing', 'status']);
+        $this->reset(['title', 'short_description', 'itemId', 'isEditing', 'status']);
         $this->resetValidation();
     }
 
