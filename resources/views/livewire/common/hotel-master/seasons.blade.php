@@ -80,7 +80,7 @@
                         <!-- Actions -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
-                                {{ $isEditing ? 'Update Category' : 'Save Category' }}
+                                {{ $isEditing ? 'Update '.$pageTitle : 'Save '.$pageTitle }}
                                 <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
                             </button>
@@ -139,7 +139,7 @@
                                         </td>
                                         <td class="text-center">
                                             <a wire:click="edit({{ $item->id }})" class="me-1" title="Edit">
-                                                <i class="bx bx-edit fs-5"></i>
+                                                <i class="bx bx-edit text-dark  fs-5"></i>
                                             </a>
                                             <a wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>

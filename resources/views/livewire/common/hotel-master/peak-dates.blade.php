@@ -88,7 +88,7 @@
                         <!-- Actions -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
-                                {{ $isEditing ? 'Update Category' : 'Save Category' }}
+                                {{ $isEditing ? 'Update '.$pageTitle : 'Save '.$pageTitle }}
                                 <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
                             </button>

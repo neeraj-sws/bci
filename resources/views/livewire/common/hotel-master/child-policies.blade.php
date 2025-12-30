@@ -135,10 +135,10 @@
                                         </td>
                                         <td class="text-center">
                                             <a wire:click="edit({{ $item->id }})">
-                                                <i class="bx bx-edit"></i>
+                                                <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
                                             <a wire:click="confirmDelete({{ $item->id }})">
-                                                <i class="bx bx-trash text-danger"></i>
+                                                <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
                                     </tr>
