@@ -28,7 +28,7 @@ class MealType extends Component
 
         return [
             'title' => $this->isEditing
-                ? 'required|string|max:255|unique:' . $table . ',title,' . $this->itemId . ',meal_type_id'
+                ? 'required|string|max:255|unique:' . $table . ',title,' . $this->itemId . ',meal_plans_id'
                 : 'required|string|max:255|unique:' . $table . ',title',
             'short_description' => "required|string|max:255",
         ];

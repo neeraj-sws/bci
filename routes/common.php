@@ -14,6 +14,8 @@ use App\Livewire\Common\HotelMaster\ChildPolicies;
 use App\Livewire\Common\HotelMaster\Hotel\HotelForm;
 use App\Livewire\Common\HotelMaster\Hotel\HotelList;
 use App\Livewire\Common\HotelMaster\HotelCategories;
+use App\Livewire\Common\HotelMaster\HotelRateForm;
+use App\Livewire\Common\HotelMaster\HotelRateList;
 use App\Livewire\Common\HotelMaster\HotelRates;
 use App\Livewire\Common\HotelMaster\HotelType;
 use App\Livewire\Common\HotelMaster\MarketingCompanies;
@@ -227,9 +229,11 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('room-categories', RoomCategory::class)->name('room-category');
         Route::get('seasons', Seasons::class)->name('seasons');
         Route::get('peak-dates', PeakDates::class)->name('peak-dates');
-        Route::get('hotel-rates', HotelRates::class)->name('hotel-rates');
+        Route::get('hotel-rates', HotelRateList::class)->name('hotel-rates');
         Route::get('supplements', Supplements::class)->name('supplements');
         Route::get('child-policies', ChildPolicies::class)->name('child-policies');
+        Route::get('hotel-rates/create', HotelRateForm::class)->name('hotel-rates.create');
+        Route::get('hotel-rates/{id}/edit', HotelRateForm::class)->name('hotel-rates.edit');
     });
 
     // Logout

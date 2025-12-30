@@ -84,6 +84,7 @@
                                 <tr>
                                     <th class="width60">#</th>
                                     <th>Title</th>
+                                    <th>Short Description</th>
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
                                 </tr>
@@ -95,6 +96,11 @@
                                         <td class="align-middle py-1">
                                             <span class="">
                                                 {{ $item->title }}
+                                            </span>
+                                        </td>
+                                        <td class="align-middle py-1">
+                                            <span class="">
+                                                {{ $item->short_description }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1">

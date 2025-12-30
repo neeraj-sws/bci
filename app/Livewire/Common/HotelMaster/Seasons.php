@@ -100,6 +100,9 @@ class Seasons extends Component
             'title' => 'Are you sure?',
             'text' => 'This action cannot be undone.',
             'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonText' => 'Yes, delete it!',
+            'cancelButtonText' => 'Cancel',
             'action' => 'delete'
         ]);
     }
