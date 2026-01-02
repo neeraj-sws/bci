@@ -105,27 +105,50 @@
         <!-- Table Card -->
         <div class="col-md-7">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="btn-group p-2 rounded border mb-xxl-0 mb-2" role="group">
-                        <button wire:click="setTab(1)"
-                            class="btn btn-sm {{ $tab == '1' ? 'bluegradientbtn active shadow' : 'lightgradientbtn' }} px-4 py-2 rounded-start">
-                            Expense
-                            <span class="badge bg-primary ms-2">{{ $expensecount }}</span>
-                            <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="setTab(1)"></i>
-                        </button>
-                        <button wire:click="setTab(2)"
-                            class="btn btn-sm {{ $tab == '2' ? 'bluegradientbtn active shadow' : 'lightgradientbtn' }} px-4 py-2 rounded-end">
-                            Income
-                            <span class="badge bg-primary ms-2">{{ $incomecount }}</span>
-                            <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="setTab(2)"></i>
-                        </button>
+                <div class="btn-group p-2 rounded border mb-0" role="group">
+                    <button wire:click="setTab(1)"
+                        class="btn btn-sm {{ $tab == '1' ? 'bluegradientbtn active shadow' : 'lightgradientbtn' }} px-4 py-2 rounded-start">
+                        Expense
+                        <span class="badge bg-primary ms-2">{{ $expensecount }}</span>
+                        <i class="spinner-border spinner-border-sm ms-2" wire:loading.delay wire:target="setTab(1)"></i>
+                    </button>
+                    <button wire:click="setTab(2)"
+                        class="btn btn-sm {{ $tab == '2' ? 'bluegradientbtn active shadow' : 'lightgradientbtn' }} px-4 py-2 rounded-end">
+                        Income
+                        <span class="badge bg-primary ms-2">{{ $incomecount }}</span>
+                        <i class="spinner-border spinner-border-sm ms-2" wire:loading.delay wire:target="setTab(2)"></i>
+                    </button>
+                </div>
+
+                <div class="card-header d-flex flex-wrap align-items-center gap-3">
+                    <!-- Category select -->
+                    <div class="flex-grow-1 flex-shrink-1" style="min-width: 220px; max-width: 320px;">
+                        <select id="search_category_id" class="form-select select2" wire:model="search_category_id"
+                            placeholder="Select Category">
+                            <option value="">Select Category </option>
+                            @foreach ($searchCategories as $index => $value)
+                                <option value="{{ $index }}"
+                                    {{ $search_category_id === $index ? 'selected' : '' }}>
+                                    {{ $value }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="position-relative">
-                        <input type="text" class="form-control ps-5" placeholder="Search..."
-                            wire:model.live.debounce.300ms="search"> <span
-                            class="position-absolute product-show translate-middle-y">
-                            <i class="bx bx-search"></i></span>
+                    <!-- Search input -->
+                    <div class="position-relative flex-grow-1" style="min-width: 240px;">
+                        <input type="text" class="form-control ps-3 pe-5" placeholder="Search..."
+                            wire:model.live.debounce.300ms="search">
+                        <span class="position-absolute top-50 end-0 translate-middle-y pe-3">
+                            <i class="bx bx-search text-muted"></i>
+                        </span>
+                    </div>
+
+                    <div>
+                        <button class="btn bluegradientbtn" wire:click="clearFilters">clear
+                            <i class="spinner-border spinner-border-sm" wire:loading.delay=""
+                                wire:target="clearFilters"></i>
+                        </button>
                     </div>
                 </div>
 

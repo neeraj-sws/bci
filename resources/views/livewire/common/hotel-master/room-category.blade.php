@@ -36,8 +36,8 @@
                         <!-- Hotel -->
                         <div class="mb-3">
                             <label class="form-label">Hotel <span class="text-danger">*</span></label>
-                            <select class="form-select select2 @error('hotel_id') is-invalid @enderror"
-                                wire:model.defer="hotel_id">
+                            <select class="form-select select2 @error('hotel_id') is-invalid @enderror" id="hotel_id"
+                                wire:model="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
                                 <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
