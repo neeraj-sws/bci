@@ -21,11 +21,15 @@ class IncomeExpenseSubCategorey extends Component
     public $model = Model::class;
     public $view = 'livewire.common.income-expenses.income-expenses-sub-categorey';
 
-    public $tab = 1;
+    public $tab = 1, $searchCategories = [], $search_category_id;
 
     public $categorys = [], $category_id;
 
-
+    public function mount()
+    {
+        $this->searchCategories = IncomeExpenseCategory::where('type', 1)
+            ->where('status', 1)->pluck('name', 'income_expense_category_id');
+    }
     public function rules()
     {
         $table = (new $this->model)->getTable();
@@ -47,6 +51,9 @@ class IncomeExpenseSubCategorey extends Component
             $query->where('type', 1);
         } elseif ($this->tab == 2) {
             $query->where('type', 2);
+        }
+        if($this->search_category_id){
+           $query =  $query->where('category_id',$this->search_category_id);
         }
         $items = $query->where('name', 'like', "%{$this->search}%")
             ->orderBy('updated_at', 'desc')
@@ -95,9 +102,7 @@ class IncomeExpenseSubCategorey extends Component
         $this->status = $item->status;
         $this->isEditing = true;
 
-        $this->updatedType($this->type,true);
-
-        $this->dispatch('initializeIconPicker');
+        $this->updatedType($this->type, true);
     }
 
     public function update()
@@ -165,15 +170,23 @@ class IncomeExpenseSubCategorey extends Component
     public function setTab($tab)
     {
         $this->tab = $tab;
+         $this->searchCategories = IncomeExpenseCategory::where('type', $tab)
+            ->where('status', 1)->pluck('name', 'income_expense_category_id');
     }
 
-    public function updatedType($id,$isClear=false)
+    public function updatedType($id, $isClear = false)
     {
-        if(!$isClear){
-            $this->category_id ='';
+        if (!$isClear) {
+            $this->category_id = '';
         }
 
         $this->categorys = IncomeExpenseCategory::where('type', $id)
             ->where('status', 1)->pluck('name', 'income_expense_category_id');
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search_category_id', 'search']);
+        $this->resetPage();
     }
 }
