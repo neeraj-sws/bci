@@ -37,7 +37,7 @@
             </div>
 
             <div class="mb-1">
-                <label class="form-label">Customer Notes <span class="text-danger">*</span></label>
+                <label class="form-label">Booking Procedure <span class="text-danger">*</span></label>
                 <textarea class="form-control @error('customer_note') is-invalid @enderror" wire:model="customer_note" rows="8"></textarea>
                 @error('customer_note')
                     <div class="invalid-feedback">{{ $message }}</div>

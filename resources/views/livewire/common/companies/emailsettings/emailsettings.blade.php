@@ -14,9 +14,20 @@
             </div>
 
 
-            @php $editorId = 'message-'. $this->getId(); @endphp
-            <livewire:common.tiny-component model="message" :value="$message" editor-id="{{ $editorId }}"
-                wire:model.defer="message" />
+            <div class="mb-1">
+                <label class="form-label">Message <span class="text-danger">*</span></label>
+                <textarea
+                    id="message"
+                    class="form-control @error('message') is-invalid @enderror"
+                    rows="10"
+                    wire:model.defer="message"
+                    placeholder="Write your email message here..."
+                ></textarea>
+
+                @error('message')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
 
             <!-- Placeholder Section -->
@@ -25,11 +36,13 @@
                 <div class="col-md-10">
                     <div class="d-flex flex-wrap gap-2">
                         @foreach ($placeholders as $placeholder)
-                            <span onclick="copyToClipboard('[{{ $placeholder }}]', this)"
-                                class="badge bg-light text-primary border border-primary px-3 py-2 copy-placeholder"
-                                style="cursor: pointer;">
-                                {{ $placeholder }}
-                            </span>
+                          <span
+                            onclick="insertPlaceholder('[{{ $placeholder }}]', this)"
+                            class="badge bg-light text-primary border border-primary px-3 py-2"
+                            style="cursor:pointer"
+                        >
+                            {{ $placeholder }}
+                        </span>
                         @endforeach
                     </div>
                 </div>
@@ -46,35 +59,3 @@
         </div>
     </form>
 </div>
-
-@push('scripts')
-    <script>
-
-        window.copyToClipboard = function(placeholder, el) {
-            const input = document.createElement('input');
-            input.value = placeholder;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-
-            const originalText = el.textContent;
-            el.textContent = "Copied!";
-            el.classList.add('bg-success', 'text-black');
-
-            setTimeout(() => {
-                el.textContent = originalText;
-                el.classList.remove('bg-success', 'text-black');
-            }, 2000);
-        };
-
-        window.addEventListener('email-settings-loaded', function() {
-            tinymce.remove('#message');
-            initializeTinyMCE();
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTinyMCE();
-        });
-    </script>
-@endpush

@@ -499,6 +499,15 @@
                 // dd($summary)
             @endphp
             <div class="table-responsive">
+                <div class="d-flex justify-content-end mb-2">
+                    <button wire:click="addDay" class="btn btn-sm btn-success">
+                        + Add Day
+                             <span wire:loading
+                                    wire:target="addDay">
+                                    <span class="spinner-border spinner-border-sm me-1" role="status"
+                                        aria-hidden="true"></span>
+                    </button>
+                </div>
                 <table class="excel-table table table-bordered table-hover bg-white">
                     <thead class="thead-light">
                         <tr>
@@ -512,9 +521,50 @@
                             <tr class="bg-day">
                                 @foreach ($day as $key => $value)
                                     <td>
-                                        @if (in_array($key, ['particular', 'activitiesCovered']))
-                                            <textarea class="form-control textarea-cell"
-                                                wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
+                                       @if (in_array($key, ['particular', 'activitiesCovered']))
+                                            @if ($key === 'particular')
+                                                <div style="position:relative;">
+                                                    
+                                                    @if (count($days) > 1)
+                                                        <span
+                                                            type="button"
+                                                            wire:click="removeDay({{ $index }})"
+                                                            title="Remove Day"
+                                                            style="
+                                                                position:absolute;
+                                                                top:0;
+                                                                right:0;
+                                                                z-index:10;
+                                                                width:22px;
+                                                                height:22px;
+                                                                padding:0;
+                                                                line-height:18px;
+                                                                border-radius:50%;
+                                                                border:none;
+                                                                background:#dc3545;
+                                                                color:#fff;
+                                                                font-size:16px;
+                                                                cursor:pointer;text-align:center">
+                                                            <span wire:loading.remove wire:target="removeDay({{ $index }})">x</span>
+                                                            <span wire:loading
+                                                                            wire:target="removeDay({{ $index }})">
+                                                                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                                                                aria-hidden="true"></span>
+                                                                        </span>
+                                                        </span>
+                                                    @endif
+
+                                                    <textarea
+                                                        class="form-control textarea-cell"
+                                                        wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
+                                                    ></textarea>
+
+                                                </div>
+                                            @else
+                                                <textarea class="form-control textarea-cell"
+                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
+                                            @endif
+
                                         @elseif (in_array($key, ['totalForTheDay', 'hotelTotal', 'hotelBalance']))
                                             <input type="text" class="form-control short-input"
                                                 wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
@@ -652,31 +702,17 @@
 </div>
 @push('scripts')
     <script>
-        window.addEventListener('tour-days-updated', function() {
-            setTimeout(() => {
-                const hiddenTour = document.querySelector('#tour_days_hidden');
-                const startEl = document.querySelector('#start_date');
-                const endEl = document.querySelector('#end_date');
-                const end = endEl?._flatpickr;
-
-                if (!end) return;
-                let minDateValue = '';
-                if (hiddenTour && hiddenTour.value) {
-                    minDateValue = hiddenTour.value;
-                } else if (startEl && startEl.value) {
-                    minDateValue = startEl.value;
-                }
-
-                if (minDateValue) {
-                    let minDate = new Date(minDateValue);
-                    minDate.setDate(minDate.getDate() + 1);
+            window.addEventListener('tour-days-updated', function () {
+                setTimeout(() => {
+                    const hiddenTour = document.querySelector('#tour_days_hidden');
+                    const endEl = document.querySelector('#end_date');
+                    const end = endEl?._flatpickr;
+                    if (!end || !hiddenTour?.value) return;
+                    const minDate = hiddenTour.value;
                     end.set('minDate', minDate);
-                    if (end.input.value && new Date(end.input.value) < minDate) {
-                        end.clear();
-                    }
-                }
-            }, 150);
-        });
+                    end.setDate(minDate, true);
+                }, 100);
+            });
         
         {{-- NEW DEV --}}
         Livewire.on('focus-item-input', () => {

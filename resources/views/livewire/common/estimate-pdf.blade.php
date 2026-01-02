@@ -326,13 +326,25 @@
             <tr>
                 <td style="width:50%; vertical-align: middle;">
                     <div class="company-info">
-                        <strong>{{ $organization->company_address ?? '' }}</strong><br>
+                        {{ $organization->company_address ?? '' }}<br>
+                         @if($organization->city_name)
+                                {{ $organization->city_name->name ?? '' }}
+                                @if($organization->state_name)
+                                    , {{ $organization->state_name->name }}
+                                @endif
+                                 @if($organization->zip_code)
+                                    {{ $organization->zip_code }}
+                                @endif
+                                @if($organization->country_name)
+                                    , {{ $organization->country_name->name }}
+                                @endif<br>
+                        @endif
                         @if (!empty($organization->company_email))
                             {{ $organization->company_email }}<br>
                         @endif
-                        Ph: {{ $organization->company_contact ?? '' }}<br>
+                        Ph: +91-{{ $organization->company_contact ?? '' }}<br>
                         @if (!empty($organization->company_tax_id))
-                            <div class="gstin">{{ $organization->company_tax_id }}</div>
+                            {{ $organization->company_tax_id }}
                         @endif
                     </div>
                 </td>
@@ -355,7 +367,7 @@
             <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
 
             @if (!empty($client['contact_phone']))
-                <div class="company-info">{{ $client['contact_phone'] }}</div>
+                <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
             @endif
             
            @if (!empty($client['address']))
@@ -460,6 +472,19 @@
         </div>
 
 
+        <!-- NOTES -->
+        @if (!empty($estimate['notes']))
+            <div class="terms">
+                <div class="label">Booking Procedure</div>
+                <ul>
+                    @foreach (explode("\n", $estimate['notes']) as $note)
+                        @if (trim($note) !== '')
+                            <li>{{ $note }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- TERMS -->
         @if (!empty($estimate['terms_and_condition']))
@@ -475,19 +500,7 @@
             </div>
         @endif
 
-        <!-- NOTES -->
-        @if (!empty($estimate['notes']))
-            <div class="terms">
-                <div class="label">Notes</div>
-                <ul>
-                    @foreach (explode("\n", $estimate['notes']) as $note)
-                        @if (trim($note) !== '')
-                            <li>{{ $note }}</li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+   
 
         <div class="tiny-divider"></div>
         <div class="footer-note">

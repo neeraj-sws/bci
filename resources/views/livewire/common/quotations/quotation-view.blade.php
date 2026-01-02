@@ -160,13 +160,25 @@
 
                 <div class="brand-row" style="margin-bottom:25px">
                     <div class="company-info">
-                        <strong>{{ $organization->company_address ?? '' }}</strong><br>
+                        {{ $organization->company_address ?? '' }}<br>
+                         @if($organization->city_name)
+                                {{ $organization->city_name->name ?? '' }}
+                                @if($organization->state_name)
+                                    , {{ $organization->state_name->name }}
+                                @endif
+                                 @if($organization->zip_code)
+                                    {{ $organization->zip_code }}
+                                @endif
+                                @if($organization->country_name)
+                                    , {{ $organization->country_name->name }}
+                                @endif<br>
+                        @endif
                         @if (!empty($organization->company_email))
                             {{ $organization->company_email }}<br>
                         @endif
-                        Ph: {{ $organization->company_contact ?? '' }}<br>
+                        Ph: +91-{{ $organization->company_contact ?? '' }}<br>
                         @if (!empty($organization->company_tax_id))
-                            <div class="gstin">{{ $organization->company_tax_id }}</div>
+                            {{ $organization->company_tax_id }}
                         @endif
                     </div>
 
@@ -301,6 +313,19 @@
                     </div>
                 </div>
 
+                       <!-- NOTES -->
+                @if (!empty($estimate['notes']))
+                    <div class="terms">
+                        <div class="label">Booking Procedure</div>
+                        <ul>
+                            @foreach (explode("\n", $estimate['notes']) as $note)
+                                @if (trim($note) !== '')
+                                    <li>{{ $note }}</li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <!-- TERMS -->
                 @if (!empty($estimate['terms_and_condition']))
                     <div class="terms">
@@ -315,19 +340,7 @@
                     </div>
                 @endif
 
-                <!-- NOTES -->
-                @if (!empty($estimate['notes']))
-                    <div class="terms">
-                        <div class="label">Notes</div>
-                        <ul>
-                            @foreach (explode("\n", $estimate['notes']) as $note)
-                                @if (trim($note) !== '')
-                                    <li>{{ $note }}</li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+         
 
 
                 <div class="tiny-divider"></div>

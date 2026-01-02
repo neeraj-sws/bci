@@ -337,10 +337,24 @@
                 <td style="width:50%; vertical-align: middle;">
                     <div class="company-info">
                         <strong>{{ $organization->company_address ?? '' }}</strong><br>
+                        @if($organization->city_name)
+                            <strong>
+                                {{ $organization->city_name->name ?? '' }}
+                                @if($organization->state_name)
+                                    , {{ $organization->state_name->name }}
+                                @endif
+                                    @if($organization->zip_code)
+                                    {{ $organization->zip_code }}
+                                @endif
+                                @if($organization->country_name)
+                                    , {{ $organization->country_name->name }}
+                                @endif
+                            </strong><br>
+                        @endif
                         @if (!empty($organization->company_email))
                             {{ $organization->company_email }}<br>
                         @endif
-                        Ph: {{ $organization->company_contact ?? '' }}<br>
+                        Ph: +91-{{ $organization->company_contact ?? '' }}<br>
                         @if (!empty($organization->company_tax_id))
                             <div class="gstin">{{ $organization->company_tax_id }}</div>
                         @endif
@@ -481,7 +495,7 @@
 
 
         <!-- TERMS -->
-        @if (!empty($invoice['quotation']['terms_and_condition']))
+        {{-- @if (!empty($invoice['quotation']['terms_and_condition']))
             <div class="terms">
                 <div class="label">Terms & Conditions</div>
                 <ul>
@@ -506,11 +520,24 @@
                     @endforeach
                 </ul>
             </div>
-        @endif
+        @endif --}}
 
-        <div class="tiny-divider"></div>
+        {{-- <div class="tiny-divider"></div>
         <div class="footer-note">
             Invoice was created digitally and is valid without signature.
+        </div> --}}
+        <div style="
+    position: absolute;
+    bottom: 30px;
+    left: 50px;
+    right: 50px;
+    width: auto;
+">
+            <div class="tiny-divider"></div>
+
+            <div  class="footer-note">
+                Invoice was created digitally and is valid without signature.
+            </div>
         </div>
 
         @yield('content')

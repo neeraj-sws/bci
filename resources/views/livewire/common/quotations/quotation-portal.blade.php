@@ -401,6 +401,19 @@
                             </div>
                         </div>
 
+                                <!-- NOTES -->
+                        @if (!empty($estimate['notes']))
+                            <div class="terms">
+                                <div class="label">Booking Procedure</div>
+                                <ul>
+                                    @foreach (explode("\n", $estimate['notes']) as $note)
+                                        @if (trim($note) !== '')
+                                            <li>{{ $note }}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <!-- TERMS -->
                         @if (!empty($estimate['terms_and_condition']))
                             <div class="terms">
@@ -415,19 +428,7 @@
                             </div>
                         @endif
 
-                        <!-- NOTES -->
-                        @if (!empty($estimate['notes']))
-                            <div class="terms">
-                                <div class="label">Notes</div>
-                                <ul>
-                                    @foreach (explode("\n", $estimate['notes']) as $note)
-                                        @if (trim($note) !== '')
-                                            <li>{{ $note }}</li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                
 
 
                         <div class="tiny-divider"></div>

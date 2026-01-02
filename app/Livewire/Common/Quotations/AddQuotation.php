@@ -258,7 +258,9 @@ class AddQuotation extends Component
                 return [$tourist->id => $tourist->primary_contact . ' - ' . $tourist->contact_phone];
             })
             ->toArray();
-        $this->tours = Tours::where('status', 1)->pluck('name', 'tour_id');
+        $this->tours = Tours::where('status', 1)
+         ->orderByDesc('updated_at')
+        ->pluck('name', 'tour_id');
 
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
 
@@ -545,9 +547,10 @@ class AddQuotation extends Component
         $tour = Tours::with('tourJsons')->find($id);
         if ($this->start_date && $tour->day) {
             $this->tourDays = Carbon::parse($this->start_date)
-                ->addDays((int) $tour->day)
+                ->addDays(((int) $tour->day) - 1)
                 ->format('Y-m-d');
 
+                $this->end_date = $this->tourDays;
             $this->dispatch('tour-days-updated');
         }
 
@@ -773,8 +776,17 @@ class AddQuotation extends Component
     }
     public function updatedStartDate($code)
     {
-        $this->end_date = null;
-        $this->dispatch('tour-days-updated');
+        if($this->tour_id){
+            $tour = Tours::with('tourJsons')->find($this->tour_id);
+            if ($code && $tour->day) {
+                $this->tourDays = Carbon::parse($code)
+                    ->addDays(((int) $tour->day) - 1)
+                    ->format('Y-m-d');
+
+                    $this->end_date = $this->tourDays;
+                $this->dispatch('tour-days-updated');
+            }
+        }
     }
     public function updatedDiscount($value)
     {
@@ -789,5 +801,51 @@ class AddQuotation extends Component
         $this->estimateSettings = QuotationSettings::where('company_id', $id)->first();
         $this->terms_and_condition = $this?->estimateSettings->terms_condition ?? '';
         $this->notes = $this->estimateSettings?->customer_note ?? '';
+    }
+    private function getEmptyDay(int $dayNumber): array
+{
+    return [
+        "particular" => "Day " . str_pad($dayNumber, 2, '0', STR_PAD_LEFT),
+        "activitiesCovered" => "",
+        "roomPerNight" => 0,
+        "numberOfRooms" => 0,
+        "vehicleCost" => 0,
+        "safariCost" => 0,
+        "safariNumber" => 0,
+        "monumentFee" => 0,
+        "entryNumbers" => 0,
+        "totalForTheDay" => 0,
+        "hotelTotal" => 0,
+        "hotelAdvance" => 0,
+        "hotelBalance" => 0,
+    ];
+}
+    public function addDay()
+    {
+        if (empty($this->tableDataJson['tourPackage']['days'])) {
+            return;
+        }
+        $days = &$this->tableDataJson['tourPackage']['days'];
+        $nextDayNumber = count($days) + 1;
+        $days[] = $this->getEmptyDay($nextDayNumber);
+        $this->recalculateAfterDayChange();
+    }
+    public function removeDay($index)
+    {
+        if (!isset($this->tableDataJson['tourPackage']['days'][$index])) {
+            return;
+        }
+        unset($this->tableDataJson['tourPackage']['days'][$index]);
+        $this->tableDataJson['tourPackage']['days'] = array_values(
+            $this->tableDataJson['tourPackage']['days']
+        );
+        $this->recalculateAfterDayChange();
+    }
+    private function recalculateAfterDayChange()
+    {
+        foreach ($this->tableDataJson['tourPackage']['days'] as $i => $day) {
+            $this->recalculateDay($i);
+        }
+        $this->calculateTotals();
     }
 }

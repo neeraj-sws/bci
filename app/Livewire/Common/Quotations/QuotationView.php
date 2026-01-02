@@ -152,18 +152,18 @@ class QuotationView extends Component
 
         $variables = [
             // '[estimate-date]'        => $this->estimate->quotation_date,
-            '[estimate-date]' => Carbon::parse($this->estimate->quotation_date)
+            '[quotation-date]' => Carbon::parse($this->estimate->quotation_date)
                 ->format($this->genrealSettings->date_format ?? 'd M Y'),
 
-            '[estimate-number]'      => $this->estimate->quotation_no,
+            '[quotation-number]'      => $this->estimate->quotation_no,
             '[po-number]'            => $this->estimate->po_number,
             // '[expiry-date]'          => $this->estimate->expiry_date,
 
             '[expiry-date]' => Carbon::parse($this->estimate->expiry_date)
                 ->format($this->genrealSettings->date_format ?? 'd M Y'),
 
-            '[estimate-title]'       => $this->estimate->quotation_title,
-            '[estimate-notes]'       => $this->estimate->notes,
+            '[quotation-title]'       => $this->estimate->quotation_title,
+            '[quotation-notes]'       => $this->estimate->notes,
             '[client-name]'          => $this->estimate->tourist->primary_contact,
             '[organization-name]'    => $this->organization_name,
             '[client-contact-name]'  => $this->estimate->tourist->primary_contact ?? '',
@@ -172,7 +172,7 @@ class QuotationView extends Component
                 $this->estimate->amount ?? 0,
                 $this->genrealSettings->number_format
             ) . ' ' . $this->estimate?->currency_label,
-            '[estimate-url]'         => $estimatUrl,
+            '[quotation-url]'         => $estimatUrl,
             '[due-date]'             => $this->estimate->expiry_date,
         ];
 
@@ -260,18 +260,18 @@ class QuotationView extends Component
 
         $variables = [
             // '[estimate-date]'        => $this->estimate->quotation_date,
-            '[estimate-date]' => Carbon::parse($this->estimate->quotation_date)
+            '[quotation-date]' => Carbon::parse($this->estimate->quotation_date)
                 ->format($this->genrealSettings->date_format ?? 'd M Y'),
 
-            '[estimate-number]'      => $this->estimate->quotation_no,
+            '[quotation-number]'      => $this->estimate->quotation_no,
             '[po-number]'            => $this->estimate->po_number,
             // '[expiry-date]'          => $this->estimate->expiry_date,
 
             '[expiry-date]' => Carbon::parse($this->estimate->expiry_date)
                 ->format($this->genrealSettings->date_format ?? 'd M Y'),
 
-            '[estimate-title]'       => $this->estimate->quotation_title,
-            '[estimate-notes]'       => $this->estimate->notes,
+            '[quotation-title]'       => $this->estimate->quotation_title,
+            '[quotation-notes]'       => $this->estimate->notes,
             '[client-name]'          => $this->estimate->tourist->primary_contact,
             '[organization-name]'    => $this->organization_name,
             '[client-contact-name]'  => $this->estimate->tourist->primary_contact ?? '',
@@ -280,7 +280,7 @@ class QuotationView extends Component
                 $this->estimate->amount ?? 0,
                 $this->genrealSettings->number_format
             ) . ' ' . $this->estimate?->currency_label,
-            '[estimate-url]'         => $estimatUrl,
+            '[quotation-url]'         => $estimatUrl,
             '[due-date]'             => $this->estimate->expiry_date,
         ];
 

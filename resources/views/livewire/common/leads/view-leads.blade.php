@@ -45,7 +45,12 @@
 									</div>
 									<div class="newboxside">
 									 @if (optional($leadData->status)->name)
+                                     <div class="d-flex gap-2 align-items-center">
+                                        @if (!$leadData->user_id)
+                                                <a wire:click='userAssignModel()' class="fs-4 text-primary cursor-pointer" title="Assign User"><i class="fadeIn animated bx bx-user-plus"></i><i class="spinner-border spinner-border-sm ms-2" wire:loading.delay wire:target="userAssignModel"></i></a>
+                                        @endif
 										<span class="py-1 px-2 fs-12  rounded text-white fw-medium" style="color:{{ optional($leadData->stage)->btn_text }};background:{{ optional($leadData->stage)->btn_bg }}">{{ $leadData->stage->name }} </span>
+                                     </div>
 											 @endif
 											 @can('leads manage')
             @if ($leadData->stage_id == 3)
@@ -67,7 +72,7 @@
             
                                    
                        <div class="">
-                @if (!$leadData->user_id)
+                {{-- @if (!$leadData->user_id)
     <div class="col-md-6 mb-3">
       <label class="form-label">User <span class="text-danger">*</span></label>
       <select id='user_id' class="form-select form-select-sm select2" wire:model="user_id">
@@ -81,7 +86,7 @@
       @enderror
     </div>
     <a wire:click='userAssign()' class="btn btn-primary">Assign</a>
-    @endif
+    @endif --}}
 
 
 @if(!in_array($leadData->stage_id, [2,6,7]))
@@ -445,5 +450,62 @@
             </div >
         </div >
     </div >
+    <div class="modal fade @if($showUserAssignModal) show @endif"
+        tabindex="-1"
+        style="background-color:#0606068c; @if($showUserAssignModal) display:block; @endif"
+        aria-modal="true"
+        role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-top">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign User</h5>
+                    <button type="button"
+                            class="btn-close"
+                            aria-label="Close"
+                            wire:click="resetForm"></button>
+                </div>
+                <form wire:submit.prevent="userAssign">
+                    <div class="modal-body">
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">
+                                User <span class="text-danger">*</span>
+                            </label>
+                            <select id="user_id"
+                                    class="form-select"
+                                    wire:model.defer="user_id">
+                                <option value="">Select User</option>
+                                @foreach ($users as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+
+                            @error('user_id')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit"
+                                class="btn bluegradientbtn"
+                                wire:loading.attr="disabled"
+                                wire:target="userAssign">
+                            Save changes
+                            <i class="spinner-border spinner-border-sm ms-2"
+                            wire:loading.delay
+                            wire:target="userAssign"></i>
+                        </button>
+                        <button type="button"
+                                class="btn btn-secondary greygradientbtn"
+                                wire:click="resetForm">
+                            Close
+                            <i class="spinner-border spinner-border-sm ms-2"
+                            wire:loading.delay
+                            wire:target="resetForm"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div >
   

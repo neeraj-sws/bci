@@ -31,6 +31,7 @@ class LeadsView extends Component
     public $coloum, $route, $edit, $guard, $chehck;
     
     const SALES_ROLE_ID = 2;
+    public $showUserAssignModal = false;
 
     public function mount($id, $route = null, $coloum = null, $edit = true, $guard = null)
     {
@@ -139,7 +140,8 @@ public function messages()
             'followup_time',
             'comments',
             'showFollowupModal',
-            'mark'
+            'mark',
+            'showUserAssignModal'
         ]);
         $this->resetValidation();
     }
@@ -191,7 +193,7 @@ public function messages()
         ]);
         SettingHelper::leadActivityLog(6, $this->leadId);
 
-        $this->reset(['user_id']);
+        $this->reset(['user_id','showUserAssignModal']);
         $this->resetValidation();
         $this->dispatch('history-status-updated');
         $this->dispatch('swal:toast', [
@@ -199,5 +201,9 @@ public function messages()
             'title' => '',
             'message' => 'Lead Assigned Successfully'
         ]);
+    }
+   public function userAssignModel()
+    {
+        $this->showUserAssignModal = true;
     }
 }

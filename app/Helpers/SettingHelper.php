@@ -259,6 +259,7 @@ class SettingHelper
             foreach ($variables as $key => $value) {
                 $renderedSubject = str_replace($key, $value, $renderedSubject);
             }
+            $renderedMessage = nl2br($renderedMessage);
             Mail::html($renderedMessage, function ($message) use ($to, $renderedSubject, $from, $attachment, $pdf) {
                 $message->to('bci.lead.module@yopmail.com')
                 // $message->to($to)

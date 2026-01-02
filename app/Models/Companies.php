@@ -51,4 +51,17 @@ class Companies extends Model
     {
         return $this->belongsTo(UploadImages::class, 'company_file_id');
     }
+        public function country_name()
+    {
+        return $this->belongsTo(Country::class, 'country','country_id');
+    }
+
+    public function city_name()
+    {
+        return $this->belongsTo(City::class, 'city','city_id');
+    }
+        public function state_name()
+    {
+        return $this->belongsTo(States::class, 'state','state_id');
+    }
 }

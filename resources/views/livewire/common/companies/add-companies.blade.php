@@ -89,3 +89,34 @@
 
 
 </div>
+@push('scripts')
+<script>
+window.insertPlaceholder = function (text, el) {
+    // Copy to clipboard (modern + fallback)
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+    } else {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+    }
+
+    // UI feedback
+    if (!el) return;
+
+    const originalText = el.innerText;
+    const originalClasses = el.className;
+
+    el.innerText = 'Copied!';
+    el.className = 'badge bg-success text-white px-3 py-2';
+
+    setTimeout(() => {
+        el.innerText = originalText;
+        el.className = originalClasses;
+    }, 1200);
+};
+</script>
+@endpush

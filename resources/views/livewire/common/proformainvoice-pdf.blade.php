@@ -480,7 +480,19 @@
         </div>
 
 
-
+        <!-- NOTES -->
+        @if (!empty($prinvoice['quotation']['notes']))
+            <div class="terms">
+                <div class="label">Notes</div>
+                <ul>
+                    @foreach (explode("\n", $prinvoice['quotation']['notes']) as $note)
+                        @if (trim($note) !== '')
+                            <li>{{ $note }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- TERMS -->
         @if (!empty($prinvoice['quotation']['terms_and_condition']))
             <div class="terms">
@@ -495,19 +507,7 @@
             </div>
         @endif
 
-        <!-- NOTES -->
-        @if (!empty($prinvoice['quotation']['notes']))
-            <div class="terms">
-                <div class="label">Notes</div>
-                <ul>
-                    @foreach (explode("\n", $prinvoice['quotation']['notes']) as $note)
-                        @if (trim($note) !== '')
-                            <li>{{ $note }}</li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        
 
         <div class="tiny-divider"></div>
         <div class="footer-note">
