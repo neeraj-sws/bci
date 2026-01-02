@@ -34,8 +34,8 @@
                             <label class="form-label">
                                 Hotel <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select @error('hotel_id') is-invalid @enderror"
-                                wire:model.defer="hotel_id">
+                            <select class="form-select @error('hotel_id') is-invalid @enderror" id="hotel_id"
+                                wire:model.live="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
                                     <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
@@ -165,7 +165,7 @@
                         <!-- Status -->
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-select" wire:model.defer="status">
+                            <select class="form-select" wire:model="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
