@@ -24,14 +24,14 @@
                             wire:target="confirmupdatePr()"></i>
                     </a>
                 @endif
-                
+
                  @if($prinvoice->status == 0)
                   <a wire:click='markasPaid()' class="btn btn-warning"><i class="fa fa-print"></i>
                     Mark as Sent
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="markasPaid"></i>
                 </a>
                 @endif
-                
+
             </div>
             <hr>
         </div>
@@ -56,7 +56,7 @@
                         <div class="ribbon">{{ $status }}</div>
                     </div>
                 @endif
-                
+
                   @if ($prinvoice->status == 2)
                       <img src="{{ asset('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"
                     style="    position: absolute;
@@ -142,7 +142,7 @@
                             <span class="quote-id">Tour Details:</span> <span>{{ $tour['description'] ?? '-' }}</span>
                         </div>
                     @endif --}}
-                    
+
                     @php
                         $tourItem = collect($prinvoice['quotation']['items'])->firstWhere('is_tour', 1);
                     @endphp
@@ -158,7 +158,7 @@
                             <span>{{ $tourItem['description'] ?? '-' }}</span>
                         </div>
                     @endif
-                    
+
                 </div>
 
                 <!-- TABLE -->
@@ -246,8 +246,8 @@
                    <!-- NOTES -->
                 @if (!empty($prinvoice['quotation']['notes']))
                     <div class="terms">
-                        <div class="label">Notes</div>
-                        <ul>
+                        <div class="label">Booking Procedure</div>
+                        <ul class="list-unstyled">
                             @foreach (explode("\n", $prinvoice['quotation']['notes']) as $note)
                                 @if (trim($note) !== '')
                                     <li>{{ $note }}</li>
@@ -260,7 +260,7 @@
                 @if (!empty($prinvoice['quotation']['terms_and_condition']))
                     <div class="terms">
                         <div class="label">Terms & Conditions</div>
-                        <ul>
+                        <ul class="list-unstyled">
                             @foreach (explode("\n", $prinvoice['quotation']['terms_and_condition']) as $term)
                                 @if (trim($term) !== '')
                                     <li>{{ $term }}</li>
@@ -270,7 +270,7 @@
                     </div>
                 @endif
 
-             
+
 
 
                 <div class="tiny-divider"></div>
@@ -312,12 +312,12 @@
                                             9 => 'Stripe',
                                             10 => 'Other',
                                         ];
-                                        
+
                                         $paymentMethodName = $paymentMethods[$history->payment_method] ?? 'NA'; // Default to 'NA' if no match
                                     @endphp
                                     {{ $paymentMethodName }}
                                 </td>
-                                
+
                                     <td>{{ $history?->notes ?? 'NA' }}</td>
 
                                 <td>{{ \App\Helpers\SettingHelper::formatCurrency($history?->paid_amount ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format', $prinvoice['company_id'])) }} {{ $item['currency_label'] }}</td>
@@ -639,8 +639,8 @@
                 </div>
             </div>
         @endif
-        
-        
+
+
                 {{-- PAYMENT --}}
         <div id="canvasBackdrop" wire:ignore></div>
         <div id="rightCanvas" wire:ignore.self>
@@ -686,19 +686,19 @@
                                             value = raw;
                                             $event.target.value = Number(raw || 0).toLocaleString();
                                         "> --}}
-                                        
+
                                    <input type="text"
                                         class="form-control"
                                         x-data="{
                                             value: @entangle('paid_amount').live,
                                             format(v) {
                                                 v = (v ?? '').toString().replace(/[^0-9.]/g, '');
-                                    
+
                                                 const parts = v.split('.');
                                                 if (parts.length > 2) parts.splice(2);
-                                    
+
                                                 this.value = v;
-                                    
+
                                                 if (v.includes('.')) {
                                                     return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + (parts[1] ?? '');
                                                 }
@@ -760,10 +760,10 @@
                         </div>
 
 
-             
+
 
                     </div>
-                    
+
                                <div class="canvas-footer d-flex justify-content-end gap-2 mt-2">
 
                             <a id="closeCanvas" class="btn btn-secondary greygradientbtn">Cancel</a>
