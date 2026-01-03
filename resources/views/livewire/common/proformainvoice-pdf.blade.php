@@ -287,7 +287,7 @@
         $logo = optional($organization->logo)->file;
         $client = $prinvoice['tourist'] ?? null;
         $tour = $prinvoice['tour'] ?? null;
-        
+
         $showStatus = $showStatus ?? true;
     @endphp
 
@@ -296,7 +296,7 @@
             <div class="ribbon">{{ $status }}</div>
         </div>
     @endif
-    
+
                       @if ($prinvoice->status == 2)
                       <img src="{{ public_path('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"
                     style="    position: absolute;
@@ -366,11 +366,11 @@
         <div style="margin-top:20px;margin-bottom:20px">
             <div class="section-title">Customer Details</div>
             <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-         
+
             @if (!empty($client['contact_phone']))
                 <div class="company-info">{{ $client['contact_phone'] }}</div>
             @endif
-            
+
                        @if (!empty($client['address']))
                 <div class="company-info">{{ $client['address'] }}</div>
             @endif
@@ -386,7 +386,7 @@
                     <strong style="font-weight:600;">{{ $tour['description'] ?? '-' }}</strong>
                 </div>
             @endif --}}
-            
+
                       @php
                         $tourItem = collect($prinvoice['quotation']['items'])->firstWhere('is_tour', 1);
                     @endphp
@@ -483,8 +483,8 @@
         <!-- NOTES -->
         @if (!empty($prinvoice['quotation']['notes']))
             <div class="terms">
-                <div class="label">Notes</div>
-                <ul>
+                <div class="label">Booking Procedure</div>
+                <ul style="list-style-type: none;">
                     @foreach (explode("\n", $prinvoice['quotation']['notes']) as $note)
                         @if (trim($note) !== '')
                             <li>{{ $note }}</li>
@@ -497,7 +497,7 @@
         @if (!empty($prinvoice['quotation']['terms_and_condition']))
             <div class="terms">
                 <div class="label">Terms & Conditions</div>
-                <ul>
+                <ul style="list-style-type: none;">
                     @foreach (explode("\n", $prinvoice['quotation']['terms_and_condition']) as $term)
                         @if (trim($term) !== '')
                             <li>{{ $term }}</li>
@@ -507,7 +507,7 @@
             </div>
         @endif
 
-        
+
 
         <div class="tiny-divider"></div>
         <div class="footer-note">

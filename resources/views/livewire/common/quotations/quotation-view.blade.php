@@ -200,11 +200,11 @@
                         $tour = $estimate['tour'] ?? null;
                     @endphp
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-                   
+
                     @if (!empty($client['contact_phone']))
                         <div class="company-info">{{ $client['contact_phone'] }}</div>
                     @endif
-                    
+
                                @if (!empty($client['address']))
                 <div class="company-info">{{ $client['address'] }}</div>
             @endif
@@ -220,7 +220,7 @@
                             <span class="quote-id">Tour Details:</span> <span>{{ $tour['description'] ?? '-' }}</span>
                         </div>
                     @endif --}}
-                    
+
                     @php
                         $tourItem = collect($estimate['items'])->firstWhere('is_tour', 1);
                     @endphp
@@ -236,7 +236,7 @@
                             <span>{{ $tourItem['description'] ?? '-' }}</span>
                         </div>
                     @endif
-                    
+
                 </div>
 
                 <!-- TABLE -->
@@ -317,7 +317,7 @@
                 @if (!empty($estimate['notes']))
                     <div class="terms">
                         <div class="label">Booking Procedure</div>
-                        <ul>
+                        <ul class="list-unstyled">
                             @foreach (explode("\n", $estimate['notes']) as $note)
                                 @if (trim($note) !== '')
                                     <li>{{ $note }}</li>
@@ -330,7 +330,7 @@
                 @if (!empty($estimate['terms_and_condition']))
                     <div class="terms">
                         <div class="label">Terms & Conditions</div>
-                        <ul>
+                        <ul class="list-unstyled">
                             @foreach (explode("\n", $estimate['terms_and_condition']) as $term)
                                 @if (trim($term) !== '')
                                     <li>{{ $term }}</li>
@@ -340,7 +340,7 @@
                     </div>
                 @endif
 
-         
+
 
 
                 <div class="tiny-divider"></div>
@@ -755,7 +755,7 @@
                                 <input type="number" id="toatl_amount" class="form-control" min="0"
                                     max="{{ $toatl_amount }}" wire:model.blur="pay_amount"
                                     placeholder="Enter amount (max {{ $toatl_amount }})"
-                                    oninput="if (this.value > {{ $toatl_amount }}) this.value = {{ $toatl_amount }}; 
+                                    oninput="if (this.value > {{ $toatl_amount }}) this.value = {{ $toatl_amount }};
                 if (this.value == '') this.value = 0;">
 
                                 @error('pay_amount')
