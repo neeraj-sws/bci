@@ -48,7 +48,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-extended.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/bootstrap-extended.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
@@ -180,7 +180,7 @@
     <script src="https://cdn.tiny.cloud/1/703e60ik4bbf0tgpid8nx2ir9yzwu22hdo6ab11waghkcofx/tinymce/5/tinymce.min.js"
         referrerpolicy="origin"></script>
         
-    <script>
+    {{-- <script>
         function initAllTinyMCEEditors() {
             document.querySelectorAll('textarea[data-editor][data-model]').forEach(el => {
                 const id = el.id;
@@ -235,7 +235,7 @@
         window.addEventListener('init-tinymce', function() {
             setTimeout(() => initAllTinyMCEEditors(), 100);
         });
-    </script>
+    </script> --}}
 
 
     @include('components.includes.sweet-alert')

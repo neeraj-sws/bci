@@ -202,7 +202,7 @@
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
 
                     @if (!empty($client['contact_phone']))
-                        <div class="company-info">{{ $client['contact_phone'] }}</div>
+                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
                     @endif
 
                                @if (!empty($client['address']))

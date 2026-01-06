@@ -10,7 +10,7 @@
                 </ol>
             </nav>
         </div>
-        @can('company manage')
+        @can('companies manage')
             <a href="{{ route($route . '.add-company') }}" class="btn bluegradientbtn">
                 <i class="bx bx-plus me-1"></i> Add New Company
             </a>

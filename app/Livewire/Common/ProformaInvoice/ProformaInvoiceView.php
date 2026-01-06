@@ -203,6 +203,7 @@ class ProformaInvoiceView extends Component
         $pdf = Pdf::loadView('livewire.common.proformainvoice-pdf', [
             'prinvoice' => $this->prinvoice,
             'prinvoiceSettings' => $this->prinvoiceSettings,
+             'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
         // 
@@ -279,6 +280,7 @@ class ProformaInvoiceView extends Component
         $pdf = Pdf::loadView('livewire.common.proforma-invoice-pdf', [
             'estimate' => $this->estimate,
             'estimateSettings' => $this->estimateSettings,
+             'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
         // 

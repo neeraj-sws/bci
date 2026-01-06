@@ -94,7 +94,14 @@ class AddQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
+                        // NEW DEV 
+                        'inr_amount' => $tourJson->inr_amount,
+                        'original_inr_amount' => $tourJson->inr_amount,
+                        'usd_amount' => $tourJson->usd_amount,
+                        'currency_label' => $tourJson->currency_label,
+                        // ends here
                         'is_tour' => $tourJson->is_tour,
+                        'tour_amount_locked' => false, // 👈 IMPORTANT
                     ];
                 }
             }
@@ -164,7 +171,14 @@ class AddQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
+                         // NEW DEV 
+                        'inr_amount' => $tourJson->inr_amount,
+                        'original_inr_amount' => $tourJson->inr_amount,
+                        'usd_amount' => $tourJson->usd_amount,
+                        'currency_label' => $tourJson->currency_label,
+                        // ends here
                         'is_tour' => $tourJson->is_tour,
+                        'tour_amount_locked' => false, // 👈 IMPORTANT
                     ];
                 }
             } else {
@@ -259,8 +273,8 @@ class AddQuotation extends Component
             })
             ->toArray();
         $this->tours = Tours::where('status', 1)
-         ->orderByDesc('updated_at')
-        ->pluck('name', 'tour_id');
+            ->orderByDesc('updated_at')
+            ->pluck('name', 'tour_id');
 
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
 
@@ -335,6 +349,7 @@ class AddQuotation extends Component
     }
     public function addEstimate()
     {
+        // dd($this->selectedItems);
         $this->validate($this->rules());
 
         // NEW DEV 
@@ -445,10 +460,13 @@ class AddQuotation extends Component
                 'quotation_id'     => $estimate->id,
                 'item_name'         => $item['name'],
                 'description'         => $item['description'],
-                'amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['amount'],
+                // 'amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['amount'],
+                'amount'         =>  $item['amount'],
 
-                'inr_amount'         => $item['is_tour'] ? $tableDataArray['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0 : $item['inr_amount'],
-                'usd_amount'         => $item['is_tour'] ? $tableDataArray['tourPackage']['summary']['USD']['Total for the Day'] ?? 0 : $item['usd_amount'],
+                // 'inr_amount'         => $item['is_tour'] ? $tableDataArray['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0 : $item['inr_amount'],
+                'inr_amount'         =>  $item['inr_amount'],
+                // 'usd_amount'         => $item['is_tour'] ? $tableDataArray['tourPackage']['summary']['USD']['Total for the Day'] ?? 0 : $item['usd_amount'],
+                'usd_amount'         =>  $item['usd_amount'],
                 'currency_label'     => $currencyLabel,
 
 
@@ -473,7 +491,7 @@ class AddQuotation extends Component
             'message' => $this->pageTitle . ' Added Successfully'
         ]);
 
-        $this->redirect(route($this->route . '.view-quotation',$estimate->uuid));
+        $this->redirect(route($this->route . '.view-quotation', $estimate->uuid));
     }
     // NEW 
     public function updateEstimate()
@@ -503,6 +521,8 @@ class AddQuotation extends Component
 
             'sub_amount' => $this->subTotal,
             'discount_amount' => $this->discount,
+            'total_remaning_amount' => $this->totalAmount,
+            'total_paid_amount' => 0
         ]);
 
         QuotationItems::where('quotation_id', $estimate->id)->delete();
@@ -519,10 +539,13 @@ class AddQuotation extends Component
                 'quotation_id'     => $estimate->id,
                 'item_name'         => $item['name'],
                 'description'         => $item['description'],
-                'amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['amount'],
+                // 'amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['amount'],
+                'amount'         =>  $item['amount'],
 
-                'inr_amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['inr_amount'],
-                'usd_amount'         => $item['is_tour'] ? $this->usdammount : $item['usd_amount'],
+                // 'inr_amount'         => $item['is_tour'] ? $this->withmarkup_total : $item['inr_amount'],
+                'inr_amount'         => $item['inr_amount'],
+                // 'usd_amount'         => $item['is_tour'] ? $this->usdammount : $item['usd_amount'],
+                'usd_amount'         => $item['usd_amount'],
                 'currency_label'     => $currencyLabel,
 
 
@@ -550,7 +573,7 @@ class AddQuotation extends Component
                 ->addDays(((int) $tour->day) - 1)
                 ->format('Y-m-d');
 
-                $this->end_date = $this->tourDays;
+            $this->end_date = $this->tourDays;
             $this->dispatch('tour-days-updated');
         }
 
@@ -579,6 +602,8 @@ class AddQuotation extends Component
                 $this->selectedItems[] = [
                     'name' => $tour->name,
                     'amount' => $this->withmarkup_total,
+                    'original_inr_amount' => $withMarkup,
+                    'tour_amount_locked' => false, // 👈 IMPORTANT
                     'description' => $tour->description ?? 'No description',
                     'is_tour' => 1
                 ];
@@ -659,8 +684,35 @@ class AddQuotation extends Component
 
                 $item['currency_label'] = $this->currency;
             } else {
-                // Tour items: don't change
-                $item['amount'] = $originalInr;
+                // Tour item
+                if ($item['tour_amount_locked']) {
+                    // auto mode → follow markup
+                    $item['amount'] = $this->withmarkup_total;
+                } else {
+                    if ($editedIndex !== null && $i == $editedIndex) {
+                        if ($this->currency == '$') {
+                            // USD was edited, recalc INR
+                            $item['usd_amount'] = floatval($item['amount']);
+                            // $item['inr_amount'] = round($item['usd_amount'] * $rate, 2);
+                            $item['inr_amount'] = round($item['usd_amount'] * $rate);
+                        } else {
+                            // INR was edited, recalc USD
+                            $item['inr_amount'] = floatval($item['amount']);
+                            // $item['usd_amount'] = round($item['inr_amount'] / $rate, 2);
+                            $item['usd_amount'] = round($item['inr_amount'] / $rate);
+                        }
+                    } else {
+                        // Normal calculation based on currency
+                        if ($this->currency == '$') {
+                            $item['amount'] = round($originalInr / $rate, 2);
+                        } else {
+                            $item['amount'] = $originalInr;
+                        }
+                        $item['inr_amount'] = $originalInr;
+                        $item['usd_amount'] = round($originalInr / $rate, 2);
+                    }
+                }
+                // manual mode → DO NOTHING
             }
         }
 
@@ -683,8 +735,10 @@ class AddQuotation extends Component
         }
 
         // Step 3: Calculate total from items
+        // $this->totalAmount = collect($this->selectedItems)
+        //     ->sum(fn($item) => $item['is_tour'] ? $this->withmarkup_total : floatval($item['amount'] ?? 0));
         $this->totalAmount = collect($this->selectedItems)
-            ->sum(fn($item) => $item['is_tour'] ? $this->withmarkup_total : floatval($item['amount'] ?? 0));
+            ->sum(fn($item) => floatval($item['amount'] ?? 0));
         $this->subTotal = $this->totalAmount;
 
         // Step 4: Apply discount
@@ -753,6 +807,17 @@ class AddQuotation extends Component
     }
     public function handleItemAmount($index)
     {
+        if (!empty($this->selectedItems[$index]['is_tour'])) {
+            $this->selectedItems[$index]['tour_amount_locked'] = false;
+            $rate = (float)($this->usdammount ?? 80);
+            if ($this->currency === '$') {
+                $this->selectedItems[$index]['original_inr_amount'] =
+                    round(floatval($this->selectedItems[$index]['amount']) * $rate);
+            } else {
+                $this->selectedItems[$index]['original_inr_amount'] =
+                    floatval($this->selectedItems[$index]['amount']);
+            }
+        }
         $this->calculateTotals($index);
     }
     public function ItemAdd()
@@ -776,14 +841,14 @@ class AddQuotation extends Component
     }
     public function updatedStartDate($code)
     {
-        if($this->tour_id){
+        if ($this->tour_id) {
             $tour = Tours::with('tourJsons')->find($this->tour_id);
             if ($code && $tour->day) {
                 $this->tourDays = Carbon::parse($code)
                     ->addDays(((int) $tour->day) - 1)
                     ->format('Y-m-d');
 
-                    $this->end_date = $this->tourDays;
+                $this->end_date = $this->tourDays;
                 $this->dispatch('tour-days-updated');
             }
         }
@@ -803,23 +868,23 @@ class AddQuotation extends Component
         $this->notes = $this->estimateSettings?->customer_note ?? '';
     }
     private function getEmptyDay(int $dayNumber): array
-{
-    return [
-        "particular" => "Day " . str_pad($dayNumber, 2, '0', STR_PAD_LEFT),
-        "activitiesCovered" => "",
-        "roomPerNight" => 0,
-        "numberOfRooms" => 0,
-        "vehicleCost" => 0,
-        "safariCost" => 0,
-        "safariNumber" => 0,
-        "monumentFee" => 0,
-        "entryNumbers" => 0,
-        "totalForTheDay" => 0,
-        "hotelTotal" => 0,
-        "hotelAdvance" => 0,
-        "hotelBalance" => 0,
-    ];
-}
+    {
+        return [
+            "particular" => "Day " . str_pad($dayNumber, 2, '0', STR_PAD_LEFT),
+            "activitiesCovered" => "",
+            "roomPerNight" => 0,
+            "numberOfRooms" => 0,
+            "vehicleCost" => 0,
+            "safariCost" => 0,
+            "safariNumber" => 0,
+            "monumentFee" => 0,
+            "entryNumbers" => 0,
+            "totalForTheDay" => 0,
+            "hotelTotal" => 0,
+            "hotelAdvance" => 0,
+            "hotelBalance" => 0,
+        ];
+    }
     public function addDay()
     {
         if (empty($this->tableDataJson['tourPackage']['days'])) {
@@ -847,5 +912,30 @@ class AddQuotation extends Component
             $this->recalculateDay($i);
         }
         $this->calculateTotals();
+    }
+    public function restoreTourAmountsFromJson()
+    {
+        
+        $rate = $this->usdammount ?? 80;
+        foreach ($this->selectedItems as &$item) {
+            if (!empty($item['is_tour'])) {
+                if ($this->currency === '$') {
+                    $item['amount'] = $this->tableDataJson['tourPackage']['summary']['USD']['Total for the Day'] ?? 0;
+                    $item['usd_amount'] = $item['amount'];
+                    $item['inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
+                    $item['original_inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
+                    $item['tour_amount_locked'] = false;
+                } else {
+                    $item['amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
+                    $item['usd_amount'] = round($item['amount'] / $rate, 2);
+                    $item['inr_amount'] = $item['amount'];
+                    $item['original_inr_amount'] = $item['amount'];
+                    $item['tour_amount_locked'] = false;
+                }
+            }
+        }
+        $this->calculateTotals();
+        $this->showModal = !$this->showModal;
+        $this->dispatch('open-new-item-modal');
     }
 }

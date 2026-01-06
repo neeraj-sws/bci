@@ -140,6 +140,7 @@ class InvoiceView extends Component
         $pdf = Pdf::loadView('livewire.common.invoice-pdf', [
             'invoice' => $this->invoice,
             'invoiceSettings' => $this->invoiceSettings,
+             'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
         // 
@@ -214,6 +215,7 @@ class InvoiceView extends Component
         $pdf = Pdf::loadView('livewire.common.invoice-pdf', [
             'invoice' => $this->estimate,
             'invoiceSettings' => $this->estimateSettings,
+             'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
         // 
