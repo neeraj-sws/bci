@@ -382,20 +382,19 @@
 
                                             @if (!App\Helpers\SettingHelper::getColoumName('hide_amount', $company_id))
                                                 <td>
-                                                    <div id="input.{{ $index }}" class="input-group mb-3">
-                                                        <span class="input-group-text"
-                                                            id="basic-addon1">{{ $currency }}</span>
-                                                        <input type="text" class="form-control text-end"
-                                                            @if ($item['is_tour']) value="{{ \App\Helpers\SettingHelper::formatCurrency($withmarkup_total ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format', $company_id)) }}"
-                                                            readonly
-                                                        @else
-                                                            wire:model="selectedItems.{{ $index }}.amount"
-                                                            wire:change="handleItemAmount({{ $index }})" @endif>
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">{{ $currency }}</span>
 
-                                                        @error("selectedItems.$index.amount")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
+                                                        <input type="text"
+                                                            class="form-control text-end"
+                                                            wire:model.defer="selectedItems.{{ $index }}.amount"
+                                                            wire:change="handleItemAmount({{ $index }})"
+                                                        >
                                                     </div>
+
+                                                    @error("selectedItems.$index.amount")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </td>
                                             @endif
 
@@ -474,7 +473,7 @@
                 </div>
 
                 <div class="mb-1 w-50">
-                    <label class="form-label">Customer Notes <span class="text-danger">*</span></label>
+                    <label class="form-label">Booking Procedure <span class="text-danger">*</span></label>
                     <textarea class="form-control @error('notes') is-invalid @enderror" wire:model="notes" rows="8"></textarea>
                     @error('notes')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -613,8 +612,8 @@
 
                         <div class="d-flex justify-content-between">
                             <a class="btn btn-dark my-3" wire:click='edit'>Back</a>
-                            <a class="btn bluegradientbtn my-3 " wire:click='edit'>Save <span wire:loading
-                                    wire:target="edit">
+                            <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
+                                    wire:target="restoreTourAmountsFromJson">
                                     <span class="spinner-border spinner-border-sm me-1" role="status"
                                         aria-hidden="true"></span>
                                 </span></a>
@@ -622,8 +621,8 @@
                     </tbody>
                 </table>
                 <div class="text-end">
-                    <a class="btn bluegradientbtn my-3 " wire:click='edit'>Save <span wire:loading
-                            wire:target="edit">
+                    <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
+                            wire:target="restoreTourAmountsFromJson">
                             <span class="spinner-border spinner-border-sm me-1" role="status"
                                 aria-hidden="true"></span>
                         </span></a>

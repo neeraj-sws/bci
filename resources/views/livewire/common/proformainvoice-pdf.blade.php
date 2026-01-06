@@ -6,7 +6,7 @@
     <title>Proforma Invoice PDF</title>
     <style>
         @page {
-            margin: 0;
+            margin: 140px 0px 80px 0px;
         }
 
         @font-face {
@@ -45,9 +45,9 @@
         .page {
             width: 85%;
             /* Reduce width to allow more room for padding */
-            margin: 25px auto;
+            /*margin: 25px auto;*/
             background: #fff;
-            padding: 40px 50px;
+            padding: 0px 60px;
             /* more space left/right */
             box-sizing: border-box;
         }
@@ -264,7 +264,8 @@
         .tiny-divider {
             height: 0.5px;
             background: #ddd;
-            margin: 25px 0 15px 0;
+             width: 92%;
+            margin: 0px auto 18px auto; /* CENTERED */
         }
 
         .footer-note {
@@ -277,6 +278,32 @@
         .rupee::before {
             content: "\20B9";
         }
+        .page-break {
+            page-break-before: always;
+        }
+        .footer {
+            position: fixed;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+        }
+          .header {
+            position: fixed;
+            top: -120px;              /* sits inside top margin */
+            left: 7.5%;               /* centers header like .page */
+            width: 85%;
+            height: 150px;
+            padding: 40px 0 0 0;
+        }
+        .ri-header {
+            position: fixed;
+            top: -140px;              /* sits inside top margin */
+            left: 0px;               /* centers header like .page */
+            width: 85%;
+        }
     </style>
 </head>
 
@@ -287,30 +314,20 @@
         $logo = optional($organization->logo)->file;
         $client = $prinvoice['tourist'] ?? null;
         $tour = $prinvoice['tour'] ?? null;
-
+        
         $showStatus = $showStatus ?? true;
     @endphp
 
-    @if ($showStatus && $status)
-        <div class="ribbon-wrapper">
-            <div class="ribbon">{{ $status }}</div>
-        </div>
-    @endif
-
-                      @if ($prinvoice->status == 2)
-                      <img src="{{ public_path('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"
-                    style="    position: absolute;
-                        width: 170px;
-                        display: block;
-                        margin: 0 auto;
-                        opacity: 0.5;
-                        left: 40%;
-                        top: 12%;" />
-                      @endif
-
-    <div id="pdf" class="page">
-
-        <table style="width:100%; border-collapse:collapse;">
+    <div class="ri-header">
+            @if ($showStatus && $status)
+            <div class="ribbon-wrapper">
+                <div class="ribbon">{{ $status }}</div>
+            </div>
+        @endif
+    </div>
+    
+    <div class="header">
+               <table style="width:100%; border-collapse:collapse;">
             <tr>
                 <td style="width:50%; vertical-align:middle;">
                     <div class="logo-wrap" style="width:180px;">
@@ -334,20 +351,72 @@
         </table>
 
         <div class="thin-line"></div>
+</div>
+
+    <div class="footer">
+            <div class="tiny-divider"></div>
+        <div class="footer-note">
+            Proforma Invoice was created digitally and is valid without signature.
+        </div>
+    </div>
+    
+                      @if ($prinvoice->status == 2)
+                      <img src="{{ public_path('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"
+                    style="    position: absolute;
+                        width: 170px;
+                        display: block;
+                        margin: 0 auto;
+                        opacity: 0.5;
+                        left: 40%;
+                        top: 12%;" />
+                      @endif
+
+    <div id="pdf" class="page">
+
+{{--        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <td style="width:50%; vertical-align:middle;">
+                    <div class="logo-wrap" style="width:180px;">
+                        @if ($logo)
+                            <img src="{{ public_path("uploads/companies/{$organization->id}/" . $logo) }}"
+                                alt="{{ $organization->name ?? 'Logo' }}" class="logo-img" />
+                        @endif
+                    </div>
+                </td>
+                <td style="width:50%; text-align:right; vertical-align:middle;">
+                    <div class="quote-box">
+                        <div class="quote-id">
+                            {{ ucfirst($prinvoiceSettings->pr_invoice_title ?? 'PrformaInvoice') }}#
+                        </div>
+                        <div class="quote-id">
+                            {{ $prinvoice['proforma_invoice_no'] ?? 'N/A' }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="thin-line"></div> --}}
 
         <table style="width:100%; border-collapse: collapse;">
             <tr>
                 <td style="width:50%; vertical-align: middle;">
-                    <div class="company-info">
-                        <strong>{{ $organization->company_address ?? '' }}</strong><br>
-                        @if (!empty($organization->company_email))
-                            {{ $organization->company_email }}<br>
-                        @endif
-                        Ph: {{ $organization->company_contact ?? '' }}<br>
-                        @if (!empty($organization->company_tax_id))
-                            <div class="gstin">{{ $organization->company_tax_id }}</div>
-                        @endif
-                    </div>
+                     <div class="company-info">
+                            {{ $organization->company_address ?? '' }}<br>
+                            @if($organization->city_name || $organization->state_name || $organization->zip_code || $organization->country_name)
+                                {{ $organization->city_name->name ?? '' }},
+                                {{ $organization->state_name->name ?? '' }} 
+                                @if($organization->zip_code) {{ $organization->zip_code }}@endif,
+                                @if($organization->country_name) {{ $organization->country_name->name }}@endif
+                            @endif
+                            @if (!empty($organization->company_email))
+                                {{ $organization->company_email }}<br>
+                            @endif
+                            Ph: +91-{{ $organization->company_contact ?? '' }}<br>
+                            @if (!empty($organization->company_tax_id))
+                                {{ $organization->company_tax_id }}
+                            @endif
+                        </div>
                 </td>
                 <td style="width:50%; text-align:right; vertical-align: top;">
                     <div class="quote-box">
@@ -366,11 +435,11 @@
         <div style="margin-top:20px;margin-bottom:20px">
             <div class="section-title">Customer Details</div>
             <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-
+         
             @if (!empty($client['contact_phone']))
-                <div class="company-info">{{ $client['contact_phone'] }}</div>
+                <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
             @endif
-
+            
                        @if (!empty($client['address']))
                 <div class="company-info">{{ $client['address'] }}</div>
             @endif
@@ -386,7 +455,7 @@
                     <strong style="font-weight:600;">{{ $tour['description'] ?? '-' }}</strong>
                 </div>
             @endif --}}
-
+            
                       @php
                         $tourItem = collect($prinvoice['quotation']['items'])->firstWhere('is_tour', 1);
                     @endphp
@@ -479,6 +548,7 @@
             </div>
         </div>
 
+        <div class="page-break"></div>
 
         <!-- NOTES -->
         @if (!empty($prinvoice['quotation']['notes']))
@@ -507,12 +577,12 @@
             </div>
         @endif
 
+        
 
-
-        <div class="tiny-divider"></div>
+       {{-- <div class="tiny-divider"></div>
         <div class="footer-note">
             Proforma Invoice was created digitally and is valid without signature.
-        </div>
+        </div> --}}
 
         @yield('content')
     </div>

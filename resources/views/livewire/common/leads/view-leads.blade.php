@@ -2,7 +2,6 @@
 <div class="card shadow-none border">
    
 							<div class="card-body pb-2">
-							   <a href="javascript:history.back()"><i class="lni lni-chevron-left"></i></a> 
 								<div class="d-flex  justify-content-between flex-wrap">
 									<div class="d-flex align-items-center mb-2">
 										<div class="avatar avatar-xxl avatar-rounded border border-warning bg-soft-warning me-3 flex-shrink-0">
@@ -123,7 +122,11 @@
 							</div>
 						</div>
 						<div class="row">
-						    <div class="col-md-12">
+                            <div class="col-md-3">
+                               <a href="javascript:history.back()" class="btn btn-primary btn-sm" style="font-size:13px;"><i class="bx bx-arrow-back"></i> Back</a>
+
+                            </div>
+						    <div class="col-md-9">
 						         <div class="step-progress justify-content-center mb-4 d-flex flex-nowrap gap-2">
 						                        @foreach ($stages as $index => $name)
             								<div class="step bg-indigo nav-pills " @if (($leadData->stage_id ?? null) == $index) style="color:{{ optional($leadData->stage)->btn_text }};background:{{ optional($leadData->stage)->btn_bg }}" @endif>{{ $name }} </div>
@@ -179,34 +182,26 @@
 						            </div>
 						            <h6 class="mb-3 fw-bold">Travel Information</h6>
 						            <div class="border-bottom mb-3 pb-2">
-						                 @if($leadData?->travel_date)
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Travel Date</p>
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->travel_date 
                                         ? \Carbon\Carbon::parse($leadData?->travel_date)->format('d M Y') 
                                         : 'N/A' }}</p>
 									</div>
-									@endif
-									 @if($leadData?->travel_days)
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Travel Days</p>
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->travel_days ?? 'N/A' }}</p>
 									</div>
-									@endif
-									 @if($leadData?->budget)
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Budget</p>
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->budget ?? 'N/A' }}</p>
 									</div>
-									@endif
-									 @if($leadData?->follow_up_date)
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Follow Up</p>
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->follow_up_date && $leadData?->follow_up_time
         ? \Carbon\Carbon::parse($leadData?->follow_up_date.' '.$leadData?->follow_up_time)->format('d M Y h:i A')
         : 'N/A' }}</p>
 									</div>
-									@endif
 						            </div>
 						             <h6 class="mb-3 fw-bold">Remark</h6>
 						            <div class="">

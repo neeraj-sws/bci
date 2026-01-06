@@ -66,9 +66,8 @@
 
                 <div class="brand-row" style="margin-bottom:25px">
                     <div class="company-info">
-                        <strong>{{ $organization->company_address ?? '' }}</strong><br>
-                        @if($organization->city_name)
-                            <strong>
+                        {{ $organization->company_address ?? '' }}<br>
+                         @if($organization->city_name)
                                 {{ $organization->city_name->name ?? '' }}
                                 @if($organization->state_name)
                                     , {{ $organization->state_name->name }}
@@ -78,15 +77,14 @@
                                 @endif
                                 @if($organization->country_name)
                                     , {{ $organization->country_name->name }}
-                                @endif
-                            </strong><br>
+                                @endif<br>
                         @endif
                         @if (!empty($organization->company_email))
                             {{ $organization->company_email }}<br>
                         @endif
                         Ph: +91-{{ $organization->company_contact ?? '' }}<br>
                         @if (!empty($organization->company_tax_id))
-                            <div class="gstin">{{ $organization->company_tax_id }}</div>
+                            {{ $organization->company_tax_id }}
                         @endif
                     </div>
 
@@ -110,7 +108,7 @@
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
                   
                     @if (!empty($client['contact_phone']))
-                        <div class="company-info">{{ $client['contact_phone'] }}</div>
+                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
                     @endif
                     
                                @if (!empty($client['address']))
