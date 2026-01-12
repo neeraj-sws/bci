@@ -201,9 +201,7 @@
                     @endphp
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
 
-                    @if (!empty($client['contact_phone']))
-                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
-                    @endif
+
 
                                @if (!empty($client['address']))
                 <div class="company-info">{{ $client['address'] }}</div>
@@ -211,6 +209,12 @@
              @if (!empty($client['country']))
                 <div class="company-info">{{ $client['country']['name'] }}</div>
             @endif
+                    @php
+                    $phone_number =  App\Helpers\SettingHelper::format_phone($client['contact_phone'])
+                    @endphp
+                    @if (!empty($client['contact_phone']))
+                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $phone_number }}</div>
+                    @endif
 
                    {{-- @if ($tour)
                         <div class="tour-name" style="margin-top:14px">

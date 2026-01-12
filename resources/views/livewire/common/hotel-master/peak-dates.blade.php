@@ -36,7 +36,7 @@
                         <!-- Hotel -->
                         <div class="mb-3">
                             <label class="form-label">Hotel <span class="text-danger">*</span></label>
-                            <select class="form-select @error('hotel_id') is-invalid @enderror"
+                            <select id="hotel_id" class="form-select select2 @error('hotel_id') is-invalid @enderror"
                                 wire:model.defer="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
@@ -47,11 +47,25 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Room Category <span class="text-danger">*</span>
+                            </label> 
+                             <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model="room_category_id">
+                                <option value="">Select Ocupancy</option>
+                                @foreach ($roomCategoys as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            @error('room_category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <!-- Dates -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Start Date *</label>
+                                <label class="form-label">Start Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" wire:model.defer="start_date">
                                 @error('start_date')
                                     <small class="text-danger">{{ $message }}</small>
@@ -59,14 +73,38 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">End Date *</label>
+                                <label class="form-label">End Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" wire:model.defer="end_date">
                                 @error('end_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                         </div>
+                        <!-- Notes -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                type="checkbox"
+                                wire:model.live="show_notes"
+                                id="show_notes">
+                            <label class="form-check-label" for="show_notes">
+                                Show Notes
+                            </label>
+                        </div>
+                        @if ($show_notes)
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Notes <span class="text-danger">*</span>
+                                </label>
+                                <textarea
+                                    class="form-control @error('notes') is-invalid @enderror"
+                                    wire:model.defer="notes"
+                                    placeholder="Explain why this period is peak..."></textarea>
 
+                                @error('notes')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <!-- New Year -->
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" wire:model.defer="is_new_year"
@@ -75,9 +113,64 @@
                                 Is New Year Peak
                             </label>
                         </div>
+                        {{-- Occupancy --}}
+                            @if (count($roomRatesData) == 0)
+                                <a class="text-primary mb-2 cursor-pointer text-decoration-underline"
+                                    wire:click='showModel'>Add Occupancy
+                                    <i class="spinner-border spinner-border-sm" wire:loading.delay
+                                        wire:target="showModel"></i>
+                                </a>
+                                @error('roomRatesData') <div class="text-danger">{{ $message }}</div> @enderror
+                            @else
+                                <div class="mt-2">
+                                    <tr><a class="text-warning  cursor-pointer text-decoration-underline"
+                                            wire:click='showModel'>Add Occupancy</a></tr>
 
+                                    <div class="table-responsive mt-3">
+                                        <table class="table table-bordered table-hover shadow-sm">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Occupancy</th>
+                                                    <th>Rate</th>
+                                                    <th style="width: 100px;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($roomRatesData as $index => $data)
+                                                    <tr>
+                                                        <td>{{ $occupances[$data['ocupancy_id']] ?? 'N/A' }}</td>
+                                                        <td>
+                                                            {{ \App\Helpers\SettingHelper::formatCurrency(
+                                                                $data['rate'] ?? 0,
+                                                                \App\Helpers\SettingHelper::getGenrealSettings('number_format'),
+                                                            ) }}
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-sm btn-info"
+                                                                wire:click="editRoomRate({{ $index }})">
+                                                                <i class="bx bx-edit text-dark"></i>
+                                                                <i class="spinner-border spinner-border-sm"
+                                                                    wire:loading.delay
+                                                                    wire:target="editRoomRate({{ $index }})"></i>
+                                                            </a>
+                                                            <a class="btn btn-sm btn-danger"
+                                                                wire:click="removeRoomRate({{ $index }})">
+                                                                <i class="bx bx-trash text-dark"></i>
+                                                                <i class="spinner-border spinner-border-sm"
+                                                                    wire:loading.delay
+                                                                    wire:target="removeRoomRate({{ $index }})"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+                        {{--  --}}
                         <!-- Status -->
-                        <div class="mb-3">
+                        <div class="mt-2 mb-3">
                             <label class="form-label">Status</label>
                             <select class="form-select" wire:model.defer="status">
                                 <option value="1">Active</option>
@@ -181,4 +274,50 @@
         </div>
 
     </div>
+    {{-- NEW DEV --}}
+    <div class="modal @if ($showRoomRateModal) show @endif" tabindex="-1"
+            style="opacity:1; background-color:#0606068c; display:@if ($showRoomRateModal) block @endif">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content p-4">
+                    <form wire:submit.prevent="{{ $roomRateEdit ? 'editRoomRateStore' : 'addRoomRates' }}">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label class="form-label">Ocupancy <span class="text-danger">*</span></label>
+                                <select id="ocupancy_id" class="form-select select2" wire:model="ocupancy_id">
+                                    <option value="">Select Ocupancy</option>
+                                    @foreach ($occupances as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('ocupancy_id')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mt-3">
+                                <label class="form-label">Rate <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" wire:model="rate"
+                                    placeholder="exg . Ocupancy Charge">
+                                @error('rate')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary px-5">Save
+                                <i class="spinner-border spinner-border-sm" wire:loading.delay
+                                    wire:target="{{ $roomRateEdit ? 'editRoomRateStore' : 'addRoomRates' }}"></i>
+                            </button>
+                            <button type="button" wire:click="resetRoomRateForm"
+                                class="btn btn-sm btn-secondary">Close
+                                <i class="spinner-border spinner-border-sm" wire:loading.delay
+                                    wire:target="resetRoomRateForm"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {{--  --}}
 </div>

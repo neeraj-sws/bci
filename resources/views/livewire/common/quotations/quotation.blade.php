@@ -129,7 +129,7 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 100%;min-height: 200px;">
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
-                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">S.no
+                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#
                                 </th>
                                 <th width="13%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
                                 </th>
@@ -147,13 +147,13 @@
                                     Status</th>
                                 <th width="15%"
                                     style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">
-                                    Quotation Amount
+                                    Quotation AMT
                                 </th>
                                 <th width="15%"
-                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Received Amount
+                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Received AMT
                                 </th>
                                 <th width="15%"
-                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Pending Amount
+                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Pending AMT
                                 </th>
                                 <th></th>
                             </tr>
@@ -198,10 +198,6 @@
                                     </td>
                                     <td>
                                         <h2 class="d-flex align-items-center">
-                                            <a href="#" class="avatar avatar-sm me-2">
-                                                <img src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0="
-                                                    alt="User Image" class="rounded-circle w-50">
-                                            </a>
                                             @php
                                                 $roleName = $item->user
                                                     ? $item->user->getRoleNames()->first()
@@ -371,7 +367,7 @@
                                                     <span style="color: {{ $item->type->color ?? 'black' }};">
                                                         <i class="bx bxs-circle font-13"></i>
                                                     </span>
-                                                    {{ $item->tourist->primary_contact ?? $item->tourist->name }}
+                                                    {{ $item?->tourist?->primary_contact ?? 'NA' }}
                                                 </span>
                                                 <div class="small mt-1"><i class="bx bx-phone"></i>
                                                     {{ $item->contact ?? 'NA' }}</div>

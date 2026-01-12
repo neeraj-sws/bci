@@ -77,7 +77,7 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 100%;">
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
-                                <th style="padding:12px 15px; font-weight: 600; color: #374151;">S.no</th>
+                                <th style="padding:12px 15px; font-weight: 600; color: #374151;">#</th>
                                 <th style="padding: 12px 15px; font-weight: 600; color: #374151;">Date</th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">{{ $pageTitle }} #
                                 </th>

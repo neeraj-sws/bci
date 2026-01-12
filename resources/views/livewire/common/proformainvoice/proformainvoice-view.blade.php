@@ -135,14 +135,18 @@
                         $tour = $prinvoice['tour'] ?? null;
                     @endphp
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-                                        @if (!empty($client['contact_phone']))
-                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $client['contact_phone'] }}</div>
-                    @endif
+                          
                     @if (!empty($client['address']))
                         <div class="company-info">{{ $client['address'] }}</div>
                     @endif
                      @if (!empty($client['country']))
                         <div class="company-info">{{ $client['country']['name'] }}</div>
+                    @endif
+                    @php
+                    $phone_number =  App\Helpers\SettingHelper::format_phone($client['contact_phone'])
+                    @endphp
+                    @if (!empty($client['contact_phone']))
+                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $phone_number }}</div>
                     @endif
 
 
@@ -699,7 +703,7 @@
                                             $event.target.value = Number(raw || 0).toLocaleString();
                                         "> --}}
 
-                                   <input type="text"
+                                   {{-- <input type="text"
                                         class="form-control"
                                         x-data="{
                                             value: @entangle('paid_amount').live,
@@ -726,13 +730,40 @@
                                             value = $el.value.replace(/,/g, '');
                                             $el.value = format(value);
                                         "
+                                    /> --}}
+                                    <input type="text"
+                                        class="form-control"
+                                         x-data="currencyInput(
+                                            @entangle('paid_amount').live,
+                                            @entangle('track_id'),
+                                            @entangle('is_copy')
+                                        )"
+                                        x-init="init()"
+                                        x-on:input="onInput($event)"
                                     />
-
                             </div>
 
                             @error('paid_amount')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
+                        </div>
+{{-- NEW DEV --}}
+                         <div class="col-md-12 mb-3">
+                                <label for="title" class="form-label">Record Amount <span
+                                        class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">INR</span>
+                               <input type="text"
+                                        class="form-control"
+                                        x-data="currencyInput(@entangle('record_amount').live)"
+                                        x-init="init()"
+                                        x-on:input="onInput($event)"
+                                    />
+                                    </div>
+                                @error('record_amount')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                        
                         </div>
 
                         <div class="col-md-12 mb-3">
@@ -798,3 +829,61 @@
 
     </div>
 </div>
+@push('scripts')
+<script>
+document.addEventListener('alpine:init', () => {
+
+    Alpine.data('currencyInput', (paid, trackId, isCopy) => ({
+        value: paid,
+        trackId: trackId,       // already entangled, reactive
+        isCopy: isCopy,         // now reactive
+
+        format(v) {
+            v = (v ?? '').toString().replace(/[^0-9.]/g, '');
+            const parts = v.split('.');
+            if (parts.length > 2) parts.splice(2);
+            return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+                (parts[1] ? '.' + parts[1] : '');
+        },
+
+        init() {
+            this.$watch('value', v => {
+                this.$el.value = this.format(v);
+
+                // ✅ WILL ONLY COPY IF isCopy IS TRUE
+                if (this.trackId && this.isCopy) {
+                    this.$wire.set('record_amount', v);
+                }
+            });
+        },
+
+        onInput(e) {
+            this.value = e.target.value.replace(/,/g, '');
+            e.target.value = this.format(this.value);
+        }
+    }));
+
+
+    Alpine.data('currencyOnly', (value) => ({
+        value,
+
+        format(v) {
+            v = (v ?? '').toString().replace(/[^0-9.]/g, '');
+            return v.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
+
+        init() {
+            this.$watch('value', v => {
+                this.$el.value = this.format(v);
+            });
+        },
+
+        onInput(e) {
+            this.value = e.target.value.replace(/,/g, '');
+            e.target.value = this.format(this.value);
+        }
+    }));
+
+});
+</script>
+@endpush

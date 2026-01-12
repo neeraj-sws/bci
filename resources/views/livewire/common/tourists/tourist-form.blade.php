@@ -142,7 +142,6 @@
                                 <!-- Birthday -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Birthday</label>
-                                    {{-- data-start-year="2000"  --}}
                                     <input data-nostart="null"  data-restrict-future="true" id='birthday' type="text"
                                         class="form-control datepicker" wire:model="birthday">
                                 </div>
@@ -198,7 +197,7 @@
             </div>
         </div>
     </div>
-
+    
     @if($showExistingModal)
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-lg modal-dialog-centered">

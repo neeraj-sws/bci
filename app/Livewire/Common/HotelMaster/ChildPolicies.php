@@ -8,6 +8,8 @@ use Livewire\Attributes\{Layout, On};
 
 use App\Models\ChildPolicy;
 use App\Models\Hotel;
+use App\Models\PeackDate;
+use App\Models\RoomCategory;
 
 #[Layout('components.layouts.common-app')]
 class ChildPolicies extends Component
@@ -23,18 +25,21 @@ class ChildPolicies extends Component
 
     public $search = '';
     public $isEditing = false;
-    public $pageTitle = 'Child Policies';
+    public $pageTitle = 'Extra Bed Child Policies';
 
     public $hotels = [];
+    public $roomCategoys = [],$room_category_id,$peakDates = [],$is_peak_date=false,$peak_date_id ;
 
     protected function rules()
     {
         return [
             'hotel_id' => 'required|exists:hotels,hotels_id',
-            'free_child_age' => 'required|integer|min:0',
+            'room_category_id' => 'required|exists:room_categoris,room_categoris_id',
+            'free_child_age' => 'required',
             'child_with_bed_rate' => 'required|numeric|min:0',
-            'child_without_bed_rate' => 'required|numeric|min:0',
+            // 'child_without_bed_rate' => 'required|numeric|min:0',
             'status' => 'required|in:0,1',
+            'peak_date_id' => 'required_if:is_peak_date,true',
         ];
     }
 
@@ -50,6 +55,8 @@ class ChildPolicies extends Component
         $this->hotels = Hotel::where('status', 1)
             ->orderBy('name')
             ->get();
+        $this->roomCategoys = RoomCategory::where('status',1)->pluck('title','room_categoris_id')->toArray();
+        $this->peakDates = PeackDate::where('status',1)->pluck('title','peak_dates_id')->toArray();
     }
 
     public function render()
@@ -84,6 +91,13 @@ class ChildPolicies extends Component
         $this->child_with_bed_rate = $item->child_with_bed_rate;
         $this->child_without_bed_rate = $item->child_without_bed_rate;
         $this->status = $item->status;
+        $this->peak_date_id = $item->peak_date_id;
+        if($item->peak_date_id){
+            $this->is_peak_date = true;
+        }else{
+            $this->is_peak_date = false;
+        }
+        $this->room_category_id = $item->room_category_id;
 
         $this->isEditing = true;
     }
@@ -135,6 +149,8 @@ class ChildPolicies extends Component
             'child_with_bed_rate' => $this->child_with_bed_rate,
             'child_without_bed_rate' => $this->child_without_bed_rate,
             'status' => $this->status,
+            'room_category_id' => $this->room_category_id,
+            'peak_date_id' => $this->peak_date_id,
         ];
     }
 
@@ -148,6 +164,9 @@ class ChildPolicies extends Component
             'child_without_bed_rate',
             'status',
             'isEditing',
+            'peak_date_id',
+            'room_category_id',
+            'is_peak_date'
         ]);
         $this->resetValidation();
     }
@@ -158,5 +177,11 @@ class ChildPolicies extends Component
             'type' => 'success',
             'message' => $this->pageTitle . ' ' . $msg
         ]);
+    }
+    public function updatedIsPeakDate($value)
+    {
+        if (!$value) {
+            $this->peak_date_id = null;
+        }
     }
 }

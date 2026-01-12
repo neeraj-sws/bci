@@ -7,6 +7,9 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Layout, On};
 use App\Models\PeackDate;
 use App\Models\Hotel;
+use App\Models\Occupancy;
+use App\Models\PeakDateRoomCategoryOccupances;
+use App\Models\RoomCategory;
 
 #[Layout('components.layouts.common-app')]
 class PeakDates extends Component
@@ -26,7 +29,9 @@ class PeakDates extends Component
     public $pageTitle = 'Peak Dates';
 
     public $hotels = [];
-
+    public $show_notes = false, $notes;
+    public $ocupancy_id, $rate,$showRoomRateModal = false, $roomRateEdit = false, $roomRateIndex,$roomCategoys = [],$room_category_id;
+    public $roomRatesData = [],$occupances = [];
     protected function rules()
     {
         return [
@@ -36,6 +41,11 @@ class PeakDates extends Component
             'end_date' => 'required|date|after_or_equal:start_date',
             'is_new_year' => 'nullable|boolean',
             'status' => 'required|in:0,1',
+            'notes' => $this->show_notes ? 'required|string|min:5' : 'nullable',
+            'roomRatesData' => 'required|array|min:1',
+            'roomRatesData.*.ocupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
+            'roomRatesData.*.rate'        => 'required|numeric|min:0',
+            'room_category_id' => 'required|exists:room_categoris,room_categoris_id',
         ];
     }
 
@@ -50,6 +60,8 @@ class PeakDates extends Component
     public function mount()
     {
         $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
+        $this->occupances = Occupancy::where('status', 1)->pluck('title', 'occupancy_id')->toArray();
+        $this->roomCategoys = RoomCategory::where('status',1)->pluck('title','room_categoris_id')->toArray();
     }
 
     public function render()
@@ -66,9 +78,19 @@ class PeakDates extends Component
     {
         $this->validate();
 
-        PeackDate::create($this->payload());
+        $peakdate = PeackDate::create($this->payload());
+        if(count($this->roomRatesData) > 0){
+            foreach ($this->roomRatesData as $rate) {
+                PeakDateRoomCategoryOccupances::create([
+                    'peak_date_id' => $peakdate->id,
+                    'occupancy_id' => $rate['ocupancy_id'],
+                    'rate'         => $rate['rate'],
+                ]);
+            }
+        }
 
         $this->resetForm();
+        $this->roomRatesData = [];
         $this->toast('Added Successfully');
     }
 
@@ -83,7 +105,15 @@ class PeakDates extends Component
         $this->end_date = $item->end_date;
         $this->is_new_year = $item->is_new_year;
         $this->status = $item->status;
-
+        $this->roomRatesData = $item->occupancies->map(fn ($o) => [
+            'ocupancy_id' => $o->occupancy_id,
+            'rate'        => $o->rate,
+        ])->toArray();
+        $this->notes = $item->notes;
+        if($this->notes){
+            $this->show_notes = true;
+        }
+        $this->room_category_id = $item->room_category_id;
         $this->isEditing = true;
     }
 
@@ -135,6 +165,8 @@ class PeakDates extends Component
             'end_date' => $this->end_date,
             'is_new_year' => $this->is_new_year ? 1 : 0,
             'status' => $this->status,
+            'notes' => $this->show_notes ? $this->notes : null,
+            'room_category_id' => $this->room_category_id,
         ];
     }
 
@@ -149,6 +181,8 @@ class PeakDates extends Component
             'is_new_year',
             'status',
             'isEditing',
+            'room_category_id',
+            'ocupancy_id', 'rate','showRoomRateModal', 'roomRateEdit','roomRatesData','notes','show_notes'
         ]);
         $this->resetValidation();
     }
@@ -159,5 +193,70 @@ class PeakDates extends Component
             'type' => 'success',
             'message' => $this->pageTitle . ' ' . $msg
         ]);
+    }
+    public function updatedShowNotes($value)
+{
+    if (!$value) {
+        $this->notes = null;
+        $this->resetValidation('notes');
+    }
+}
+    // NEW DEV 
+        public function addRoomRates()
+    {
+        $this->validate([
+            'ocupancy_id' => 'required|exists:occupances,occupancy_id',
+            'rate' => 'required|numeric|min:0',
+        ]);
+        if (collect($this->roomRatesData)->contains('ocupancy_id', $this->ocupancy_id)) {
+            $this->addError('ocupancy_id', 'This ocupancy is already added.');
+            return;
+        }
+
+        $this->roomRatesData[] = [
+            'ocupancy_id' => $this->ocupancy_id,
+            'rate' => $this->rate,
+        ];
+
+        $this->resetRoomRateForm();
+    }
+
+    public function editRoomRate($index)
+    {
+        $vehicle = $this->roomRatesData[$index];
+
+        $this->ocupancy_id = $vehicle['ocupancy_id'];
+        $this->rate = $vehicle['rate'];
+        $this->roomRateIndex = $index;
+        $this->roomRateEdit = true;
+        $this->showRoomRateModal = true;
+    }
+
+    public function editRoomRateStore()
+    {
+        if (isset($this->roomRatesData[$this->roomRateIndex])) {
+            $this->roomRatesData[$this->roomRateIndex] = [
+                'ocupancy_id' => $this->ocupancy_id,
+                'rate' => $this->rate,
+            ];
+        }
+        $this->resetRoomRateForm();
+    }
+
+    public function removeRoomRate($index)
+    {
+        unset($this->roomRatesData[$index]);
+        $this->roomRatesData = array_values($this->roomRatesData);
+    }
+
+    public function resetRoomRateForm()
+    {
+        $this->reset(['ocupancy_id', 'rate','showRoomRateModal', 'roomRateEdit']);
+        $this->resetValidation();
+    }
+
+    public function showModel()
+    {
+        $this->showRoomRateModal = true;
     }
 }

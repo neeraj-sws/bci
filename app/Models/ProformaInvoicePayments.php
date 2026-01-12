@@ -8,7 +8,7 @@ class ProformaInvoicePayments extends Model
 {
     protected $primaryKey = 'proforma_invoice_payment_id';
 
-    protected $fillable = ['proforma_invoice_payment_id', 'proforma_invoice_id',   'quotation_id', 'payment_date', 'paid_amount', 'payment_method', 'reference', 'notes'];
+    protected $fillable = ['proforma_invoice_payment_id', 'proforma_invoice_id',   'quotation_id', 'payment_date', 'paid_amount','record_amount', 'payment_method', 'reference', 'notes'];
 
     // ID ALIAS
     public function getIdAttribute()

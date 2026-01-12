@@ -166,8 +166,11 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Amount <span
                                         class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">INR</span>
                                 <input type="number" placeholder="Amount"
                                     class="form-control @error('amount') is-invalid @enderror" wire:model="amount">
+                                     </div>
                                 @error('amount')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -282,8 +285,11 @@
                                         @endif
 
                                         <td class="align-middle py-1">
-                                            <span class="">
+                                            {{-- <span class="">
                                                 {{ $item?->amount }} {{ $item?->quotation?->currency_label }}
+                                            </span> --}}
+                                            <span class="">
+                                                {{ $item?->amount }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1">

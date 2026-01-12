@@ -180,11 +180,15 @@ public function messages()
             'anniversary' => $this->company_anniversary,'reference'=>$this->reference,'base_currency_code'=>$this->currency,'reference'=>$this->reference
         ]);
 
-        TouristOtherDetails::where('tourist_id', $this->itemId)->firstOrFail()->update([
-            'tax_id' => $this->tax_id,
-            'website' => $this->website,
-            'payment_terms' => $this->payment_terms,
-        ]);
+        $details = TouristOtherDetails::where('tourist_id', $this->itemId)->first();
+
+        if ($details) {
+            $details->update([
+                'tax_id' => $this->tax_id,
+                'website' => $this->website,
+                'payment_terms' => $this->payment_terms,
+            ]);
+        }
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

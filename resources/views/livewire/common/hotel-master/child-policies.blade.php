@@ -18,7 +18,7 @@
                             <label class="form-label">
                                 Hotel <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select @error('hotel_id') is-invalid @enderror"
+                            <select id="hotel_id" class="form-select select2 @error('hotel_id') is-invalid @enderror"
                                 wire:model.defer="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
@@ -30,12 +30,62 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Room Category <span class="text-danger">*</span>
+                            </label> 
+                             <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model="room_category_id">
+                                <option value="">Select Ocupancy</option>
+                                @foreach ($roomCategoys as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            @error('room_category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        @if($is_peak_date)
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Peak Date <span class="text-danger">*</span>
+                                </label>
+                                <select id="peak_date_id"
+                                    class="form-select select2 @error('peak_date_id') is-invalid @enderror"
+                                    wire:model="peak_date_id"
+                                >
+                                    <option value="">Select Peak Date</option>
+                                    @foreach ($peakDates as $id => $title)
+                                        <option value="{{ $id }}" @if ($peak_date_id == $id) selected @endif>{{ $title }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('peak_date_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
+                      <div class="mb-3 form-check">
+                            <input 
+                                type="checkbox"
+                                class="form-check-input @error('is_peak_date') is-invalid @enderror"
+                                id="is_peak_date"
+                                wire:model.live="is_peak_date"
+                            >
+                            <label class="form-check-label" for="is_peak_date">
+                                Peak Date
+                            </label>
+
+                            @error('is_peak_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                      </div>
+
                         <!-- Free Child Age -->
                         <div class="mb-3">
                             <label class="form-label">
                                 Free Child Age (Years) <span class="text-danger">*</span>
                             </label>
-                            <input type="number" class="form-control @error('free_child_age') is-invalid @enderror"
+                            <input type="text" class="form-control @error('free_child_age') is-invalid @enderror"
                                 wire:model.defer="free_child_age" placeholder="e.g. 5">
                             @error('free_child_age')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -58,7 +108,7 @@
                         <!-- Child Without Bed -->
                         <div class="mb-3">
                             <label class="form-label">
-                                Child Without Bed Rate <span class="text-danger">*</span>
+                                Child Without Bed Rate 
                             </label>
                             <input type="number"
                                 class="form-control @error('child_without_bed_rate') is-invalid @enderror"
@@ -134,10 +184,10 @@
                                                 @checked($item->status)>
                                         </td>
                                         <td class="text-center">
-                                            <a wire:click="edit({{ $item->id }})">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
-                                            <a wire:click="confirmDelete({{ $item->id }})">
+                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>

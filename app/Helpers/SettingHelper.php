@@ -398,4 +398,20 @@ class SettingHelper
         }
     }
     // 
+
+    public static  function format_phone(?string $phone): ?string
+        {
+            try {
+                if (!$phone) {
+                    return null;
+                }
+                $digits = preg_replace('/\D/', '', $phone);
+                if (strlen($digits) !== 10) {
+                    return $phone;
+                }
+                return preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1 $2 $3', $digits);
+            } catch (\Throwable $e) {
+                return $phone;
+            }
+        }
 }

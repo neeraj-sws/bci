@@ -109,7 +109,7 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 100%;min-height: 200px;">
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
-                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">S.no
+                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#
                                 </th>
                                 <th width="13%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
                                 </th>
@@ -131,10 +131,10 @@
                                     style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Amount
                                 </th>
                                 <th width="15%"
-                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Received Amount
+                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Received AMT
                                 </th>
                                 <th width="15%"
-                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Pending Amount
+                                    style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Pending AMT
                                 </th>
                             </tr>
                         </thead>
@@ -175,10 +175,10 @@
                                     </td>
                                     <td>
                                         <h2 class="d-flex align-items-center">
-                                            <a href="#" class="avatar avatar-sm me-2">
+                                            {{-- <a href="#" class="avatar avatar-sm me-2">
                                                 <img src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0="
                                                     alt="User Image" class="rounded-circle w-50">
-                                            </a>
+                                            </a> --}}
                                             @php
                                                 $roleName = $item->user
                                                     ? $item->user->getRoleNames()->first()
@@ -411,31 +411,13 @@
                                         
                                     <input type="text"
                                         class="form-control"
-                                        x-data="{
-                                            value: @entangle('paid_amount').live,
-                                            format(v) {
-                                                v = (v ?? '').toString().replace(/[^0-9.]/g, '');
-                                    
-                                                const parts = v.split('.');
-                                                if (parts.length > 2) parts.splice(2);
-                                    
-                                                this.value = v;
-                                    
-                                                if (v.includes('.')) {
-                                                    return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + (parts[1] ?? '');
-                                                }
-                                                return v.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                                            }
-                                        }"
-                                        x-init="
-                                            $watch('value', v => {
-                                                $el.value = format(v);
-                                            })
-                                        "
-                                        x-on:input="
-                                            value = $el.value.replace(/,/g, '');
-                                            $el.value = format(value);
-                                        "
+                                         x-data="currencyInput(
+                                            @entangle('paid_amount').live,
+                                            @entangle('track_id'),
+                                            @entangle('is_copy')
+                                        )"
+                                        x-init="init()"
+                                        x-on:input="onInput($event)"
                                     />
 
                             </div>
@@ -443,6 +425,24 @@
                             @error('paid_amount')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
+                        </div>
+                        {{-- NEW DEV --}}
+                         <div class="col-md-12 mb-3">
+                                <label for="title" class="form-label">Record Amount <span
+                                        class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">INR</span>
+                               <input type="text"
+                                        class="form-control"
+                                        x-data="currencyInput(@entangle('record_amount').live)"
+                                        x-init="init()"
+                                        x-on:input="onInput($event)"
+                                    />
+                                    </div>
+                                @error('record_amount')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                        
                         </div>
 
                         <div class="col-md-12 mb-3">
@@ -504,35 +504,92 @@
         </div>
         {{--  --}}
 
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        <script>
-            document.addEventListener('livewire:init', function() {
-                $("#kt_daterangepicker_1").daterangepicker({
-                    locale: {
-                        cancelLabel: 'Clear',
-                    },
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')],
-                    },
-                });
-                $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
-                    let startDate = picker.startDate.format('YYYY-MM-DD');
-                    let endDate = picker.endDate.format('YYYY-MM-DD');
-                    @this.set('startdate', startDate);
-                    @this.set('enddate', endDate);
-                });
 
-                $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
-                    @this.set('startdate', null);
-                    @this.set('enddate', null);
-                });
-            });
-        </script>
     </div>
+@push('scripts')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script>
+document.addEventListener('livewire:init', function() {
+        $("#kt_daterangepicker_1").daterangepicker({
+            locale: {
+                cancelLabel: 'Clear',
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                    'month').endOf('month')],
+            },
+        });
+        $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
+            let startDate = picker.startDate.format('YYYY-MM-DD');
+            let endDate = picker.endDate.format('YYYY-MM-DD');
+            @this.set('startdate', startDate);
+            @this.set('enddate', endDate);
+        });
+
+        $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
+            @this.set('startdate', null);
+            @this.set('enddate', null);
+        });
+    });
+document.addEventListener('alpine:init', () => {
+
+    Alpine.data('currencyInput', (paid, trackId, isCopy) => ({
+        value: paid,
+        trackId: trackId,       // already entangled, reactive
+        isCopy: isCopy,         // now reactive
+
+        format(v) {
+            v = (v ?? '').toString().replace(/[^0-9.]/g, '');
+            const parts = v.split('.');
+            if (parts.length > 2) parts.splice(2);
+            return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+                (parts[1] ? '.' + parts[1] : '');
+        },
+
+        init() {
+            this.$watch('value', v => {
+                this.$el.value = this.format(v);
+
+                // ✅ WILL ONLY COPY IF isCopy IS TRUE
+                if (this.trackId && this.isCopy) {
+                    this.$wire.set('record_amount', v);
+                }
+            });
+        },
+
+        onInput(e) {
+            this.value = e.target.value.replace(/,/g, '');
+            e.target.value = this.format(this.value);
+        }
+    }));
+
+
+    Alpine.data('currencyOnly', (value) => ({
+        value,
+
+        format(v) {
+            v = (v ?? '').toString().replace(/[^0-9.]/g, '');
+            return v.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
+
+        init() {
+            this.$watch('value', v => {
+                this.$el.value = this.format(v);
+            });
+        },
+
+        onInput(e) {
+            this.value = e.target.value.replace(/,/g, '');
+            e.target.value = this.format(this.value);
+        }
+    }));
+
+});
+</script>
+@endpush
