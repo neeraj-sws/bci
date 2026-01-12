@@ -28,4 +28,9 @@ class RoomCategory extends Model
     {
         return $this->room_categoris_id;
     }
+    public function occupancies()
+{
+    return $this->hasMany(RoomCategoryOccupances::class, 'room_category_id', 'id');
+}
+
 }

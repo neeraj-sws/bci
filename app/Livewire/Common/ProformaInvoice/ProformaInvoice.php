@@ -30,9 +30,9 @@ class ProformaInvoice extends Component
 
 
     // NEW DEV 
-    public $payment_date, $paid_amount, $payment_method="1", $reference, $notes, $prinvoice;
+    public $payment_date, $paid_amount,$record_amount, $payment_method="1", $reference, $notes, $prinvoice;
     // 
-    
+    public $track_id = 1; public $is_copy = false; 
     public function mount()
     {
         $this->route = 'common';
@@ -108,8 +108,15 @@ class ProformaInvoice extends Component
     // NEW DEV 
     public function showRecordPaymentModal($id)
     {
+        $this->resetErrorBag();
+        $this->reset(['payment_date', 'paid_amount', 'payment_method', 'reference', 'notes','record_amount']);
         $this->prinvoice = ProformaInvoices::findOrFail($id);
         $this->paid_amount =  $this->prinvoice->total_remaning_amount;
+        if($this->prinvoice->currency_label == 'INR'){
+            $this->is_copy = true;
+        } else{
+            $this->is_copy = false;
+        }
         $this->dispatch('open-offcanvas');
     }
 
@@ -118,6 +125,7 @@ class ProformaInvoice extends Component
         $this->validate([
             'payment_date' => 'required',
             'paid_amount' => 'required',
+            'record_amount' => 'required',
             'payment_method' => 'nullable',
             'reference' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
@@ -151,7 +159,8 @@ class ProformaInvoice extends Component
             IncomeExpenses::create([
                 'entry_type' => 2,
                 'date' => $this->payment_date,
-                'amount' => $this->paid_amount,
+                // 'amount' => $this->paid_amount,
+                'amount' => $this->record_amount,
                 'reference' => $this->prinvoice->proforma_invoice_no . ' | ' . $this->prinvoice->proforma_invoice_title,
                 'tourist_id' => $this->prinvoice->tourist_id,
                 'tour_id' => $this->prinvoice->tour_id,
@@ -192,6 +201,7 @@ class ProformaInvoice extends Component
             'quotation_id' => $this->prinvoice->quotation_id,
             'payment_date' => $this->payment_date,
             'paid_amount' => $this->paid_amount,
+            'record_amount' => $this->record_amount,
             'payment_method' => $this->payment_method,
             'reference' => $this->reference,
             'notes' => $this->notes,

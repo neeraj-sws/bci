@@ -167,9 +167,12 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Amount <span
                                         class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">INR</span>
                                 <input type="number" placeholder="Amount"
-                                    class="form-control @error('amount') is-invalid @enderror" wire:model="amount"
-                                    @if ($proforma_invoice_id && $type == 1) readonly @endif>
+                                    class="form-control @error('amount') is-invalid @enderror" wire:model="amount" />
+                                    {{-- @if ($proforma_invoice_id && $type == 1) readonly @endif> --}}
+                                    </div>
                                 @error('amount')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -287,7 +290,8 @@
 
                                         <td class="align-middle py-1">
                                             <span class="">
-                                                {{ $item?->amount }} {{ $item?->quotation?->currency_label }}
+                                                {{-- {{ $item?->amount }} {{ $item?->quotation?->currency_label }} --}}
+                                                {{ $item?->amount }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1">

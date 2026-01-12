@@ -21,7 +21,9 @@ class PeackDate extends Model
         "start_date",
         "end_date",
         "is_new_year",
-        "status"
+        "status",
+        "room_category_id",
+        "notes"
     ];
 
     public function hotel()
@@ -35,4 +37,8 @@ class PeackDate extends Model
     {
         return $this->peak_dates_id;
     }
+        public function occupancies()
+{
+    return $this->hasMany(PeakDateRoomCategoryOccupances::class, 'peak_date_id', 'id');
+}
 }

@@ -70,6 +70,7 @@
                             <th class="tableheadingcolor px-3 py-2">Name</th>
                             <th class="tableheadingcolor px-3 py-2">Contact</th>
                             <th class="tableheadingcolor px-3 py-2">Email Id</th>
+                             <th class="tableheadingcolor px-3 py-2">Country</th>
                             <th class="tableheadingcolor px-3 py-2">Birthday</th>
                             <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
                         </tr>
@@ -81,10 +82,13 @@
                                     <span class="text-dark">{{ $item->primary_contact }}</span>
                                 </td>
                                 <td class="px-3 py-1">
-                                    <span class="fw-500 text-dark">{{ $item->contact_phone ?? 'NA' }}</span>
+                                    <span class="fw-500 text-dark">@if($item->country && $item->contact_phone) +{{$item->country->phonecode }}-@endif{{ $item->contact_phone ?? 'NA' }}</span>
                                 </td>
                                 <td class="px-3 py-1">
                                     {{ $item->contact_email ?? 'NA' }}
+                                </td>
+                                 <td class="px-3 py-1">
+                                    {{ $item->country->name ?? 'NA' }}
                                 </td>
                                 <td class="px-3 py-1">
                                     {{ $item->birthday

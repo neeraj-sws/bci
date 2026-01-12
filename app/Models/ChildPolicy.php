@@ -20,7 +20,8 @@ class ChildPolicy extends Model
         "free_child_age",
         "child_with_bed_rate",
         "child_without_bed_rate",
-        "status"
+        "status",
+        "room_category_id"	,"peak_date_id"
     ];
 
     public function hotel()

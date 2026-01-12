@@ -116,7 +116,7 @@ class Income extends Component
             'amount' => $this->amount,
             'reference' => $this->reference,
             'tourist_id' => $this->client_id,
-            'tour_id' => $this->tour_id,
+            'tour_id' => $this->tour_id || null,
             'notes' => $this->notes,
             'quotation_id' => $this->quotation_id,
             'proforma_invoice_id' => $this->proforma_invoice_id,
