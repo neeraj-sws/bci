@@ -8,7 +8,7 @@ class VendorTypes extends Model
 {
    protected $primaryKey = 'vendor_type_id';
 
-   protected $fillable = ['name', 'status','soft_delete'];
+   protected $fillable = ['name', 'soft_name', 'status','soft_delete'];
 
    // ID ALIAS
    public function getIdAttribute()

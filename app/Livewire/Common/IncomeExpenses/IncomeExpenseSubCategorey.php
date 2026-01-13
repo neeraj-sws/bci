@@ -143,7 +143,11 @@ class IncomeExpenseSubCategorey extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::destroy($this->itemId);
+        $model = $this->model::find($this->itemId);
+        $model->soft_name = $model->name;
+        $model->name = null;
+        $model->save();
+        $model->delete();
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

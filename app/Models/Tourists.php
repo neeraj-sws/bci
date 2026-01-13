@@ -12,9 +12,9 @@ class Tourists extends Model
 
     const DELETED_AT = 'soft_delete';
     protected $primaryKey = 'tourist_id';
-    protected $fillable = ['flag', 'company_name', 'date', 'source_id', 'primary_contact',    'contact_email', 'contact_phone', 'address', 'city_suburb', 'state',    'zip_code', 'country_id', 'birthday', 'anniversary', 'other_id', 'base_currency_code', 'reference'];
+    protected $fillable = ['flag', 'company_name', 'date', 'source_id', 'primary_contact', 'soft_primary_contact','contact_email', 'contact_phone', 'address', 'city_suburb', 'state',    'zip_code', 'country_id', 'birthday', 'anniversary', 'other_id', 'base_currency_code', 'reference'];
 
-    // ID ALIAS 
+    // ID ALIAS
     public function getIdAttribute()
     {
         return $this->tourist_id;
@@ -24,7 +24,7 @@ class Tourists extends Model
     {
         return $this->belongsTo(TouristOtherDetails::class, 'other_id');
     }
-    
+
         public function tax_id()
     {
         return $this->belongsTo(TouristOtherDetails::class, 'other_id')->select('tax_id');

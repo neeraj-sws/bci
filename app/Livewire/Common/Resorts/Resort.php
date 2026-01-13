@@ -30,7 +30,7 @@ class Resort extends Component
     public $isEditing = false;
     public $isFormOpen = false;
     public $search = '';
-    
+
     // Room category properties
     public $categories = [];
     public $categoryId;
@@ -81,11 +81,11 @@ class Resort extends Component
     public function resetForm()
     {
         $this->reset([
-            'resortId', 'name', 'phone', 'park_id', 'location_gate', 
+            'resortId', 'name', 'phone', 'park_id', 'location_gate',
             'address', 'primary_contact', 'secondary_phone', 'zone_id', 'drive_link',
             'isEditing', 'categories', 'editingCategoryIndex'
         ]);
-        
+
         $this->addEmptyCategory();
     }
 
@@ -135,7 +135,7 @@ class Resort extends Component
     public function edit($id)
     {
         $resort = $this->model::with('categories')->findOrFail($id);
-        
+
         $this->resortId = $resort->id;
         $this->name = $resort->name;
         $this->phone = $resort->phone;
@@ -146,11 +146,11 @@ class Resort extends Component
         $this->secondary_phone = $resort->secondary_phone;
         $this->zone_id = $resort->zone_id;
         $this->drive_link = $resort->drive_link;
-        
+
         $this->categories = $resort->categories->toArray();
-        
+
                $this->updatedParkId($this->park_id, true);
-               
+
         $this->isEditing = true;
         $this->isFormOpen = true;
     }
@@ -208,8 +208,8 @@ class Resort extends Component
 
     public function delete($id)
     {
-        Resort::find($id)->delete();
-       
+        $this->model::find($id)->delete();
+
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'title' => '',
@@ -245,7 +245,7 @@ class Resort extends Component
             'extra_adult_rate' => 0
         ]];
     }
-    
+
         public function updatedParkId($id,$clear=false){
         if(!$clear){
                     $this->zone_id = '';
@@ -255,6 +255,6 @@ class Resort extends Component
             ->where('park_id',$id)
             ->pluck('name', 'zone_id')
             ->toArray();
-        
+
     }
 }

@@ -64,7 +64,6 @@ class Income extends Component
 
         $query->where('entry_type', 2);
 
-        $query->where('soft_delete', 0);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -198,9 +197,9 @@ class Income extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::where('income_expense_id', $this->itemId)->update([
-            'soft_delete' => 1
-        ]);
+
+        $model = $this->model::where('income_expense_id', $this->itemId)->first();
+        $model->delete();
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

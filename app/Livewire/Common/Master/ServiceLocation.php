@@ -36,7 +36,7 @@ class ServiceLocation extends Component
 
     public function render()
     {
-        $items = $this->model::where('soft_delete', 0)->where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
+        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
             ->latest()->paginate(10);
 
         return view($this->view, compact('items'));
@@ -110,9 +110,11 @@ class ServiceLocation extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::where('service_location_id', $this->itemId)->update([
-            'soft_delete' => 1
-        ]);;
+        $model = $this->model::where('service_location_id', $this->itemId)->first();
+        $model->soft_name = $model->name;
+        $model->name = null;
+        $model->save();
+        $model->delete();
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

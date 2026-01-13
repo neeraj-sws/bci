@@ -20,8 +20,10 @@ class IncomeExpenseSubCategory extends Model
 
     protected $fillable = [
         'name',
+        'soft_name',
         'type',
-        'status','category_id'
+        'status',
+        'category_id'
     ];
     // ID ALIAS
     public function getIdAttribute()

@@ -15,6 +15,7 @@ class LeadStages extends Model
 
     protected $fillable = [
         'name',
+        'soft_name',
         'btn_bg',
         'btn_text'
     ];

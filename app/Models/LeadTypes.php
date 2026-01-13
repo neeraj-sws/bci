@@ -13,7 +13,7 @@ class LeadTypes extends Model
     const DELETED_AT = 'soft_delete';
     
     protected $primaryKey = 'lead_type_id';
-    protected $fillable = ['name', 'color'];
+    protected $fillable = ['name', 'soft_name', 'color'];
     // ID ALIAS
     public function getIdAttribute()
     {
