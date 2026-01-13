@@ -15,6 +15,7 @@ class Items extends Model
     protected $primaryKey = 'item_id';
     protected $fillable = [
         'name',
+        'soft_name',
         'sku',
         'rate',
         'unit',

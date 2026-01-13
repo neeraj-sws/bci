@@ -28,7 +28,7 @@ class Vehicles extends Component
 
         return [
             'name' => $this->isEditing
-                ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId .',vehicle_id'
+                ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId . ',vehicle_id'
                 : 'required|string|max:255|unique:' . $table . ',name',
         ];
     }
@@ -111,7 +111,11 @@ class Vehicles extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::destroy($this->itemId);
+        $model = Model::find($this->itemId);
+        $model->soft_name = $model->name;
+        $model->name = null;
+        $model->save();
+        $model->delete();
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
