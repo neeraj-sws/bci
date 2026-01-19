@@ -73,7 +73,6 @@ class Expense extends Component
         $query = $this->model::query();
 
         $query->where('entry_type', 1);
-        $query->where('soft_delete', 0);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -91,7 +90,7 @@ class Expense extends Component
                     });
             });
         }
-        
+
         if ($this->catgorie_filter_id) {
             $query->where('category_id', $this->catgorie_filter_id);
         }
@@ -111,13 +110,13 @@ class Expense extends Component
         if(!$this->trip_id){
             $this->quotations = Quotations::with('tour', 'tourist')
             ->select('quotation_id', 'quotation_no', 'tour_id', 'tourist_id')
-            ->whereIn('status', [2,6,7])
+            ->whereIn('status', [2, 6, 7])
             ->orderBy('updated_at', 'desc')
             ->get()
             ->mapWithKeys(function ($quotation) {
                 return [
                     $quotation->quotation_id => $quotation->quotation_no . ' | '
-                      .$quotation?->tourist?->primary_contact . ' | '  . ($quotation?->tour?->name ?? '') 
+                        . $quotation?->tourist?->primary_contact . ' | '  . ($quotation?->tour?->name ?? '')
                 ];
             })
             ->toArray();
@@ -224,10 +223,9 @@ class Expense extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::where('income_expense_id', $this->itemId)->update([
-            'soft_delete' => 1
-        ]);
-
+        $model = $this->model::where('income_expense_id', $this->itemId)->first();
+        $model->delete();
+        $this->itemId ="";
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'title' => '',
@@ -357,8 +355,8 @@ class Expense extends Component
             ->where('type', 1)
             ->pluck('name', 'income_expense_sub_category_id');
     }
-    
-        public function clearFilters()
+
+    public function clearFilters()
     {
         $this->sub_catgorie_filter_id = '';
         $this->catgorie_filter_id = '';

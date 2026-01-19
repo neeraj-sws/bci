@@ -17,6 +17,7 @@ class Taxes extends Model
 
     protected $fillable = [
         'tax_name',
+        'soft_tax_name',
         'rate','company_id'
     ];
 

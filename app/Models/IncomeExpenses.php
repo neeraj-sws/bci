@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class IncomeExpenses extends Model
 {
+    use SoftDeletes;
+
+    protected $dates = ['soft_delete'];
+
+    const DELETED_AT = 'soft_delete';
     protected $primaryKey = 'income_expense_id';
 
     protected $fillable = [
@@ -53,7 +59,7 @@ class IncomeExpenses extends Model
     {
         return $this->belongsTo(Quotations::class, 'quotation_id');
     }
-        public function proforma()
+    public function proforma()
     {
         return $this->belongsTo(ProformaInvoices::class, 'proforma_invoice_id');
     }

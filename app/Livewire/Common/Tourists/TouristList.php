@@ -68,7 +68,11 @@ class TouristList extends Component
     #[On('delete')]
     public function delete()
     {
-        Model::destroy($this->itemId);
+        $model = Model::find($this->itemId);
+        $model->soft_primary_contact = $model->primary_contact;
+        $model->primary_contact = null;
+        $model->save();
+        $model->delete();
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'title' => '',
@@ -181,8 +185,8 @@ class TouristList extends Component
                 $item->other?->tax_id ?? 'NA',
             ];
         })->toArray();
-        
-        
+
+
         return SettingHelper::ExportHelper('tourists', $headings, $data);
     }
 }

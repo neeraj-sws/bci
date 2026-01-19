@@ -16,27 +16,27 @@ class Roles extends Component
     public $search = '';
     public $pageTitle = 'Roles';
 
-public function rules()
-{
-    return [
-        'name' => [
-            'required',
-            'string',
-            'max:255',
-            'unique:roles,name' . ($this->isEditing ? ',' . $this->roleId : ''),
-        ],
-    ];
-}
+    public function rules()
+    {
+        return [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:roles,name' . ($this->isEditing ? ',' . $this->roleId : ''),
+            ],
+        ];
+    }
 
-public function messages()
-{
-    return [
-        'name.required' => 'The Role name field is required.',
-        'name.string' => 'The Role name must be a string.',
-        'name.max' => 'The Role name may not be greater than 255 characters.',
-        'name.unique' => 'The Role name has already been taken.'
-    ];
-}
+    public function messages()
+    {
+        return [
+            'name.required' => 'The Role name field is required.',
+            'name.string' => 'The Role name must be a string.',
+            'name.max' => 'The Role name may not be greater than 255 characters.',
+            'name.unique' => 'The Role name has already been taken.'
+        ];
+    }
 
 
     public function store()
@@ -98,9 +98,13 @@ public function messages()
     #[On('delete')]
     public function delete()
     {
-        $role = Role::findOrFail($this->roleId);
-        $role->syncPermissions([]);
-        $role->delete();
+        $model = Role::find($this->roleId);
+        $model->soft_name = $model->name;
+        $model->name = "";
+        $model->syncPermissions([]);
+        $model->save();
+        $model->delete();
+         $this->roleId = "";
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

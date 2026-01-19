@@ -14,7 +14,7 @@ class User extends Component
     public $userId;
     public $name;
     public $email;
-    public $password,$password_confirmation,$mail_sent;
+    public $password, $password_confirmation, $mail_sent;
     public $status = true;
     public $selectedRole = '';
     public $roles = [];
@@ -40,47 +40,47 @@ class User extends Component
         $this->reset(['mail_sent']);
     }
 
- public function rules()
-{
-    $table = (new Model)->getTable();
+    public function rules()
+    {
+        $table = (new Model)->getTable();
 
-    $rules = [
-        'name' => [
-            'required',
-            'string',
-            'max:255'
-        ],
-        'email' => 'required|email|unique:' . $table . ',email' . ($this->isEditing ? ',' . $this->userId . ',user_id' : ''),
-        'status' => 'required',
-        'selectedRole' => 'required|in:' . implode(',', array_keys($this->roles)),
-    ];
+        $rules = [
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+            'email' => 'required|email|unique:' . $table . ',email' . ($this->isEditing ? ',' . $this->userId . ',user_id' : ''),
+            'status' => 'required',
+            'selectedRole' => 'required|in:' . implode(',', array_keys($this->roles)),
+        ];
 
-    if ($this->isEditing && $this->password) {
-        $rules['password'] = 'required|string|min:6|confirmed';
+        if ($this->isEditing && $this->password) {
+            $rules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        if (!$this->isEditing) {
+            $rules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        return $rules;
     }
 
-    if (!$this->isEditing) {
-        $rules['password'] = 'required|string|min:6|confirmed';
+    public function messages()
+    {
+        return [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please provide a valid email address.',
+            'email.unique' => 'This email has already been taken.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 6 characters.',
+            'password.confirmed' => 'The password confirmation does not match.',
+            'status.required' => 'The status field is required.',
+            'selectedRole.required' => 'Please select a role.',
+            'selectedRole.in' => 'Invalid role selected.',
+        ];
     }
-
-    return $rules;
-}
-
-public function messages()
-{
-    return [
-        'name.required' => 'The name field is required.',
-        'email.required' => 'The email field is required.',
-        'email.email' => 'Please provide a valid email address.',
-        'email.unique' => 'This email has already been taken.',
-        'password.required' => 'The password field is required.',
-        'password.min' => 'The password must be at least 6 characters.',
-        'password.confirmed' => 'The password confirmation does not match.',
-        'status.required' => 'The status field is required.',
-        'selectedRole.required' => 'Please select a role.',
-        'selectedRole.in' => 'Invalid role selected.',
-    ];
-}
 
 
     public function store()
@@ -133,14 +133,14 @@ public function messages()
 
     public function render()
     {
-        $items = Model::where('is_admin','!=',1)
+        $items = Model::where('is_admin', '!=', 1)
             ->where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
             ->latest()->paginate(10);
 
         return view('livewire.admin.user.user', compact('items'));
     }
-    
-        public function confirmDelete($id)
+
+    public function confirmDelete($id)
     {
         $this->itemId = $id;
 
@@ -158,7 +158,13 @@ public function messages()
     #[On('delete')]
     public function delete()
     {
-        Model::destroy($this->itemId);
+
+        $model = Model::find($this->itemId);
+        $model->soft_email = $model->email;
+        $model->email ="";
+        $model->save();
+        $model->delete();
+        $this->itemId = "";
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -166,8 +172,8 @@ public function messages()
             'message' => $this->pageTitle . ' deleted successfully!'
         ]);
     }
-    
-        public function toggleStatus($id)
+
+    public function toggleStatus($id)
     {
         $habitat = Model::findOrFail($id);
         $habitat->status = !$habitat->status;

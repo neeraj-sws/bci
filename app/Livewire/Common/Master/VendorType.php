@@ -113,9 +113,12 @@ class VendorType extends Component
     #[On('delete')]
     public function delete()
     {
-        $this->model::where('vendor_type_id', $this->itemId)->update([
-            'soft_delete' => 1
-        ]);;
+        $model = $this->model::find($this->itemId);
+        $model->soft_name = $model->name;
+        $model->name = null;
+        $model->save();
+        $model->soft_delete = 1;
+        $model->save();
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

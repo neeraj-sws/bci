@@ -13,6 +13,7 @@ class LeadStatus extends Model
     const DELETED_AT = 'soft_delete';
     protected $fillable = [
         'name',
+        'soft_name',
         'type_id',
         'btn_bg',
         'btn_text'
