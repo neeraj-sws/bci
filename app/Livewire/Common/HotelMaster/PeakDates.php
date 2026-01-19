@@ -30,8 +30,10 @@ class PeakDates extends Component
 
     public $hotels = [];
     public $show_notes = false, $notes;
-    public $ocupancy_id, $rate,$showRoomRateModal = false, $roomRateEdit = false, $roomRateIndex,$roomCategoys = [],$room_category_id;
-    public $roomRatesData = [],$occupances = [];
+    public $ocupancy_id, $rate, $showRoomRateModal = false, $roomRateEdit = false, $roomRateIndex, $roomCategoys = [], $room_category_id;
+    public $roomRatesData = [], $occupances = [];
+    public $selected_occupancies = [];
+
     protected function rules()
     {
         return [
@@ -42,12 +44,30 @@ class PeakDates extends Component
             'is_new_year' => 'nullable|boolean',
             'status' => 'required|in:0,1',
             'notes' => $this->show_notes ? 'required|string|min:5' : 'nullable',
+            'room_category_id' => 'required|exists:room_categoris,room_categoris_id',
             'roomRatesData' => 'required|array|min:1',
             'roomRatesData.*.ocupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
             'roomRatesData.*.rate'        => 'required|numeric|min:0',
-            'room_category_id' => 'required|exists:room_categoris,room_categoris_id',
+            'roomRatesData.*.weekend_rate' => 'required|numeric|min:0',
+            'selected_occupancies' => 'required|array|min:1',
         ];
     }
+    protected function messages()
+    {
+        return [
+            'roomRatesData.*.rate.required' => 'Please enter rate for each occupancy.',
+            'roomRatesData.*.rate.numeric'  => 'Rate must be a number.',
+            'roomRatesData.*.rate.min'      => 'Rate cannot be negative.',
+
+            'roomRatesData.*.weekend_rate.required' => 'Please enter weekend rate for each occupancy.',
+            'roomRatesData.*.weekend_rate.numeric'  => 'Weekend rate must be a number.',
+            'roomRatesData.*.weekend_rate.min'      => 'Weekend rate cannot be negative.',
+
+            'roomRatesData.*.ocupancy_id.required' => 'Please select occupancy.',
+            'roomRatesData.*.ocupancy_id.distinct' => 'Duplicate occupancy is not allowed.',
+        ];
+    }
+
 
     protected $validationAttributes = [
         'title' => 'Peak Date Title',
@@ -61,17 +81,21 @@ class PeakDates extends Component
     {
         $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
         $this->occupances = Occupancy::where('status', 1)->pluck('title', 'occupancy_id')->toArray();
-        $this->roomCategoys = RoomCategory::where('status',1)->pluck('title','room_categoris_id')->toArray();
     }
 
     public function render()
     {
         $items = PeackDate::with('hotel')
             ->where('title', 'like', "%{$this->search}%")
-            ->orderBy('start_date')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         return view('livewire.common.hotel-master.peak-dates', compact('items'));
+    }
+
+    public function updatedHotelId($id)
+    {
+        $this->roomCategoys = RoomCategory::where('hotel_id', $id)->where('status', 1)->pluck('title', 'room_categoris_id')->toArray();
     }
 
     public function store()
@@ -79,12 +103,13 @@ class PeakDates extends Component
         $this->validate();
 
         $peakdate = PeackDate::create($this->payload());
-        if(count($this->roomRatesData) > 0){
+        if (count($this->roomRatesData) > 0) {
             foreach ($this->roomRatesData as $rate) {
                 PeakDateRoomCategoryOccupances::create([
                     'peak_date_id' => $peakdate->id,
                     'occupancy_id' => $rate['ocupancy_id'],
                     'rate'         => $rate['rate'],
+                    'weekend_rate' => $rate['weekend_rate'] ?? 0,
                 ]);
             }
         }
@@ -105,12 +130,14 @@ class PeakDates extends Component
         $this->end_date = $item->end_date;
         $this->is_new_year = $item->is_new_year;
         $this->status = $item->status;
-        $this->roomRatesData = $item->occupancies->map(fn ($o) => [
+        $this->roomRatesData = $item->occupancies->map(fn($o) => [
             'ocupancy_id' => $o->occupancy_id,
             'rate'        => $o->rate,
+            'weekend_rate' => $o->weekend_rate ?? 0,
         ])->toArray();
+        $this->selected_occupancies = $item->occupancies->pluck('occupancy_id')->toArray();
         $this->notes = $item->notes;
-        if($this->notes){
+        if ($this->notes) {
             $this->show_notes = true;
         }
         $this->room_category_id = $item->room_category_id;
@@ -121,7 +148,23 @@ class PeakDates extends Component
     {
         $this->validate();
 
-        PeackDate::findOrFail($this->itemId)->update($this->payload());
+        $roomCat =  PeackDate::findOrFail($this->itemId);
+        $roomCat->update($this->payload());
+
+        // Delete existing occupancies and recreate
+        PeakDateRoomCategoryOccupances::where('peak_date_id', $roomCat->id)->delete();
+
+        if (count($this->roomRatesData) > 0) {
+            foreach ($this->roomRatesData as $rate) {
+                PeakDateRoomCategoryOccupances::create([
+                    'peak_date_id' => $roomCat->id,
+                    'occupancy_id' => $rate['ocupancy_id'],
+                    'rate'         => $rate['rate'],
+                    'weekend_rate' => $rate['weekend_rate'] ?? 0,
+                ]);
+            }
+        }
+
 
         $this->resetForm();
         $this->toast('Updated Successfully');
@@ -182,7 +225,14 @@ class PeakDates extends Component
             'status',
             'isEditing',
             'room_category_id',
-            'ocupancy_id', 'rate','showRoomRateModal', 'roomRateEdit','roomRatesData','notes','show_notes'
+            'ocupancy_id',
+            'rate',
+            'showRoomRateModal',
+            'roomRateEdit',
+            'roomRatesData',
+            'notes',
+            'show_notes',
+            'selected_occupancies',
         ]);
         $this->resetValidation();
     }
@@ -195,14 +245,14 @@ class PeakDates extends Component
         ]);
     }
     public function updatedShowNotes($value)
-{
-    if (!$value) {
-        $this->notes = null;
-        $this->resetValidation('notes');
+    {
+        if (!$value) {
+            $this->notes = null;
+            $this->resetValidation('notes');
+        }
     }
-}
-    // NEW DEV 
-        public function addRoomRates()
+    // NEW DEV
+    public function addRoomRates()
     {
         $this->validate([
             'ocupancy_id' => 'required|exists:occupances,occupancy_id',
@@ -251,12 +301,31 @@ class PeakDates extends Component
 
     public function resetRoomRateForm()
     {
-        $this->reset(['ocupancy_id', 'rate','showRoomRateModal', 'roomRateEdit']);
+        $this->reset(['ocupancy_id', 'rate', 'showRoomRateModal', 'roomRateEdit']);
         $this->resetValidation();
     }
 
     public function showModel()
     {
         $this->showRoomRateModal = true;
+    }
+
+    public function updatedSelectedOccupancies()
+    {
+
+        $currentOccupancies = collect($this->roomRatesData)->pluck('ocupancy_id')->toArray();
+
+        foreach ($this->selected_occupancies as $occupancyId) {
+            if (!in_array($occupancyId, $currentOccupancies)) {
+                $this->roomRatesData[] = [
+                    'ocupancy_id' => $occupancyId,
+                    'rate' => 0,
+                    'weekend_rate' => 0,
+                ];
+            }
+        }
+        $this->roomRatesData = array_values(array_filter($this->roomRatesData, function ($item) {
+            return in_array($item['ocupancy_id'], $this->selected_occupancies);
+        }));
     }
 }

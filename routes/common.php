@@ -10,15 +10,18 @@ use App\Livewire\Common\Dashboard;
 use App\Livewire\Common\Calculator\Calculator;
 use App\Livewire\Common\Companies\AddCompanies;
 use App\Livewire\Common\Companies\CompaniesList;
+use App\Livewire\Common\HotelMaster\ChainList;
 use App\Livewire\Common\HotelMaster\ChildPolicies;
 use App\Livewire\Common\HotelMaster\Hotel\HotelForm;
 use App\Livewire\Common\HotelMaster\Hotel\HotelList;
+use App\Livewire\Common\HotelMaster\Hotel\HotelDetail;
 use App\Livewire\Common\HotelMaster\HotelCategories;
 use App\Livewire\Common\HotelMaster\HotelRateForm;
 use App\Livewire\Common\HotelMaster\HotelRateList;
 use App\Livewire\Common\HotelMaster\HotelRates;
 use App\Livewire\Common\HotelMaster\HotelType;
 use App\Livewire\Common\HotelMaster\MarketingCompanies;
+use App\Livewire\Common\HotelMaster\MarketingCompanyList;
 use App\Livewire\Common\HotelMaster\RateType;
 use App\Livewire\Common\HotelMaster\MealType;
 use App\Livewire\Common\HotelMaster\Occupancy;
@@ -222,9 +225,13 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('meal-type', MealType::class)->name('meal-type');
         Route::get('marketing-companies', MarketingCompanies::class)->name('marketing-companies');
         Route::get('meal-plans', MealType::class)->name('meal-type');
-        Route::get('hotels', HotelList::class)->name('hotels');
+        Route::get('hotels', HotelList::class)->name('hotel-list');
+        Route::get('hotels/{id}', HotelDetail::class)->name('hotel-detail');
         Route::get('create-hotel', HotelForm::class)->name('create-hotel');
         Route::get('update-hotel/{id}', HotelForm::class)->name('update-hotel');
+        Route::get('chains', ChainList::class)->name('chains-list');
+        Route::get('marketing-companies', MarketingCompanyList::class)->name('marketing-company-list');
+
 
         Route::get('room-categories', RoomCategory::class)->name('room-category');
         Route::get('seasons', Seasons::class)->name('seasons');

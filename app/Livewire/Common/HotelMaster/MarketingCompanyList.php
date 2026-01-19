@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Common\HotelMaster;
 
-use App\Models\HotelTypes as Model;
+use App\Models\MarketingCompany as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
 #[Layout('components.layouts.common-app')]
-class HotelType extends Component
+class MarketingCompanyList extends Component
 {
     use WithPagination;
 
@@ -15,10 +15,10 @@ class HotelType extends Component
     public $status = 1;
     public $title, $search = '';
     public $isEditing = false;
-    public $pageTitle = 'Hotel Types';
+    public $pageTitle = 'Marketing Companies';
 
     public $model = Model::class;
-    public $view = 'livewire.common.hotel-master.hotel-type';
+    public $view = 'livewire.common.hotel-master.marketing-company-list';
 
 
 
@@ -28,7 +28,7 @@ class HotelType extends Component
 
         return [
             'title' => $this->isEditing
-                ? 'required|string|max:255|unique:' . $table . ',title,' . $this->itemId . ',hotel_type_id'
+                ? 'required|string|max:255|unique:' . $table . ',title,' . $this->itemId . ',marketing_company_id'
                 : 'required|string|max:255|unique:' . $table . ',title',
         ];
     }
@@ -65,27 +65,6 @@ class HotelType extends Component
     public function edit($id)
     {
 
-        if (in_array($id, [1, 2])) {
-            $this->dispatch('swal:toast', [
-                'type' => 'error',
-                'title' => 'Cannot Edit',
-                'message' => 'This hotel type is protected and cannot be edited.'
-            ]);
-            return;
-        }
-
-
-        $hotelsCount = \App\Models\Hotel::where('hotel_type_id', $id)->count();
-
-        if ($hotelsCount > 0) {
-            $this->dispatch('swal:toast', [
-                'type' => 'error',
-                'title' => 'Cannot Edit',
-                'message' => 'This hotel type is already in use and cannot be edited.'
-            ]);
-            return;
-        }
-
         $this->resetForm();
         $item = $this->model::findOrFail($id);
 
@@ -115,27 +94,6 @@ class HotelType extends Component
 
     public function confirmDelete($id)
     {
-
-        if (in_array($id, [1, 2])) {
-            $this->dispatch('swal:toast', [
-                'type' => 'error',
-                'title' => 'Cannot Delete',
-                'message' => 'This hotel type is protected and cannot be deleted.'
-            ]);
-            return;
-        }
-
-        $hotelsCount = \App\Models\Hotel::where('hotel_type_id', $id)->count();
-
-        if ($hotelsCount > 0) {
-            $this->dispatch('swal:toast', [
-                'type' => 'error',
-                'title' => 'Cannot Delete',
-                'message' => 'This hotel type is already in use and cannot be deleted.'
-            ]);
-            return;
-        }
-
         $this->itemId = $id;
 
         $this->dispatch('swal:confirm', [

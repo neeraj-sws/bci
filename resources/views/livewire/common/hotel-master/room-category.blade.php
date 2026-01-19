@@ -23,105 +23,104 @@
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
 
-                        <!-- Title -->
-                        <div class="mb-3">
-                            <label class="form-label">Category Title <span class="text-danger">*</span></label>
-                            <input type="text"
-                                class="form-control text-capitalize @error('title') is-invalid @enderror"
-                                wire:model.defer="title"
-                                placeholder="Room category title">
-                            @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-
-                        <!-- Hotel -->
                         <div class="mb-3">
                             <label class="form-label">Hotel <span class="text-danger">*</span></label>
                             <select class="form-select select2 @error('hotel_id') is-invalid @enderror" id="hotel_id"
                                 wire:model="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
-                                <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
+                                    <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
                                 @endforeach
                             </select>
-                            @error('hotel_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @error('hotel_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <!-- Occupancy -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Base Occupancy <span class="text-danger">*</span></label>
-                                <input type="number"
-                                    class="form-control @error('base_occupancy') is-invalid @enderror"
-                                    wire:model.defer="base_occupancy"
-                                    placeholder="e.g. 2">
-                                @error('base_occupancy') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Max Occupancy <span class="text-danger">*</span></label>
-                                <input type="number"
-                                    class="form-control @error('max_occupancy') is-invalid @enderror"
-                                    wire:model.defer="max_occupancy"
-                                    placeholder="e.g. 4">
-                                @error('max_occupancy') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label class="form-label">Category Title <span class="text-danger">*</span></label>
+                            <input type="text"
+                                class="form-control text-capitalize @error('title') is-invalid @enderror"
+                                wire:model.defer="title" placeholder="Room category title">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        {{-- Occupancy --}}
-                            @if (count($roomRatesData) == 0)
-                                <a class="text-primary mb-2 cursor-pointer text-decoration-underline"
-                                    wire:click='showModel'>Add Occupancy
-                                    <i class="spinner-border spinner-border-sm" wire:loading.delay
-                                        wire:target="showModel"></i>
-                                </a>
-                                @error('roomRatesData') <div class="text-danger">{{ $message }}</div> @enderror
-                            @else
-                                <div class="mt-2">
-                                    <tr><a class="text-warning  cursor-pointer text-decoration-underline"
-                                            wire:click='showModel'>Add Occupancy</a></tr>
+                        <!-- Hotel -->
+                        <div class="mb-3">
+                            <label class="form-label">Rate Type </label>
+                            <select class="form-select select2 @error('rate_type') is-invalid @enderror" id="rate_type"
+                                wire:model="rate_type">
+                                <option value="">Select Type</option>
+                                @foreach ($rateTypes as $value)
+                                    <option value="{{ $value->id }}" @selected($value->id == $rate_type) >{{ $value->title }}</option>
+                                @endforeach
+                            </select>
+                            @error('rate_type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                                    <div class="table-responsive mt-3">
-                                        <table class="table table-bordered table-hover shadow-sm">
-                                            <thead class="table-light">
+                        {{-- Occupancy Selection --}}
+                        <div class="mb-3">
+                            <label class="form-label">Occupancy <span class="text-danger">*</span></label>
+                            <select class="form-select select2" id="selected_occupancies"
+                                wire:model.live="selected_occupancies" multiple>
+                                @foreach ($occupances as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            @error('selected_occupancies')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Dynamic Rate Inputs --}}
+                        @if (count($roomRatesData) > 0)
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Rates for Selected Occupancies</label>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Occupancy</th>
+                                                <th>Weekday Rate <span class="text-danger">*</span></th>
+                                                <th>Weekend Rate <span class="text-danger">*</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($roomRatesData as $index => $data)
                                                 <tr>
-                                                    <th>Occupancy</th>
-                                                    <th>Rate</th>
-                                                    <th style="width: 100px;">Action</th>
+                                                    <td class="align-middle">
+                                                        <strong>{{ $occupances[$data['ocupancy_id']] ?? 'N/A' }}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" step="0.01"
+                                                            class="form-control form-control-sm @error('roomRatesData.'.$index.'.rate') is-invalid @enderror"
+                                                            wire:model.defer="roomRatesData.{{ $index }}.rate"
+                                                            placeholder="Enter weekday rate">
+                                                        @error('roomRatesData.'.$index.'.rate')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" step="0.01"
+                                                            class="form-control form-control-sm @error('roomRatesData.'.$index.'.weekend_rate') is-invalid @enderror"
+                                                            wire:model.defer="roomRatesData.{{ $index }}.weekend_rate"
+                                                            placeholder="Enter weekend rate">
+                                                        @error('roomRatesData.'.$index.'.weekend_rate')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($roomRatesData as $index => $data)
-                                                    <tr>
-                                                        <td>{{ $occupances[$data['ocupancy_id']] ?? 'N/A' }}</td>
-                                                        <td>
-                                                            {{ \App\Helpers\SettingHelper::formatCurrency(
-                                                                $data['rate'] ?? 0,
-                                                                \App\Helpers\SettingHelper::getGenrealSettings('number_format'),
-                                                            ) }}
-                                                        </td>
-                                                        <td>
-                                                            <a class="btn btn-sm btn-info"
-                                                                wire:click="editRoomRate({{ $index }})">
-                                                                <i class="bx bx-edit text-dark"></i>
-                                                                <i class="spinner-border spinner-border-sm"
-                                                                    wire:loading.delay
-                                                                    wire:target="editRoomRate({{ $index }})"></i>
-                                                            </a>
-                                                            <a class="btn btn-sm btn-danger"
-                                                                wire:click="removeRoomRate({{ $index }})">
-                                                                <i class="bx bx-trash text-dark"></i>
-                                                                <i class="spinner-border spinner-border-sm"
-                                                                    wire:loading.delay
-                                                                    wire:target="removeRoomRate({{ $index }})"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                            @endif
+                            </div>
+                        @endif
                         {{--  --}}
                         <!-- Status -->
                         <div class="mt-2 mb-3">
@@ -136,14 +135,11 @@
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
                                 {{ $isEditing ? 'Update Category' : 'Save Category' }}
-                                <i class="spinner-border spinner-border-sm ms-1"
-                                    wire:loading
+                                <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
                             </button>
 
-                            <button type="button"
-                                wire:click="resetForm"
-                                class="btn btn-secondary greygradientbtn">
+                            <button type="button" wire:click="resetForm" class="btn btn-secondary greygradientbtn">
                                 Reset
                             </button>
                         </div>
@@ -160,9 +156,7 @@
                 <!-- Search -->
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
-                        <input type="text"
-                            class="form-control ps-5"
-                            placeholder="Search..."
+                        <input type="text" class="form-control ps-5" placeholder="Search..."
                             wire:model.live="search">
                         <span class="position-absolute product-show translate-middle-y">
                             <i class="bx bx-search"></i>
@@ -177,47 +171,67 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th width="60">#</th>
+                                    <th>Hotel</th>
                                     <th>Category Title</th>
+                                    <th>Rates</th>
                                     <th>Status</th>
                                     <th width="80">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($items as $index => $item)
-                                <tr wire:key="{{ $item->id }}">
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $item->title }}</td>
-                                    <td>
-                                        <input class="form-check-input"
-                                            type="checkbox"
-                                            wire:change="toggleStatus({{ $item->id }})"
-                                            @checked($item->status)>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" class="me-1" title="Edit">
-                                            <i class="bx bx-edit text-dark fs-5"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})" title="Delete">
-                                            <i class="bx bx-trash text-danger fs-5"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                    <tr wire:key="{{ $item->id }}">
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $item?->rommtCategoryHotel?->name }}</td>
+                                        <td>{{ $item->title }}</td>
+                                        <td>
+                                            @if($item->occupancies && $item->occupancies->count() > 0)
+                                                <small>
+                                                    @foreach($item->occupancies as $occ)
+                                                        <div class="mb-1">
+                                                            <strong>{{ $occ->occupancy->title ?? 'N/A' }}:</strong>
+                                                            Weekday: {{ \App\Helpers\SettingHelper::formatCurrency($occ->rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }},
+                                                            Weekend: {{ \App\Helpers\SettingHelper::formatCurrency($occ->weekend_rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }}
+                                                        </div>
+                                                    @endforeach
+                                                </small>
+                                            @else
+                                                <small class="text-muted">No rates</small>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox"
+                                                wire:change="toggleStatus({{ $item->id }})"
+                                                @checked($item->status)>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
+                                                class="me-1" title="Edit">
+                                                <i class="bx bx-edit text-dark fs-5"></i>
+                                            </a>
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})" title="Delete">
+                                                <i class="bx bx-trash text-danger fs-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">No {{ $pageTitle }} found.</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center">No {{ $pageTitle }} found.</td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
                     @if ($items->hasPages())
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <small class="text-muted">
-                            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                        </small>
-                        {{ $items->links('livewire::bootstrap') }}
-                    </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">
+                                Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of
+                                {{ $items->total() }}
+                            </small>
+                            {{ $items->links('livewire::bootstrap') }}
+                        </div>
                     @endif
 
                 </div>
@@ -225,50 +239,4 @@
         </div>
 
     </div>
-    {{-- NEW DEV --}}
-    <div class="modal @if ($showRoomRateModal) show @endif" tabindex="-1"
-            style="opacity:1; background-color:#0606068c; display:@if ($showRoomRateModal) block @endif">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content p-4">
-                    <form wire:submit.prevent="{{ $roomRateEdit ? 'editRoomRateStore' : 'addRoomRates' }}">
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label class="form-label">Ocupancy <span class="text-danger">*</span></label>
-                                <select id="ocupancy_id" class="form-select select2" wire:model="ocupancy_id">
-                                    <option value="">Select Ocupancy</option>
-                                    @foreach ($occupances as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('ocupancy_id')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mt-3">
-                                <label class="form-label">Rate <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" wire:model="rate"
-                                    placeholder="exg . Ocupancy Charge">
-                                @error('rate')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary px-5">Save
-                                <i class="spinner-border spinner-border-sm" wire:loading.delay
-                                    wire:target="{{ $roomRateEdit ? 'editRoomRateStore' : 'addRoomRates' }}"></i>
-                            </button>
-                            <button type="button" wire:click="resetRoomRateForm"
-                                class="btn btn-sm btn-secondary">Close
-                                <i class="spinner-border spinner-border-sm" wire:loading.delay
-                                    wire:target="resetRoomRateForm"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {{--  --}}
 </div>

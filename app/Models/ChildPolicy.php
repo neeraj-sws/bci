@@ -21,12 +21,23 @@ class ChildPolicy extends Model
         "child_with_bed_rate",
         "child_without_bed_rate",
         "status",
-        "room_category_id"	,"peak_date_id"
+        "room_category_id",
+        "peak_date_id"
     ];
 
     public function hotel()
     {
         return $this->belongsTo(Hotel::class, 'hotel_id', 'hotels_id');
+    }
+
+    public function roomCategory()
+    {
+        return $this->belongsTo(RoomCategory::class, 'room_category_id', 'room_categoris_id');
+    }
+
+    public function peakDate()
+    {
+        return $this->belongsTo(PeackDate::class, 'peak_date_id', 'peak_dates_id');
     }
 
     // ID ALIAS

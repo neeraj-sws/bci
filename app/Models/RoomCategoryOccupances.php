@@ -19,6 +19,7 @@ class RoomCategoryOccupances extends Model
         'room_category_id',
         'occupancy_id',
         'rate',
+        'weekend_rate',
     ];
 
     // ID ALIAS
@@ -26,9 +27,14 @@ class RoomCategoryOccupances extends Model
     {
         return $this->room_category_occupancy_id;
     }
-    public function roomCategory()
-{
-    return $this->belongsTo(RoomCategory::class, 'room_category_id', 'id');
-}
 
+    public function roomCategory()
+    {
+        return $this->belongsTo(RoomCategory::class, 'room_category_id', 'room_categoris_id');
+    }
+
+    public function occupancy()
+    {
+        return $this->belongsTo(Occupancy::class, 'occupancy_id', 'occupancy_id');
+    }
 }

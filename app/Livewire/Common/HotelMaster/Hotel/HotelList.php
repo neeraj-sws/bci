@@ -30,7 +30,7 @@ class HotelList extends Component
 
     public function render()
     {
-        $query = $this->model::query()->with(['hotelType','hotelCategory'])
+        $query = $this->model::query()->with(['hotelType','hotelCategory','hotelRateType','hotelMealType.mealType'])
             ->where('name', 'like', "%{$this->search}%");
 
         $inactiveCount = $this->model::where('status', '0')->count();
