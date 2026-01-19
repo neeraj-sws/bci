@@ -127,6 +127,16 @@
                                      </a>
                                  </li>
                              @endcan
+                             @can('customer-trips list')
+                                 <li class="mb-1">
+                                     <a href="{{ route('common.trip') }}" class="text-white">
+                                         <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                             <i class="lni lni-map"></i>
+                                         </div>
+                                         <div class="menu-title"><span>Customer Trips</span></div>
+                                     </a>
+                                 </li>
+                             @endcan
 
 
                              @can('income list')

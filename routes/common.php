@@ -71,6 +71,9 @@ use App\Livewire\Common\ProformaInvoice\AddProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoiceView;
 use App\Livewire\Common\Tours\TourList;
+use App\Livewire\Common\TripMaster\Archive;
+use App\Livewire\Common\TripMaster\Trip;
+use App\Livewire\Common\TripMaster\TripView\View;
 
 // Route::name('common.')->middleware(['auth.guard:web', 'web', 'role:admin,sales,marketing'])->group(function () {
 Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(function () {
@@ -234,6 +237,13 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('child-policies', ChildPolicies::class)->name('child-policies');
         Route::get('hotel-rates/create', HotelRateForm::class)->name('hotel-rates.create');
         Route::get('hotel-rates/{id}/edit', HotelRateForm::class)->name('hotel-rates.edit');
+    });
+
+    // Trip Master
+    Route::prefix('customer-trips')->group(function () {
+        Route::get('/', Trip::class)->name('trip');
+        Route::get('/archive', Archive::class)->name('trip-archive');
+        Route::get('/view/{id}', View::class)->name('trip-view');
     });
 
     // Logout

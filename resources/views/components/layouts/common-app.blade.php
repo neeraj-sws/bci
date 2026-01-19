@@ -147,7 +147,7 @@
     <!---------------|| Js Files ||--------------->
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <!--plugins-->
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/jquery.min.js') }}"></script> --}}
     <script src="{{ asset('assets/plugins/simplebar/js/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/metismenu/js/metisMenu.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
@@ -237,6 +237,8 @@
         });
     </script> --}}
 
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     @include('components.includes.sweet-alert')
     @include('components.includes.select2')

@@ -20,7 +20,7 @@ class IncomeExpenses extends Model
         'notes',
         'quotation_id',
         'type',
-        'entry_type','soft_delete','proforma_invoice_id','vendor_id','payment_reference'
+        'entry_type','soft_delete','proforma_invoice_id','vendor_id','payment_reference','trip_id'
     ];
 
     // ID ALIAS
@@ -32,6 +32,10 @@ class IncomeExpenses extends Model
     public function category()
     {
         return $this->belongsTo(IncomeExpenseCategory::class, 'category_id');
+    }
+    public function subcategory()
+    {
+        return $this->belongsTo(IncomeExpenseSubCategory::class, 'sub_category_id');
     }
     public function client()
     {

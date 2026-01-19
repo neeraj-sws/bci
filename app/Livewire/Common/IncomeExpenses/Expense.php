@@ -9,6 +9,7 @@ use App\Models\IncomeExpenses as Model;
 use App\Models\IncomeExpenseSubCategory;
 use App\Models\Quotations;
 use App\Models\Tours;
+use App\Models\Trip;
 use App\Models\Vendors;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
@@ -35,8 +36,11 @@ class Expense extends Component
 
 
     public $Filtersubcategorys = [], $catgorie_filter_id, $sub_catgorie_filter_id;
+    public $trips=[],$trip_id;
 
-
+    public function mount(){
+        $this->trips = Trip::where('status',1)->pluck('name','trip_id');
+    }
     public function rules()
     {
         $rules = [
@@ -47,11 +51,16 @@ class Expense extends Component
             'category_id' => 'required',
         ];
 
-        if ($this->type == 1) {
+        if ($this->type == 1 && !$this->trip_id) {
             $rules = array_merge($rules, [
                 'vendor_id' => 'required',
                 'reference' => 'required',
                 'quotation_id' => 'required',
+            ]);
+        }
+        if($this->trip_id){
+             $rules = array_merge($rules, [
+                'vendor_id' => 'required',
             ]);
         }
 
@@ -99,7 +108,8 @@ class Expense extends Component
         $this->vendores = Vendors::where('sub_type_id', $this->sub_category_id)
             ->where('status', 1)->where('soft_delete', 0)->pluck('name', 'vendor_id');
 
-        $this->quotations = Quotations::with('tour', 'tourist')
+        if(!$this->trip_id){
+            $this->quotations = Quotations::with('tour', 'tourist')
             ->select('quotation_id', 'quotation_no', 'tour_id', 'tourist_id')
             ->whereIn('status', [2,6,7])
             ->orderBy('updated_at', 'desc')
@@ -111,6 +121,7 @@ class Expense extends Component
                 ];
             })
             ->toArray();
+        }
 
         return view($this->view, compact('items'));
     }
@@ -129,6 +140,7 @@ class Expense extends Component
             'tour_id' => $this->tour_id,
             'notes' => $this->notes,
             'quotation_id' => $this->quotation_id,
+            'trip_id' => $this->trip_id,
         ]);
         $this->resetForm();
         $this->dispatch('swal:toast', [
@@ -149,7 +161,13 @@ class Expense extends Component
             $this->reference = $item->reference;
             $this->tour_id = $item->tour_id;
             $this->quotation_id = $item->quotation_id;
-            $this->updatedQuotationId($this->quotation_id);
+            $this->trip_id = $item->trip_id;
+            if($this->quotation_id){
+                $this->updatedQuotationId($this->quotation_id);
+            }
+            if($this->trip_id){
+                $this->updatedTripId($item->trip_id,true);
+            }
         }
 
 
@@ -176,7 +194,8 @@ class Expense extends Component
             'tourist_id' => $this->client_id,
             'tour_id' => $this->tour_id,
             'notes' => $this->notes,
-            'quotation_id' => $this->quotation_id
+            'quotation_id' => $this->quotation_id,
+            'trip_id' => $this->trip_id,
         ]);
 
         $this->resetForm();
@@ -231,7 +250,8 @@ class Expense extends Component
             'tour_id',
             'notes',
             'quotation_id',
-            'type'
+            'type',
+            'trip_id'
         ]);
         $this->resetValidation();
     }
@@ -342,5 +362,31 @@ class Expense extends Component
     {
         $this->sub_catgorie_filter_id = '';
         $this->catgorie_filter_id = '';
+    }
+    public function updatedTripId($trip_id,$isRemove = false){
+        $quotationIds = \App\Models\TripItem::where('trip_id', $trip_id)
+            ->pluck('quotation_id')
+            ->unique()
+            ->toArray();
+        $this->quotations = Quotations::with('tour', 'tourist')
+            ->whereIn('quotation_id', $quotationIds)
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->mapWithKeys(function ($quotation) {
+                return [
+                    $quotation->quotation_id =>
+                        $quotation->quotation_no . ' | ' .
+                        ($quotation?->tourist?->primary_contact ?? '') . ' | ' .
+                        ($quotation?->tour?->name ?? '')
+                ];
+            })
+            ->toArray();
+        if(!$isRemove ){
+            $this->quotation_id = 0;
+            $this->reference = '';
+            $this->client_id = 0;
+            $this->tour_id = 0;
+            $this->vendor_id = null;
+        }
     }
 }

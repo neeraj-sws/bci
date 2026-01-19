@@ -73,6 +73,24 @@
 
                             @if ($type == 1)
                                 <div class="loading">
+                                     <div class="mb-3">
+                                        <div class="form-group">
+                                            <label for="title" class="form-label">Trip#</label>
+                                            <select id="trip_id" class="form-select select2"
+                                                wire:model="trip_id" placeholder="Trip#">
+                                                <option value=""></option>
+                                                @foreach ($trips as $id => $company_name)
+                                                    <option value="{{ $id }}"
+                                                        @if ($trip_id === $id) selected @endif>
+                                                        {{ $company_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('trip_id')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
                                     <div class="mb-3">
                                         <div class="form-group">
