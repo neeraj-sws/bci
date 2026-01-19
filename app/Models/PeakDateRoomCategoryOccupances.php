@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Livewire\Common\HotelMaster\PeakDates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +19,7 @@ class PeakDateRoomCategoryOccupances extends Model
         'peak_date_id',
         'occupancy_id',
         'rate',
+        'weekend_rate',
     ];
 
     // ID ALIAS
@@ -27,9 +27,14 @@ class PeakDateRoomCategoryOccupances extends Model
     {
         return $this->peak_date_room_category_occupancy_id;
     }
-    public function peakDates()
-{
-    return $this->belongsTo(PeakDates::class, 'peak_dates_id', 'id');
-}
 
+    public function peakDate()
+    {
+        return $this->belongsTo(PeackDate::class, 'peak_date_id', 'peak_dates_id');
+    }
+
+    public function occupancy()
+    {
+        return $this->belongsTo(Occupancy::class, 'occupancy_id', 'occupancy_id');
+    }
 }

@@ -397,74 +397,109 @@
                                          <span>Hotel Master</span>
                                      </div>
                                  </a>
+
                                  <ul class="mm-collapse ps-3 list-unstyled border-0">
+                                     {{-- MAIN MENU TOGGLE --}}
                                      <li class="mt-1">
-                                         <a href="{{ route('common.hotel-type') }}" class="text-white ps-4">
-                                             <i class="bx bx-cog me-2"></i>Hotel Type
+                                         <a class="has-arrow text-white ps-4" href="javascript:;">
+                                             <i class="lni lni-menu me-2"></i>Masters
                                          </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.hotel-categories') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Hotel Categories
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.rate-type') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Rate Type
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.ocupancy') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Ocupancy
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.meal-type') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Meal Plans
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.seasons') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Seasons
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.peak-dates') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Peak Dates
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.child-policies') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Child Policies
-                                         </a>
+
+                                         <ul class="mm-collapse ps-4 list-unstyled border-0">
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-categories') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Hotel Categories
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-type') }}" class="text-white ps-4">
+                                                     <i class="bx bx-cog me-2"></i>Hotel Type
+                                                 </a>
+                                             </li>
+
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.rate-type') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Rate Type
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.ocupancy') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Occupancy
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.meal-type') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Meal Plans
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.chains-list') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Chains
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.marketing-company-list') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Marketing Companies
+                                                 </a>
+                                             </li>
+                                         </ul>
                                      </li>
 
                                      <li class="mt-1">
-                                         <a href="{{ route('common.room-category') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Room Category
+                                         <a class="has-arrow text-white ps-4" href="javascript:;">
+                                             <i class="lni lni-menu me-2"></i>Hotel Master
+                                         </a>
+
+                                         <ul class="mm-collapse ps-4 list-unstyled border-0">
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.hotel-list') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Hotels
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.room-category') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Room Category
+                                                 </a>
+                                             </li>
+
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.peak-dates') }}" class="text-white ps-4">
+                                                     <i class="lni lni-agenda me-2"></i>Peak Dates
+                                                 </a>
+                                             </li>
+                                             <li class="mt-1">
+                                                 <a href="{{ route('common.child-policies') }}"
+                                                     class="text-white ps-4">
+                                                     <i class="lni lni-agenda"></i>Extra Bed / Child Policies
+                                                 </a>
+                                             </li>
+                                         </ul>
+                                     </li>
+
+                                     <li class="mt-1">
+                                         <a href="{{ route('common.seasons') }}" class="text-white ps-4">
+                                             <i class="lni lni-agenda me-2"></i>Seasons
                                          </a>
                                      </li>
+
 
                                      <li class="mt-1">
                                          <a href="{{ route('common.supplements') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Supplements
+                                             <i class="lni lni-agenda me-2"></i>Supplements
                                          </a>
                                      </li>
+
                                      <li class="mt-1">
                                          <a href="{{ route('common.hotel-rates') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Hotel Rates
-                                         </a>
-                                     </li>
-                                     <li class="mt-1">
-                                         <a href="{{ route('common.hotels') }}" class="text-white ps-4">
-                                             <i class="lni lni-agenda"></i>Hotels
+                                             <i class="lni lni-agenda me-2"></i>Hotel Rates
                                          </a>
                                      </li>
 
                                  </ul>
                              </li>
-
-
 
                              @can('calculator view')
                                  <li class="mb-1">
@@ -476,8 +511,6 @@
                                      </a>
                                  </li>
                              @endcan
-
-
 
                              @can('items list')
                                  <li class="mb-1">
@@ -492,10 +525,6 @@
 
 
                          </ul>
-
-
-
-
                      </div>
                  </div>
              </div>

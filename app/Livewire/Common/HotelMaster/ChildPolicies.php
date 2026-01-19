@@ -28,7 +28,7 @@ class ChildPolicies extends Component
     public $pageTitle = 'Extra Bed Child Policies';
 
     public $hotels = [];
-    public $roomCategoys = [],$room_category_id,$peakDates = [],$is_peak_date=false,$peak_date_id ;
+    public $roomCategoys = [], $room_category_id, $peakDates = [], $is_peak_date = false, $peak_date_id;
 
     protected function rules()
     {
@@ -55,8 +55,6 @@ class ChildPolicies extends Component
         $this->hotels = Hotel::where('status', 1)
             ->orderBy('name')
             ->get();
-        $this->roomCategoys = RoomCategory::where('status',1)->pluck('title','room_categoris_id')->toArray();
-        $this->peakDates = PeackDate::where('status',1)->pluck('title','peak_dates_id')->toArray();
     }
 
     public function render()
@@ -69,6 +67,11 @@ class ChildPolicies extends Component
             ->paginate(10);
 
         return view('livewire.common.hotel-master.child-policies', compact('items'));
+    }
+
+    public function updatedHotelId($id)
+    {
+        $this->roomCategoys = RoomCategory::where('hotel_id', $id)->where('status', 1)->pluck('title', 'room_categoris_id')->toArray();
     }
 
     public function store()
@@ -92,9 +95,9 @@ class ChildPolicies extends Component
         $this->child_without_bed_rate = $item->child_without_bed_rate;
         $this->status = $item->status;
         $this->peak_date_id = $item->peak_date_id;
-        if($item->peak_date_id){
+        if ($item->peak_date_id) {
             $this->is_peak_date = true;
-        }else{
+        } else {
             $this->is_peak_date = false;
         }
         $this->room_category_id = $item->room_category_id;
@@ -182,6 +185,11 @@ class ChildPolicies extends Component
     {
         if (!$value) {
             $this->peak_date_id = null;
+            $this->peakDates = [];
         }
+    }
+    public function updatedRoomCategoryId($id)
+    {
+        $this->peakDates = PeackDate::where('hotel_id', $this->hotel_id)->where('room_category_id', $id)->where('status', 1)->pluck('title', 'peak_dates_id')->toArray();
     }
 }

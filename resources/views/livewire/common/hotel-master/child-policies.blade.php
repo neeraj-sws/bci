@@ -19,7 +19,7 @@
                                 Hotel <span class="text-danger">*</span>
                             </label>
                             <select id="hotel_id" class="form-select select2 @error('hotel_id') is-invalid @enderror"
-                                wire:model.defer="hotel_id">
+                                wire:model.live="hotel_id">
                                 <option value="">Select Hotel</option>
                                 @foreach ($hotels as $hotel)
                                     <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
@@ -33,8 +33,8 @@
                         <div class="mb-3">
                             <label class="form-label">
                                 Room Category <span class="text-danger">*</span>
-                            </label> 
-                             <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model="room_category_id">
+                            </label>
+                             <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model.live="room_category_id">
                                 <option value="">Select Ocupancy</option>
                                 @foreach ($roomCategoys as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
@@ -65,7 +65,7 @@
                             </div>
                         @endif
                       <div class="mb-3 form-check">
-                            <input 
+                            <input
                                 type="checkbox"
                                 class="form-check-input @error('is_peak_date') is-invalid @enderror"
                                 id="is_peak_date"
@@ -86,7 +86,7 @@
                                 Free Child Age (Years) <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control @error('free_child_age') is-invalid @enderror"
-                                wire:model.defer="free_child_age" placeholder="e.g. 5">
+                                wire:model.defer="free_child_age" placeholder="e.g. 6-12 Years">
                             @error('free_child_age')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -108,7 +108,7 @@
                         <!-- Child Without Bed -->
                         <div class="mb-3">
                             <label class="form-label">
-                                Child Without Bed Rate 
+                                Child Without Bed Rate
                             </label>
                             <input type="number"
                                 class="form-control @error('child_without_bed_rate') is-invalid @enderror"
@@ -175,7 +175,7 @@
                                     <tr wire:key="{{ $item->id }}">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $item->hotel->name ?? '-' }}</td>
-                                        <td>{{ $item->free_child_age }} yrs</td>
+                                        <td>{{ $item->free_child_age }} </td>
                                         <td>₹{{ number_format($item->child_with_bed_rate, 2) }}</td>
                                         <td>₹{{ number_format($item->child_without_bed_rate, 2) }}</td>
                                         <td>

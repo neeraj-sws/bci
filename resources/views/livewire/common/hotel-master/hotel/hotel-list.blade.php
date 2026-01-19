@@ -54,6 +54,8 @@
                                     <th>Hotel Name</th>
                                     <th>Hotel Type</th>
                                     <th>Hotel Category</th>
+                                    <th>Hotel Rate Type</th>
+                                    <th>Hotel Meal Type</th>
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
                                 </tr>
@@ -66,6 +68,18 @@
                                         <td class="align-middle py-1">{{ $item->name }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelType->title }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelCategory->title }}</td>
+                                        <td class="align-middle py-1">{{ $item?->hotelRateType?->title ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">
+                                            @if (!empty($item?->hotelMealType))
+                                                @forelse ($item?->hotelMealType as $plan)
+                                                    <span class="badge bg-primary me-1">
+                                                        {{ $plan?->mealType?->title }}
+                                                    </span>
+                                                @empty
+                                                    NA
+                                                @endforelse
+                                            @endif
+                                        </td>
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
@@ -75,10 +89,12 @@
 
                                         <td class="align-middle py-1 text-center"
                                             style="overflow:visible; position:relative;">
-                                            <a href="{{ route('common.update-hotel', $item->id) }}"><i
+                                            <a href="{{ route('common.hotel-detail', $item->id) }}"
+                                                title="View Details"><i class="bx bx-show text-primary fs-5"></i></a>
+                                            <a href="{{ route('common.update-hotel', $item->id) }}" title="Edit"><i
                                                     class="bx bx-edit text-dark fs-5"></i></a>
                                             <a href="javascript:void(0)"
-                                                wire:click="confirmDelete({{ $item->id }})"><i
+                                                wire:click="confirmDelete({{ $item->id }})" title="Delete"><i
                                                     class="bx bx-trash text-danger fs-5"></i></a>
 
                                         </td>

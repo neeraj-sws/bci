@@ -20,7 +20,8 @@ class RoomCategory extends Model
         'hotel_id',
         'base_occupancy',
         'max_occupancy',
-        'status'
+        'status',
+        'rate_type_id'
     ];
 
     // ID ALIAS
@@ -29,8 +30,22 @@ class RoomCategory extends Model
         return $this->room_categoris_id;
     }
     public function occupancies()
-{
-    return $this->hasMany(RoomCategoryOccupances::class, 'room_category_id', 'id');
-}
+    {
+        return $this->hasMany(RoomCategoryOccupances::class, 'room_category_id', 'room_categoris_id');
+    }
 
+    public function childPolicies()
+    {
+        return $this->hasMany(ChildPolicy::class, 'room_category_id', 'room_categoris_id');
+    }
+
+    public function peakDates()
+    {
+        return $this->hasMany(PeackDate::class, 'room_category_id', 'room_categoris_id');
+    }
+
+    public function rommtCategoryHotel()
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id', 'hotels_id');
+    }
 }

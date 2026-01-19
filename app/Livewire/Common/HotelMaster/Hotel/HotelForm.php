@@ -2,11 +2,16 @@
 
 namespace App\Livewire\Common\HotelMaster\Hotel;
 
+use App\Models\Chain;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\Hotel;
 use App\Models\HotelTypes;
 use App\Models\HotelCategories;
+use App\Models\HotelMealPlan;
+use App\Models\MarketingCompany;
+use App\Models\MealType;
+use App\Models\RateTypes;
 
 #[Layout('components.layouts.common-app')]
 class HotelForm extends Component
@@ -26,6 +31,14 @@ class HotelForm extends Component
     // Dropdown data
     public $hotel_types = [];
     public $hotel_categories = [];
+    public $rateTypes, $rate_type, $mealTypes, $meal_type = [];
+    public $chainHotels = [];
+    public $marketedHotels = [];
+    public $showModel = false;
+    public $modalType = null;
+    public $modalTitle;
+    public $newTitle;
+
 
     protected function rules()
     {
@@ -37,6 +50,7 @@ class HotelForm extends Component
             'marketing_company_id' => 'nullable|integer',
             'location' => 'nullable|string|max:255',
             'status' => 'required|boolean',
+            'rate_type' => 'nullable|exists:rate_types,rate_type_id',
         ];
     }
 
@@ -51,6 +65,8 @@ class HotelForm extends Component
     {
         $this->hotel_types = HotelTypes::where('status', 1)->get();
         $this->hotel_categories = HotelCategories::where('status', 1)->get();
+        $this->rateTypes = RateTypes::where('status', 1)->get();
+        $this->mealTypes = MealType::where('status', 1)->get();
 
         if ($id) {
             $hotel = Hotel::findOrFail($id);
@@ -65,6 +81,12 @@ class HotelForm extends Component
             $this->marketing_company_id = $hotel->marketing_company_id;
             $this->location = $hotel->location;
             $this->status = $hotel->status;
+            $this->rate_type = $hotel->rate_type_id;
+            $this->meal_type = HotelMealPlan::where('hotel_id', $hotel->id)
+                ->pluck('meal_plan_id')
+                ->toArray();
+
+            $this->loadHotelsByType($this->hotel_type_id);
         }
     }
 
@@ -72,14 +94,21 @@ class HotelForm extends Component
     {
         $this->validate();
 
-        Hotel::create($this->payload());
+        $hotel = Hotel::create($this->payload());
+
+        foreach ($this->meal_type as $mealTypeId) {
+            HotelMealPlan::insert([
+                'hotel_id' => $hotel->id,
+                'meal_plan_id' => $mealTypeId,
+            ]);
+        }
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'message' => 'Hotel added successfully'
         ]);
 
-        return redirect()->route('common.hotels');
+        return redirect()->route('common.hotel-list');
     }
 
     public function update()
@@ -87,14 +116,41 @@ class HotelForm extends Component
         $this->validate();
 
         Hotel::findOrFail($this->hotelId)->update($this->payload());
+        HotelMealPlan::where('hotel_id',$this->hotelId)->delete();
+        foreach ($this->meal_type as $mealTypeId) {
+            HotelMealPlan::insert([
+                'hotel_id' => $this->hotelId,
+                'meal_plan_id' => $mealTypeId,
+            ]);
+        }
+
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'message' => 'Hotel updated successfully'
         ]);
 
-        return redirect()->route('common.hotels');
+        return redirect()->route('common.hotel-list');
     }
+
+    public function updatedHotelTypeId($value)
+    {
+        $this->loadHotelsByType($value);
+    }
+
+    private function loadHotelsByType($hotelTypeId)
+    {
+        if ($hotelTypeId == 1) {
+            $this->marketedHotels = MarketingCompany::where('status', 1)->get();
+            $this->chainHotels = [];
+        }
+
+        if ($hotelTypeId == 2) {
+            $this->chainHotels = Chain::where('status', 1)->get();
+            $this->marketedHotels = [];
+        }
+    }
+
 
     private function payload(): array
     {
@@ -106,8 +162,63 @@ class HotelForm extends Component
             'marketing_company_id' => $this->marketing_company_id,
             'location' => $this->location,
             'status' => $this->status,
+            'rate_type_id' => $this->rate_type,
         ];
     }
+
+    public function openModal()
+    {
+        $this->resetValidation();
+        $this->resetErrorBag();
+
+        if ($this->hotel_type_id == 2) {
+            $this->modalType = 'chain';
+            $this->modalTitle = 'Add Parent Chain';
+        }
+
+        if ($this->hotel_type_id == 1) {
+            $this->modalType = 'marketing';
+            $this->modalTitle = 'Add Marketing Company';
+        }
+
+        $this->newTitle = null;
+        $this->showModel = true;
+    }
+
+    public function saveModalData()
+    {
+        $this->validate([
+            'newTitle' => 'required|string|max:255',
+        ]);
+
+        if ($this->modalType === 'chain') {
+
+            Chain::create([
+                'title' => ucwords($this->newTitle),
+                'status' => 1,
+            ]);
+
+            $this->chainHotels = Chain::where('status', 1)->get();
+        }
+
+        if ($this->modalType === 'marketing') {
+
+            MarketingCompany::create([
+                'title' => ucwords($this->newTitle),
+                'status' => 1,
+            ]);
+
+            $this->marketedHotels = MarketingCompany::where('status', 1)->get();
+        }
+
+        $this->reset(['newTitle', 'showModel', 'modalType']);
+
+        $this->dispatch('swal:toast', [
+            'type' => 'success',
+            'message' => 'Saved successfully'
+        ]);
+    }
+
 
     public function render()
     {
