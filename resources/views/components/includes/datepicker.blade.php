@@ -61,7 +61,7 @@
         const group = el.dataset.group;
 
         // 🔹 Keep start/end logic if needed
-        if (role && group) {
+        if (role && group && el.dataset.range !== "proper") {
             const startEl = document.querySelector(`.datepicker[data-role="start"][data-group="${group}"]`);
             const endEl = document.querySelector(`.datepicker[data-role="end"][data-group="${group}"]`);
 
@@ -78,6 +78,50 @@
                     if (endEl.value && new Date(endEl.value) > new Date(dateStr)) {
                         endPicker.clear();
                     }
+                }
+            }
+        }
+
+        // 🆕 PROPER RANGE LOGIC (OPT-IN)
+        if (el.dataset.range === "proper") {
+            const role = el.dataset.role;
+            const group = el.dataset.group;
+            if (!role || !group) return;
+
+            const startEl = document.querySelector(
+                `.datepicker[data-role="start"][data-group="${group}"][data-range="proper"]`
+            );
+            const endEl = document.querySelector(
+                `.datepicker[data-role="end"][data-group="${group}"][data-range="proper"]`
+            );
+
+            if (!startEl || !endEl) return;
+
+            const startPicker = startEl._flatpickr;
+            const endPicker = endEl._flatpickr;
+            if (!startPicker || !endPicker) return;
+
+            // start → end (END = START + 1 day)
+            if (role === "start" && dateStr) {
+                const minEndDate = new Date(dateStr);
+                minEndDate.setDate(minEndDate.getDate() + 1);
+
+                endPicker.set("minDate", minEndDate);
+
+                if (endEl.value && new Date(endEl.value) < minEndDate) {
+                    endPicker.clear();
+                }
+            }
+
+            // end → start (START = END - 1 day)
+            if (role === "end" && dateStr) {
+                const maxStartDate = new Date(dateStr);
+                maxStartDate.setDate(maxStartDate.getDate() - 1);
+
+                startPicker.set("maxDate", maxStartDate);
+
+                if (startEl.value && new Date(startEl.value) > maxStartDate) {
+                    startPicker.clear();
                 }
             }
         }

@@ -193,37 +193,39 @@
         </div>
 
 
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        <script>
-            document.addEventListener('livewire:init', function() {
-                $("#kt_daterangepicker_1").daterangepicker({
-                    locale: {
-                        cancelLabel: 'Clear',
-                    },
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')],
-                    },
-                });
-                $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
-                    let startDate = picker.startDate.format('YYYY-MM-DD');
-                    let endDate = picker.endDate.format('YYYY-MM-DD');
-                    @this.set('startdate', startDate);
-                    @this.set('enddate', endDate);
-                });
 
-                $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
-                    @this.set('startdate', null);
-                    @this.set('enddate', null);
-                });
-            });
-        </script>
+        
     </div>
 
 </div>
+@push('scripts')
+<script>
+document.addEventListener('livewire:init', function() {
+    $("#kt_daterangepicker_1").daterangepicker({
+        locale: {
+            cancelLabel: 'Clear',
+        },
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                'month').endOf('month')],
+        },
+    });
+    $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
+        let startDate = picker.startDate.format('YYYY-MM-DD');
+        let endDate = picker.endDate.format('YYYY-MM-DD');
+        @this.set('startdate', startDate);
+        @this.set('enddate', endDate);
+    });
+
+    $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
+        @this.set('startdate', null);
+        @this.set('enddate', null);
+    });
+});
+</script>
+@endpush
