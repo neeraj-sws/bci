@@ -54,7 +54,7 @@
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Trip Name <span
+                            <label for="title" class="form-label">Customer Trip Name <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                 wire:model="name" placeholder="Trip name">
@@ -153,7 +153,7 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Trip Name</th>
+                                    <th>Customer Trip Name</th>
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
                                 </tr>
