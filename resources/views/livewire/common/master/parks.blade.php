@@ -24,7 +24,8 @@
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Park Name <span class="text-danger">*</span></label>
+                            <label for="title" class="form-label">Park Name <span
+                                    class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                 wire:model="name" placeholder="Park name">
                             @error('name')
@@ -83,23 +84,25 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td class="align-middle py-1">{{ $index + 1 }}</td>
+                                        <td class="align-middle py-1">{{ $items->firstItem() + $index }}</td>
                                         <td class="align-middle py-1">
                                             <span class="">
                                                 {{ $item->name }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="{{$index + 1}}"
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="{{ $index + 1 }}"
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
                                         <td class="align-middle py-1 text-center">
-                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
+                                                title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
-                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})"
-                                                title="Delete">
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
@@ -111,18 +114,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$items" />
                     </div>
-                    @if ($items->hasPages())
-                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                        <div class="text-muted small">
-                            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                            entries
-                        </div>
-                        <div>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    </div>
-                @endif
                 </div>
             </div>
         </div>

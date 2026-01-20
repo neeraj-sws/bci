@@ -29,14 +29,17 @@
                                         placeholder="Select park">
                                         <option value=""></option>
                                         @foreach ($parks as $id => $name)
-                                            <option value="{{ $id }}" @if ($park === $id) selected @endif>{{ $name }}</option>
+                                            <option value="{{ $id }}"
+                                                @if ($park === $id) selected @endif>{{ $name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="title" class="form-label">Zone Name</label>
-                                <input type="text" class="form-control text-capitalize  @error('name') is-invalid @enderror"
+                                <input type="text"
+                                    class="form-control text-capitalize  @error('name') is-invalid @enderror"
                                     wire:model="name">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -44,7 +47,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="title" class="form-label">Nearest Airport</label>
-                                <input type="text" class="form-control text-capitalize @error('nearest_airport') is-invalid @enderror"
+                                <input type="text"
+                                    class="form-control text-capitalize @error('nearest_airport') is-invalid @enderror"
                                     wire:model="nearest_airport">
                                 @error('nearest_airport')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -52,7 +56,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="title" class="form-label">Nearest Railway Station</label>
-                                <input type="text" class="form-control text-capitalize @error('nearest_railway') is-invalid @enderror"
+                                <input type="text"
+                                    class="form-control text-capitalize @error('nearest_railway') is-invalid @enderror"
                                     wire:model="nearest_railway">
                                 @error('nearest_railway')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -61,7 +66,8 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Nearest City <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control text-capitalize @error('nearest_city') is-invalid @enderror"
+                                <input type="text"
+                                    class="form-control text-capitalize @error('nearest_city') is-invalid @enderror"
                                     wire:model="nearest_city">
                                 @error('nearest_city')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -134,8 +140,8 @@
                             <thead>
                                 <tr>
                                     <th class="width60">S.no</th>
-                                    <th>Park Name</th>
                                     <th>Zone Name</th>
+                                    <th>Park Name</th>
                                     <th>Nearest Airport/Railway/City </th>
                                     <th class="width60">Action</th>
                                 </tr>
@@ -143,15 +149,15 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td class="align-middle py-1">{{ $index + 1 }}</td>
+                                        <td class="align-middle py-1">{{ $items->firstItem() + $index }}</td>
                                         <td class="align-middle py-1">
                                             <span class="">
-                                                {{ $item->park->name ?? 'NA' }}
+                                                {{ $item->name ?? 'NA' }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1">
                                             <span class="">
-                                                {{ $item->name ?? 'NA' }}
+                                                {{ $item->park->name ?? 'NA' }}
                                             </span>
                                         </td>
                                         <td class="align-middle py-1 text-center">
@@ -161,11 +167,12 @@
                                             </span>
                                         </td>
                                         <td class="align-middle py-1 text-center">
-                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
+                                                title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
-                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})"
-                                                title="Delete">
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
@@ -177,18 +184,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$items" />
                     </div>
-                    @if ($items->hasPages())
-                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                        <div class="text-muted small">
-                            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                            entries
-                        </div>
-                        <div>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    </div>
-                @endif
                 </div>
             </div>
         </div>

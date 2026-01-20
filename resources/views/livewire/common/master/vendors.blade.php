@@ -50,8 +50,8 @@
                                     @enderror
                                 </div>
                             </div>
-                            
-                            
+
+
                                       <div class="mt-3">
                                 <div class="form-group">
                                     <label for="title" class="form-label">Vendor Sub Type <span
@@ -155,20 +155,20 @@
 
                             @if ($is_taxi)
                                 <div class="col mt-3">
-                                    
-                                          
+
+
                                 @if($serviceAreaNames)
                                     <label class="form-label">Existing Location's</label></br>
                                     <span>{{ $serviceAreaNames ?? '' }}</span>
                                 @endif
-                                
+
                                     <a class="text-primary mt-2 cursor-pointer text-decoration-underline"
                                         wire:click='openServiceAreaModal'>Add Service Location's
                                         <i class="spinner-border spinner-border-sm" wire:loading.delay
                                             wire:target="openServiceAreaModal"></i>
                                     </a>
                                 </div>
-                          
+
                             @endif
 
 
@@ -347,7 +347,7 @@
                 @endforeach
             </select>
         </div>
-        
+
           <div class="col-3">
                  <button class="btn bluegradientbtn" wire:click="clearFilters">clear
 
@@ -375,7 +375,7 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td class="align-middle py-1">{{ $index + 1 }}</td>
+                                        <td class="align-middle py-1">{{ $items->firstItem() + $index }}</td>
                                         <td class="align-middle py-1">
                                             <span class="">
                                                 {{ $item->name }}
@@ -411,18 +411,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                         <x-pagination :paginator="$items" />
                     </div>
-                   @if ($items->hasPages())
-                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                        <div class="text-muted small">
-                            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                            entries
-                        </div>
-                        <div>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    </div>
-                @endif
                 </div>
             </div>
         </div>
@@ -521,13 +511,13 @@
                             </tbody>
                         </table>
                     </div> --}}
-                    
+
 <div class="modal-body">
     <table style="width: 100%; border-collapse: collapse;">
         <tbody style="display: block; column-count: 4; column-gap: 5px; max-height: 400px; overflow-y: auto; padding: 0; margin: 0;">
 
             @foreach ($serviceAreas as $area)
-                <tr 
+                <tr
                     wire:key="area-{{ $area->service_location_id }}"
                     style="
                         display: block;

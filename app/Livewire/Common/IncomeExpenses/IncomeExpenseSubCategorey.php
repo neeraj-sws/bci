@@ -56,7 +56,7 @@ class IncomeExpenseSubCategorey extends Component
            $query =  $query->where('category_id',$this->search_category_id);
         }
         $items = $query->where('name', 'like', "%{$this->search}%")
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('name', 'asc')
             ->paginate(10);
 
         $expensecount = $this->model::where('type', '1')->count();

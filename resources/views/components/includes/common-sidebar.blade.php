@@ -479,7 +479,7 @@
                                          </ul>
                                      </li>
 
-                                     <li class="mt-1">
+                                     {{-- <li class="mt-1">
                                          <a href="{{ route('common.seasons') }}" class="text-white ps-4">
                                              <i class="lni lni-agenda me-2"></i>Seasons
                                          </a>
@@ -490,7 +490,7 @@
                                          <a href="{{ route('common.supplements') }}" class="text-white ps-4">
                                              <i class="lni lni-agenda me-2"></i>Supplements
                                          </a>
-                                     </li>
+                                     </li> --}}
 
                                      <li class="mt-1">
                                          <a href="{{ route('common.hotel-rates') }}" class="text-white ps-4">
