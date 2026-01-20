@@ -48,7 +48,7 @@
                     <tbody>
                         @forelse ($items as $index => $item)
                             <tr class="table-bottom-border transition2" wire:key="{{ $item->id }}">
-                                <td class="px-3 py-1 darkgreytext">{{ $index + 1 }}</td>
+                                <td class="px-3 py-1 darkgreytext">{{ $items->firstItem() + $index }}</td>
                                 <td>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span class="d-flex align-items-center gap-2">
@@ -65,7 +65,7 @@
                                 <td class="px-3 py-1">₹{{ number_format($item->guide_fee, 2) }}</td>
                                 <td class="px-3 py-1">₹{{ number_format($item->weekday_permit, 2) }}</td>
                                 <td class="px-3 py-1">₹{{ number_format($item->weekend_permit, 2) }}</td>
-                                                 <td class="px-3 py-1">₹{{ number_format($item->total_week_day, 2) }}</td>
+                                <td class="px-3 py-1">₹{{ number_format($item->total_week_day, 2) }}</td>
                                 <td class="px-3 py-1">₹{{ number_format($item->total_week_end, 2) }}</td>
                                 <td class="px-3 py-1">{{ $item?->night_safari_permit ?? 'NA' }}</td>
                                 <td class="px-3 py-1 text-center">
@@ -90,20 +90,8 @@
                         @endforelse
                     </tbody>
                 </table>
+                <x-pagination :paginator="$items" />
             </div>
-
-            <!-- Pagination -->
-@if ($items->hasPages())
-                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                        <div class="text-muted small">
-                            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                            entries
-                        </div>
-                        <div>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    </div>
-                @endif
         </div>
     </div>
 
@@ -135,17 +123,18 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="mb-3 col-sm-6" >
-                            <div class="form-group" >
+                        <div class="mb-3 col-sm-6">
+                            <div class="form-group">
                                 <label for="title" class="form-label">Select Zone {{ $zone }} <span
                                         class="text-danger">*</span></label>
-                        
+
                                 <select id="zone" class="form-select select2" wire:model="zone"
                                     placeholder="Select zone">
                                     <option value=""></option>
                                     @foreach ($zones as $id => $name)
                                         <option wire:key='{{ $id }}' value="{{ $id }}"
-                                            @if ($zone == $id) selected @endif>{{ $name }} {{ $id }}
+                                            @if ($zone == $id) selected @endif>{{ $name }}
+                                            {{ $id }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -158,7 +147,8 @@
                             <label for="title" class="form-label">Gate Name <span
                                     class="text-danger">*</span></label>
                             <input type="text" placeholder="Gate Name"
-                                class="form-control text-capitalize @error('name') is-invalid @enderror" wire:model="name">
+                                class="form-control text-capitalize @error('name') is-invalid @enderror"
+                                wire:model="name">
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

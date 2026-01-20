@@ -57,8 +57,13 @@ class Gates extends Component
 
     public function render()
     {
-        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
-            ->latest()->paginate(10);
+        $items = $this->model::query()
+            ->where('name', 'like', "%{$this->search}%")
+            ->orderBy(
+                Parks::select('name')->whereColumn('parks.park_id', 'park_gates.park_id'),
+                'asc'
+            )
+            ->paginate(10);
 
         return view($this->view, compact('items'));
     }

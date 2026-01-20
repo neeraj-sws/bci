@@ -139,7 +139,7 @@ class Vendors extends Component
             )
             // ->where('soft_delete', 0)
             ->with(['vehicles', 'type'])
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('name', 'asc')
             ->paginate(10);
 
         return view($this->view, compact('items'));

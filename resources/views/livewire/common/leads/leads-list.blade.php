@@ -35,7 +35,7 @@
 
 
     </div> --}}
-    
+
     <div class="page-header mb-4">
         <div class="d-flex flex-wrap align-items-end justify-content-between">
 
@@ -277,9 +277,9 @@
                         <div class="card kanban-card border mb-4 shadow ui-sortable-handle">
                              <div class="card-header ">
                                   <div class="d-block">
-                                          
+
                                             <div class="d-flex align-items-center">
-                                                <a href="{{ route($route . '.lead-view', $item->id) }}" class="avatar rounded-circle bg-soft-info flex-shrink-0"> 
+                                                <a href="{{ route($route . '.lead-view', $item->id) }}" class="avatar rounded-circle bg-soft-info flex-shrink-0">
                                                 <span
                                         style="color: {{ $item->type->color ?? 'black' }};font-weight:bold"><i class="bx bxs-circle font-24"></i></span></a>
                                                 <h6 class="fw-medium fs-14 mb-0"><a href="{{ route($route . '.lead-view', $item->id) }}">{{ $item->tourist->primary_contact ?? $item->tourist->name }}</a>
@@ -288,7 +288,7 @@
                                         </div>
                                  </div>
                                     <div class="card-body">
-                                       
+
                                         <div class="d-flex flex-column">
                                             <p class="text-default d-inline-flex align-items-center mb-2">
                                                <i class="lni lni-money-protection pe-1"></i>
@@ -307,7 +307,7 @@
                                                  {{ $item->tourist->address ?? 'NA' }}
                                             </p>
                                         </div>
-                                      
+
                                     </div>
                                 </div>
                     </div>
@@ -337,7 +337,7 @@
 
                         <tr class="table-bottom-border transition2" wire:key="{{ $item->id }}">
                             <td class="px-3 py-1"> <a href="{{ route($route . '.lead-view', $item->id) }}">
-                                    {{ $index + 1 }} </a></td>
+                                    {{ $items->firstItem() + $index }}</a></td>
                             <td class="px-3 py-1">
                                 <span class="fw-500 text-dark">
                                     <span style="color: {{ $item->type->color ?? 'black' }}; font-weight: bold;">
@@ -491,20 +491,8 @@
                     @endforelse
                 </tbody>
             </table>
+             <x-pagination :paginator="$items" />
         </div>
-
-        <!-- Pagination -->
-        @if ($items->hasPages())
-            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                <div class="text-muted small">
-                    Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                    entries
-                </div>
-                <div>
-                    {{ $items->links('livewire::bootstrap') }}
-                </div>
-            </div>
-        @endif
     </div>
 </div>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>

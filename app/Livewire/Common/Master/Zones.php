@@ -50,8 +50,8 @@ class Zones extends Component
 
     public function render()
     {
-        $items = $this->model::with('park')->where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
-            ->latest()->paginate(10);
+        $items = $this->model::with('park')->where('name', 'like', "%{$this->search}%")->orderBy('name', 'asc')
+            ->paginate(10);
         return view($this->view, compact('items'));
     }
 
