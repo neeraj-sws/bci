@@ -163,63 +163,63 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                
+                                {{-- NEW DEV --}}
+                                <div class="mb-3">
+                                    <div class="form-group">
+                                        <label for="title" class="form-label d-flex justify-content-between">Tour
+                                            Name
+                                            @if ($tour_id)
+                                                <span wire:click="edit" style="cursor: pointer;color: #E41F07;"><i
+                                                        class="lni lni-pencil me-2"></i>Edit <span wire:loading
+                                                        wire:target="edit">
+                                                        <span class="spinner-border spinner-border-sm me-1"
+                                                            role="status" aria-hidden="true"></span>
+                                                    </span></span>
 
+                                            @endif
+                                        </label>
+                                        <select @disabled(!$company_id || $estimateId) id="tour_id"
+                                            class="form-select select2" wire:model="tour_id"
+                                            placeholder="Tour  Name">
+                                            <option value=""></option>
+                                            @foreach ($tours as $id => $company_name)
+                                                <option value="{{ $id }}"
+                                                    @if ($tour_id == $id) selected @endif>
+                                                    {{ $company_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('tour_id')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                {{-- NEW DEV --}}
                                 <div class="row">
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Quotation Date <span
-                                                    class="text-danger">*</span></label>
-                                            <input id="estimate_date" type="text" placeholder="Estimate Date"
-                                                class="form-control datepicker @error('estimate_date') is-invalid @enderror"
-                                                wire:model="estimate_date">
-                                            @error('estimate_date')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                 <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Quotation Date <span
+                                                class="text-danger">*</span></label>
+                                        <input id="estimate_date" type="text" placeholder="Estimate Date"
+                                            class="form-control datepicker @error('estimate_date') is-invalid @enderror"
+                                            wire:model="estimate_date">
+                                        @error('estimate_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Quotation Expiry Date <span
-                                                    class="text-danger">*</span></label>
-                                            <input id="expiry_date" type="text" placeholder="Expiry Date"
-                                                class="form-control datepicker @error('expiry_date') is-invalid @enderror"
-                                                wire:model="expiry_date">
-                                            @error('expiry_date')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Quotation Expiry Date <span
+                                                class="text-danger">*</span></label>
+                                        <input id="expiry_date" type="text" placeholder="Expiry Date"
+                                            class="form-control datepicker @error('expiry_date') is-invalid @enderror"
+                                            wire:model="expiry_date">
+                                        @error('expiry_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Tour Start Date <span
-                                                    class="text-danger">*</span></label>
-                                            <input id="start_date" type="text" placeholder="Start Date"
-                                                class="form-control datepicker @error('start_date') is-invalid @enderror"
-                                                wire:model.live="start_date" data-role="start" data-group="booking1">
-                                            @error('start_date')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- NEW DEV --}}
-                                    <input type="hidden" id="tour_days_hidden" class="date" data-role="tour-min"
-                                        value="{{ $tourDays }}">
-
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label">Tour End Date <span
-                                                    class="text-danger">*</span></label>
-                                            <input id="end_date" type="text" placeholder="End Date"
-                                                class="form-control datepicker @error('end_date') is-invalid @enderror"
-                                                wire:model="end_date">
-                                            @error('end_date')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
+                                </div>
                                 </div>
                             </fieldset>
 
@@ -270,36 +270,38 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                <div class="mb-3">
-                                    <div class="form-group">
-                                        <label for="title" class="form-label d-flex justify-content-between">Tour
-                                            Name
-                                            @if ($tour_id)
-                                                <span wire:click="edit" style="cursor: pointer;color: #E41F07;"><i
-                                                        class="lni lni-pencil me-2"></i>Edit <span wire:loading
-                                                        wire:target="edit">
-                                                        <span class="spinner-border spinner-border-sm me-1"
-                                                            role="status" aria-hidden="true"></span>
-                                                    </span></span>
-
-                                            @endif
-                                        </label>
-                                        <select @disabled(!$company_id || $estimateId) id="tour_id"
-                                            class="form-select select2" wire:model="tour_id"
-                                            placeholder="Tour  Name">
-                                            <option value=""></option>
-                                            @foreach ($tours as $id => $company_name)
-                                                <option value="{{ $id }}"
-                                                    @if ($tour_id == $id) selected @endif>
-                                                    {{ $company_name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('tour_id')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                              {{-- NEW DEV --}}
+                              <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Tour Start Date <span
+                                                    class="text-danger">*</span></label>
+                                            <input id="start_date" type="text" placeholder="Start Date"
+                                                class="form-control datepicker @error('start_date') is-invalid @enderror"
+                                                wire:model.live="start_date" data-role="start" data-group="booking1">
+                                            @error('start_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
+
+                                    {{-- NEW DEV --}}
+                                    <input type="hidden" id="tour_days_hidden" class="date" data-role="tour-min"
+                                        value="{{ $tourDays }}">
+
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Tour End Date <span
+                                                    class="text-danger">*</span></label>
+                                            <input id="end_date" type="text" placeholder="End Date"
+                                                class="form-control datepicker @error('end_date') is-invalid @enderror"
+                                                wire:model="end_date" @if($tour_id) disabled @endif>
+                                            @error('end_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                              </div>
 
                                 @if (!$estimateId)
                                     <div class="row">

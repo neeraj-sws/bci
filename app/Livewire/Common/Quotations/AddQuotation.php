@@ -262,6 +262,8 @@ class AddQuotation extends Component
             $this->notes = $this->estimateSettings?->customer_note ?? '';
             $this->company_id = Companies::where('is_primary', 1)?->first()?->company_id ?? null;
             $this->updatedCompanyId($this->company_id);
+            // NEW DEV 
+            $this->start_date = Carbon::now()->format('Y-m-d');
         }
     }
     public function render()
@@ -937,5 +939,15 @@ class AddQuotation extends Component
         $this->calculateTotals();
         $this->showModal = !$this->showModal;
         $this->dispatch('open-new-item-modal');
+        // NEW DEV 
+        $days = &$this->tableDataJson['tourPackage']['days'];
+        $nextDayNumber = count($days);
+        if ($this->start_date && $nextDayNumber) {
+            $this->tourDays = Carbon::parse($this->start_date)
+                ->addDays(((int)  $nextDayNumber) - 1)
+                ->format('Y-m-d');
+            $this->end_date = $this->tourDays;
+            $this->dispatch('tour-days-updated');
+        }
     }
 }
