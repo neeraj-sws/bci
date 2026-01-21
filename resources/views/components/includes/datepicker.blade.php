@@ -8,20 +8,29 @@
             const NoDateAfter = parseInt(el.dataset.nostart || 0);
             const restrictFuture = el.dataset.restrictFuture === "true";
 
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            let minDate = today;
             let maxDate = null;
-            let minDate = null;
-
-            if (NoDateAfter == 0) {
-                minDate = new Date(new Date().toDateString());
-                if (safariDateAfter > 0) {
-                    minDate.setDate(minDate.getDate() + safariDateAfter);
-                }
-            } else if (restrictFuture) {
-                maxDate = new Date();
+            
+            let existingDate = null;
+            if (el.value) {
+                existingDate = new Date(el.value);
+                existingDate.setHours(0, 0, 0, 0);
+            }
+            
+            // RULE 1: existing past date wins over everything
+            if (existingDate && existingDate < today) {
                 minDate = null;
             } else {
-                minDate = null;
+                // RULE 2: apply constraints only for new data
+                const startFrom = el.dataset.startFrom;
+                if (startFrom) {
+                    minDate = new Date(startFrom);
+                }
             }
+
             
             // NEW DEV 
             const startFrom = el.dataset.startFrom;

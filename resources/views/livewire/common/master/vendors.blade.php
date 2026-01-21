@@ -397,10 +397,8 @@
                                             </span>
                                         </td>
 
-                                        <td class="align-middle py-1">
-                                            <span class="">
-                                                {{ $item->contact }}
-                                            </span>
+                                         <td class="px-3 py-1">
+                                            <span class="fw-500 text-dark">@if($item->country && $item->contact) +{{$item->country->phonecode }}-@endif{{ $item->contact ?? 'NA' }}</span>
                                         </td>
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"

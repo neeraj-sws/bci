@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.common-app')]
-class AddQuotation extends Component
+class AddHotelQuotation extends Component
 {
     public $pageTitle, $showModal = false, $showItemModal = false;
     public $estimateSettings;
@@ -280,7 +280,7 @@ class AddQuotation extends Component
 
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
 
-        return view('livewire.common.quotations.quotation-add');
+        return view('livewire.common.quotations.hotel-quotation-add');
     }
     public function removeItem($index)
     {
