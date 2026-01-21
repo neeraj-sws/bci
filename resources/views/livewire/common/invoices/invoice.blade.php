@@ -1,4 +1,4 @@
-<div class="container" style="max-width: 1400px; margin: 0 auto;">
+<div class="mx-5 mt-sm-0 mt-3">
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600">{{ $pageTitle }} </h6>
@@ -82,6 +82,9 @@
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">{{ $pageTitle }} #
                                 </th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Quotation #</th>
+                                <th width="20%" class="text-start" style="padding: 12px 16px; font-weight: 600; color: #374151;">
+                                    Start/End Date
+                                </th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Tourist</th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Status</th>
                                 <th style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Amount
@@ -115,6 +118,13 @@
                                        <a href="{{ route('common.view-quotation', $item->quotation->uuid) }}"
                                             class="fw-500 text-primary">
                                             {{ $item->quotation->quotation_no ?? 'NA' }}
+                                        </a>
+                                    </td>
+                                    <td class="p-3">
+                                        <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
+                                            {{ \Carbon\Carbon::parse($item->start_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
+                                            -
+                                            {{ \Carbon\Carbon::parse($item->end_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
                                         </a>
                                     </td>
                                    

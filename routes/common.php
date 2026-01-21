@@ -73,6 +73,7 @@ use App\Livewire\Common\Tours\TourForm;
 use App\Livewire\Common\ProformaInvoice\AddProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoiceView;
+use App\Livewire\Common\Quotations\AddHotelQuotation;
 use App\Livewire\Common\Tours\TourList;
 use App\Livewire\Common\TripMaster\Archive;
 use App\Livewire\Common\TripMaster\Trip;
@@ -252,7 +253,14 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/archive', Archive::class)->name('trip-archive');
         Route::get('/view/{id}', View::class)->name('trip-view');
     });
-
+    // HOTEl QUOTATIONS
+    Route::prefix('hotel-quotations')->group(function () {
+        Route::get('/', Quotation::class)->name('hotel-quotation');
+        Route::get('/{lead_id?}/create', AddHotelQuotation::class)->name('add-hotel-quotation');
+        Route::get('/edit/{estimate}', AddHotelQuotation::class)->name('edit-hotel-quotation');
+        Route::get('/view/{id}', QuotationView::class)->name('view-hotel-quotation');
+        Route::get('/{revised_id}/revised', AddHotelQuotation::class)->name('revised-hotel-quotation');
+    });
     // Logout
     Route::get('/logout', [LoginComponent::class, 'logout'])->name('logout');
 });

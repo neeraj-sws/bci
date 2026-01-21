@@ -323,7 +323,14 @@ public function messages()
                     $rawHeaders = array_values($cells);
                     continue;
                 }
+                // NEW DEV 
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
 
+                $cells = [];
+                foreach ($cellIterator as $cell) {
+                    $cells[] = trim((string)$cell->getFormattedValue());
+                }
                 $rowAssoc = array_combine(
                     $rawHeaders,
                     array_pad(array_slice($cells, 0, count($rawHeaders)), count($rawHeaders), '')
