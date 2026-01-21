@@ -1,4 +1,4 @@
-<div class="container" style="max-width: 1400px; margin: 0 auto;">
+<div class="mx-5 mt-sm-0 mt-3">
     <style>
         .dropdown-toggle::after {
             display: none;
@@ -131,7 +131,7 @@
                             <tr>
                                 <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#
                                 </th>
-                                <th width="13%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
+                                <th width="10%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
                                 </th>
                                 <th width="17%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
                                     {{ $pageTitle }} #
@@ -139,10 +139,11 @@
                                 <th width="7%" style="padding: 12px 16px; font-weight: 600; color: #374151;">Lead
                                     #</th>
 
-                                <th width="20%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
-                                    Tourist</th>
                                 <th width="10%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
-                                    Quotation by</th>
+                                    Tourist</th>
+                                <th width="15%" class="text-start" style="padding: 12px 16px; font-weight: 600; color: #374151;">
+                                    Start/End Date
+                                </th>
                                 <th width="12%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
                                     Status</th>
                                 <th width="15%"
@@ -174,7 +175,6 @@
                                     <td class="p-3">
                                         <a href="{{ $estimateRoute }}" class="text-dark">
                                             {{ \Carbon\Carbon::parse($item->quotation_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
-                                            {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }}
                                         </a>
                                     </td>
                                     <td class="p-3">
@@ -196,20 +196,12 @@
                                             {{ $item?->tourist?->primary_contact ?? 'NA' }}
                                         </a>
                                     </td>
-                                    <td>
-                                        <h2 class="d-flex align-items-center">
-                                            @php
-                                                $roleName = $item->user
-                                                    ? $item->user->getRoleNames()->first()
-                                                    : 'Admin';
-                                                $userName = $item->user ? $item->user->name : 'Admin';
-                                            @endphp
-                                            <a href="javascript:void(0);"
-                                                class="d-flex flex-column fs-14 fw-medium d-flex text-capitalize">{{ $userName }}<span
-                                                    class="text-capitalize text-body d-flex mt-1 fs-13 fw-normal">{{ $roleName }}
-                                                </span>
-                                            </a>
-                                        </h2>
+                                    <td class="p-3">
+                                        <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
+                                            {{ \Carbon\Carbon::parse($item->start_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
+                                            -
+                                            {{ \Carbon\Carbon::parse($item->end_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
+                                        </a>
                                     </td>
                                     <td class="p-3">
                                         @php

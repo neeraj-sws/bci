@@ -63,6 +63,12 @@
         select2Initialize()
     });
     
+    // NEW DEV
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            document.querySelector('.select2-search__field')?.focus();
+        }, 0);
+    });
     
     
 </script>
