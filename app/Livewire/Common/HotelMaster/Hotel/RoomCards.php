@@ -48,7 +48,7 @@ class RoomCards extends Component
         return $room->peakDates
             ->filter(fn($peak) => Carbon::parse($peak->end_date)->gte(now()))
             ->sortBy('start_date')
-            ->take(2);
+            ->take(1);
     }
 
     public function render()

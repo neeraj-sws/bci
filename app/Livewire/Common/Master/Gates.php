@@ -18,7 +18,7 @@ class Gates extends Component
     public $name, $gypsy_charge, $guide_fee, $weekday_permit, $weekend_permit, $search = '';
     public $isEditing = false;
     public $isadd = false;
-    public $pageTitle = 'Gates';
+    public $pageTitle = 'Safari Gates';
     public $sortBy = 'name';
     public $sortDirection = 'asc';
 
