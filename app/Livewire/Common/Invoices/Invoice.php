@@ -15,9 +15,10 @@ class Invoice extends Component
     public $pageTitle;
     public $search = '';
     public $invoiceSettings;
-
     public $statusFilter = null;
     public $startdate, $enddate;
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public function mount()
     {
@@ -61,7 +62,7 @@ class Invoice extends Component
             $query->whereDate('invoice_date', '<=', $this->enddate);
         }
 
-        $items = $query->orderBy('updated_at', 'desc')->paginate(10);
+        $items = $query->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
 
         $counts = [
             'draft' => Model::where('status', 0)->count(),
@@ -70,5 +71,20 @@ class Invoice extends Component
         ];
 
         return view('livewire.common.invoices.invoice', compact('items', 'counts'));
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

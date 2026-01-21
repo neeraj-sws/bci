@@ -103,8 +103,18 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Tour Name</th>
-                                    <th>Status</th>
+                                    <th wire:click="shortby('name')" style="cursor: pointer;">
+                                        Tour Name
+                                        @if($sortBy === 'name')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('status')" style="cursor: pointer;">
+                                        Status
+                                        @if($sortBy === 'status')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th class="width80">Actions</th>
                                 </tr>
                             </thead>

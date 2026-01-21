@@ -140,8 +140,18 @@
                             <thead>
                                 <tr>
                                     <th class="width60">S.no</th>
-                                    <th>Zone Name</th>
-                                    <th>Park Name</th>
+                                    <th wire:click="shortby('name')" style="cursor: pointer;">
+                                        Zone Name
+                                        @if($sortBy === 'name')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('park_id')" style="cursor: pointer;">
+                                        Park Name
+                                        @if($sortBy === 'park_id')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Nearest Airport/Railway/City </th>
                                     <th class="width60">Action</th>
                                 </tr>

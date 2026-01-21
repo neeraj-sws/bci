@@ -33,14 +33,54 @@
                     <thead class="lightgradient">
                         <tr>
                             <th class="tableheadingcolor px-3 py-2">#</th>
-                            <th class="tableheadingcolor px-3 py-2">Park</th>
-                            <th class="tableheadingcolor px-3 py-2">Zone</th>
-                            <th class="tableheadingcolor px-3 py-2">Gate Name</th>
-                            <th class="tableheadingcolor px-3 py-2">Guide Fee</th>
-                            <th class="tableheadingcolor px-3 py-2">Weekday Permit</th>
-                            <th class="tableheadingcolor px-3 py-2">Weekend Permit</th>
-                            <th class="tableheadingcolor px-3 py-2">Weekday Cost </th>
-                            <th class="tableheadingcolor px-3 py-2">Weekend Cost </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('park_id')" style="cursor: pointer;">
+                                Park
+                                @if($sortBy === 'park_id')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('zone_id')" style="cursor: pointer;">
+                                Zone
+                                @if($sortBy === 'zone_id')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('name')" style="cursor: pointer;">
+                                Gate Name
+                                @if($sortBy === 'name')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('guide_fee')" style="cursor: pointer;">
+                                Guide Fee
+                                @if($sortBy === 'guide_fee')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('weekday_permit')" style="cursor: pointer;">
+                                Weekday Permit
+                                @if($sortBy === 'weekday_permit')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('weekend_permit')" style="cursor: pointer;">
+                                Weekend Permit
+                                @if($sortBy === 'weekend_permit')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('total_week_day')" style="cursor: pointer;">
+                                Weekday Cost
+                                @if($sortBy === 'total_week_day')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('total_week_end')" style="cursor: pointer;">
+                                Weekend Cost
+                                @if($sortBy === 'total_week_end')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
                             <th class="tableheadingcolor px-3 py-2">Night Safari Cost</th>
                             <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
                         </tr>

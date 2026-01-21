@@ -173,7 +173,7 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $items->firstItem() + $index }}</td>
                                         <td>{{ $item->hotel->name ?? '-' }}</td>
                                         <td>{{ $item->free_child_age }} </td>
                                         <td>₹{{ number_format($item->child_with_bed_rate, 2) }}</td>
@@ -201,17 +201,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                         <x-pagination :paginator="$items" />
                     </div>
-
-                    @if ($items->hasPages())
-                        <div class="d-flex justify-content-between mt-3">
-                            <small class="text-muted">
-                                Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of
-                                {{ $items->total() }}
-                            </small>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    @endif
                 </div>
 
             </div>

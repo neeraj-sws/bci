@@ -27,6 +27,8 @@ class PeakDates extends Component
     public $search = '';
     public $isEditing = false;
     public $pageTitle = 'Peak Dates';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $hotels = [];
     public $show_notes = false, $notes;
@@ -87,7 +89,7 @@ class PeakDates extends Component
     {
         $items = PeackDate::with('hotel')
             ->where('title', 'like', "%{$this->search}%")
-            ->orderByDesc('created_at')
+           ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view('livewire.common.hotel-master.peak-dates', compact('items'));
@@ -327,5 +329,15 @@ class PeakDates extends Component
         $this->roomRatesData = array_values(array_filter($this->roomRatesData, function ($item) {
             return in_array($item['ocupancy_id'], $this->selected_occupancies);
         }));
+    }
+
+    public function sortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 }

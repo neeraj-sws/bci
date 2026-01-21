@@ -64,17 +64,46 @@
                     </div>
 
                     @if ($room->occupancies && $room->occupancies->count() > 0)
-                        <div class="d-flex flex-wrap gap-2 mt-2">
-                            @foreach ($room->occupancies as $occ)
-                                <div
-                                    style="background: #F0FDF4; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
-                                    <span
-                                        style="font-size: 11px; color: #166534; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
-                                    <span class="crm-success"
-                                        style="font-size: 13px; font-weight: 700;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
-                                </div>
-                            @endforeach
+                        <!-- Regular Rates -->
+                        <div class="mt-2">
+                            <small style="font-size: 10px; color: #6B7280; font-weight: 600; display: block; margin-bottom: 4px;">REGULAR RATES</small>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach ($room->occupancies as $occ)
+                                    <div
+                                        style="background: #F0FDF4; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                                        <span
+                                            style="font-size: 11px; color: #166534; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
+                                        <span class="crm-success"
+                                            style="font-size: 13px; font-weight: 700;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
+
+                        <!-- Peak Date Rates -->
+                        @if ($upcomingPeaks && $upcomingPeaks->count() > 0)
+                            @foreach ($upcomingPeaks as $peak)
+                                @if ($peak->occupancies && $peak->occupancies->count() > 0)
+                                    <div class="mt-3">
+                                        <small style="font-size: 10px; color: #DC2626; font-weight: 600; display: block; margin-bottom: 4px;">
+                                            <i class="bx bx-calendar-star" style="font-size: 11px;"></i>
+                                            {{ strtoupper($peak->title) }} ({{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($peak->end_date)->format('d M Y') }})
+                                        </small>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach ($peak->occupancies as $occ)
+                                                <div
+                                                    style="background: #FEF2F2; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #FECACA;">
+                                                    <span
+                                                        style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
+                                                    <span
+                                                        style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
                     @else
                         <p class="mb-0 mt-2" style="color: #9CA3AF; font-size: 12px;">No pricing configured</p>
                     @endif
@@ -154,21 +183,30 @@
                                     <i class="bx bx-calendar-star me-1"
                                         style="font-size: 14px; color: #DC2626;"></i>Peak Periods
                                 </h6>
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="d-flex flex-column gap-3">
                                     @foreach ($room->peakDates as $peak)
-                                        <div
-                                            style="background: #FEF2F2; padding: 6px 10px; border-radius: 6px; border-left: 2px solid #DC2626;">
-                                            <div class="d-flex align-items-center gap-1">
-                                                <span
-                                                    style="font-size: 11px; color: #DC2626; font-weight: 600;">{{ $peak->title }}</span>
+                                        <div style="background: #FEF2F2; padding: 12px; border-radius: 8px; border-left: 3px solid #DC2626;">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <span style="font-size: 12px; color: #DC2626; font-weight: 600;">{{ $peak->title }}</span>
                                                 @if ($peak->is_new_year)
-                                                    <i class="bx bx-party" style="font-size: 12px; color: #DC2626;"></i>
+                                                    <i class="bx bx-party" style="font-size: 13px; color: #DC2626;"></i>
                                                 @endif
+                                                <span style="font-size: 10px; color: #991B1B;">
+                                                    {{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($peak->end_date)->format('d M Y') }}
+                                                </span>
                                             </div>
-                                            <div style="font-size: 10px; color: #991B1B;">
-                                                {{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} -
-                                                {{ \Carbon\Carbon::parse($peak->end_date)->format('d M') }}
-                                            </div>
+                                            @if ($peak->occupancies && $peak->occupancies->count() > 0)
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    @foreach ($peak->occupancies as $occ)
+                                                        <div style="background: white; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #FECACA;">
+                                                            <span style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
+                                                            <span style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <small style="font-size: 10px; color: #991B1B;">No rates configured</small>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>

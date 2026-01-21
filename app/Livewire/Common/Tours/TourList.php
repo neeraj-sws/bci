@@ -17,6 +17,8 @@ class TourList extends Component
     public $search = '';
     public $tab = 'all';
     public $pageTitle = 'Tour Master';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $model = Model::class;
     public $view = 'livewire.common.tours.tour-list';
@@ -42,7 +44,7 @@ class TourList extends Component
         } else if ($this->tab === 'inactive') {
             $query->where('status', '0');
         }
-        $items = $query->orderBy('updated_at', 'desc')->paginate(10);
+        $items = $query->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
         return view($this->view, compact('items', 'inactiveCount', 'activeCount', 'allCount'));
     }
 
@@ -88,5 +90,20 @@ class TourList extends Component
     public function setTab($tab)
     {
         $this->tab = $tab;
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

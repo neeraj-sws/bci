@@ -75,7 +75,12 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Tag Name</th>
+                                    <th wire:click="sortby('name')" style="cursor: pointer;" >Tag Name
+                                        @if ($sortBy === 'name')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
                                 </tr>
@@ -83,7 +88,7 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td class="align-middle py-1">{{ $index + 1 }}</td>
+                                        <td class="align-middle py-1">{{ $items->firstItem() + $index}}</td>
                                         <td class="align-middle py-1">
                                             <span class="">
                                                 {{ $item->name }}
@@ -111,19 +116,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$items" />
                     </div>
-                 <!-- Pagination -->
-        @if ($items->hasPages())
-            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                <div class="text-muted small">
-                    Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }}
-                    entries
-                </div>
-                <div>
-                    {{ $items->links('pagination::bootstrap-5') }}
-                </div>
-            </div>
-        @endif
                 </div>
             </div>
         </div>

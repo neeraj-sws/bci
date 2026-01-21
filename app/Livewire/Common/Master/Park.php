@@ -16,6 +16,8 @@ class Park extends Component
     public $name, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Parks';
+    public $sortBy = 'name';
+    public $sortDirection = 'asc';
 
     public $model = Model::class;
     public $view = 'livewire.common.master.parks';
@@ -36,7 +38,7 @@ class Park extends Component
 
     public function render()
     {
-        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy('name', 'asc')
+        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view($this->view, compact('items'));
@@ -138,5 +140,20 @@ class Park extends Component
         $habitat->save();
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

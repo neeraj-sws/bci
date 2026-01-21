@@ -189,7 +189,7 @@
                                          @can('gates list')
                                              <li class="mt-1">
                                                  <a href="{{ route('common.gates') }}" class="text-white ps-4">
-                                                     <i class="lni lni-grid me-2"></i>Gates
+                                                     <i class="lni lni-grid me-2"></i>Safari Gates
                                                  </a>
                                              </li>
                                          @endcan

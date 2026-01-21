@@ -126,8 +126,18 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Category Name</th>
-                                    <th>Status</th>
+                                    <th wire:click="sortby('name')" style="cursor: pointer;" >Category Name
+                                         @if ($sortBy === 'name')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="sortby('status')" style="cursor: pointer;" >Status
+                                         @if ($sortBy === 'status')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th class="width80">Actions</th>
                                 </tr>
                             </thead>

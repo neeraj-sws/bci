@@ -14,6 +14,8 @@ class TouristList extends Component
     use WithFileUploads;
 
     public $pageTitle = 'Tourists';
+    public $sortBy = 'created_at';
+    public $sortDirection = 'asc';
     public $search = '';
     public $route;
     public $itemId;
@@ -45,7 +47,7 @@ class TouristList extends Component
             $query->where('primary_contact', 'like', "%{$this->search}%")
                 ->orWhereNull('primary_contact');
         })
-            ->orderBy('updated_at', 'desc')
+            ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
 
         return view('livewire.common.tourists.tourist-list', compact('items'));
@@ -188,5 +190,20 @@ class TouristList extends Component
 
 
         return SettingHelper::ExportHelper('tourists', $headings, $data);
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

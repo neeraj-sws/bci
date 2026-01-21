@@ -68,10 +68,10 @@
                                         <div class="d-flex flex-wrap gap-2">
                                             @foreach ($peak->occupancies as $occ)
                                                 <div
-                                                    style="background: #F0FDF4; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                                                    style="background: #FEF2F2; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
                                                     <span
-                                                        style="font-size: 11px; color: #166534; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
-                                                    <span class="crm-success"
+                                                        style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
+                                                    <span class="crm-danger"
                                                         style="font-size: 13px; font-weight: 700;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
                                                 </div>
                                             @endforeach

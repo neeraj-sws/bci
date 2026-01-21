@@ -158,9 +158,19 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Sub Category Name</th>
+                                    <th wire:click="sortby('name')" style="cursor: pointer;">Sub Category Name
+                                        @if ($sortBy === 'name')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Category Name</th>
-                                    <th>Status</th>
+                                    <th wire:click="sortby('status')" style="cursor: pointer;">Status
+                                        @if ($sortBy === 'status')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th class="width80">Actions</th>
                                 </tr>
                             </thead>
@@ -170,7 +180,7 @@
                                         <td class="align-middle py-1">
                                             {{ $items->firstItem() + $index }}
                                         </td>
-                                         <td class="align-middle py-1">
+                                        <td class="align-middle py-1">
                                             <span class="">
                                                 {{ $item->name }}
                                             </span>
@@ -204,7 +214,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                         <x-pagination :paginator="$items" />
+                        <x-pagination :paginator="$items" />
                     </div>
                 </div>
             </div>

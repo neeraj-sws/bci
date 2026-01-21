@@ -10,7 +10,7 @@
                 </ol>
             </nav>
         </div>
-         <a href="{{ route($route . '.tourist-create') }}" class="btn bluegradientbtn">
+        <a href="{{ route($route . '.tourist-create') }}" class="btn bluegradientbtn">
             <i class="bx bx-plus me-1"></i> Add New Tourist
         </a>
     </div>
@@ -24,8 +24,8 @@
                     <i class="bx bx-search"></i>
                 </span>
             </div>
-            
-                  <div class="d-flex gap-2">
+
+            <div class="d-flex gap-2">
 
                 <!-- Import Button -->
                 <button title="Import"
@@ -59,7 +59,7 @@
                 </button>
 
             </div>
-            
+
         </div>
 
         <div class="card-body p-0">
@@ -67,27 +67,53 @@
                 <table class="table table-hover align-middle mb-0 tableminwidth">
                     <thead class="lightgradient">
                         <tr>
-                            <th class="tableheadingcolor px-3 py-2">Name</th>
-                            <th class="tableheadingcolor px-3 py-2">Contact</th>
-                            <th class="tableheadingcolor px-3 py-2">Email Id</th>
-                             <th class="tableheadingcolor px-3 py-2">Country</th>
-                            <th class="tableheadingcolor px-3 py-2">Birthday</th>
+                            <th class="tableheadingcolor px-3 py-2">#</th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('primary_contact')"
+                                style="cursor: pointer;">Name
+                                @if ($sortBy === 'primary_contact')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('contact_phone')"
+                                style="cursor: pointer;">Contact
+                                @if ($sortBy === 'contact_phone')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('contact_email')"
+                                style="cursor: pointer;">Email Id
+                                @if ($sortBy === 'contact_email')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
+                            <th class="tableheadingcolor px-3 py-2">Country</th>
+                            <th class="tableheadingcolor px-3 py-2" wire:click="shortby('birthday')"
+                                style="cursor: pointer;">Birthday
+                                @if ($sortBy === 'birthday')
+                                    <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                @endif
+                            </th>
                             <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($items as $index => $item)
                             <tr class="table-bottom-border transition2" wire:key="{{ $item->id }}">
+                                <td class="px-3 py-1 darkgreytext">{{ $items->firstItem() + $index }}</td>
                                 <td class="px-3 py-1">
                                     <span class="text-dark">{{ $item->primary_contact }}</span>
                                 </td>
                                 <td class="px-3 py-1">
-                                    <span class="fw-500 text-dark">@if($item->country && $item->contact_phone) +{{$item->country->phonecode }}-@endif{{ $item->contact_phone ?? 'NA' }}</span>
+                                    <span class="fw-500 text-dark">
+                                        @if ($item->country && $item->contact_phone)
+                                            +{{ $item->country->phonecode }}-
+                                        @endif{{ $item->contact_phone ?? 'NA' }}
+                                    </span>
                                 </td>
                                 <td class="px-3 py-1">
                                     {{ $item->contact_email ?? 'NA' }}
                                 </td>
-                                 <td class="px-3 py-1">
+                                <td class="px-3 py-1">
                                     {{ $item->country->name ?? 'NA' }}
                                 </td>
                                 <td class="px-3 py-1">
@@ -125,13 +151,14 @@
             </div>
 
             <!-- Pagination -->
-           @if ($items->hasPages() || $items->total() > 0)
-                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
+            @if ($items->hasPages() || $items->total() > 0)
+                <div
+                    class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
                     <div class="d-flex align-items-center">
                         <label class="me-2 mb-0 small text-muted">Show</label>
                         <select wire:model.live="perPage" class="form-select form-select-sm w-auto">
                             <option value="10">10</option>
-                             <option value="15">15</option>
+                            <option value="15">15</option>
                             <option value="50">50</option>
                             <option value="50">100</option>
                             <option value="50">200</option>
@@ -145,9 +172,9 @@
             @endif
         </div>
     </div>
-    
-    
-        @if ($showModel)
+
+
+    @if ($showModel)
         <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-md">
                 <div class="modal-content radius12 shadow-sm">
@@ -158,16 +185,17 @@
                     </div>
 
                     <div class="modal-body">
-                 <p class="text-muted mb-4">
-    To import your data, please use our sample file as a template. 
-    If you don’t already have it, you can 
-    <a class="text-decoration-underline" href="{{ asset('uploads/sample-files/tourists.xls') }}" download>
-        download our sample file
-    </a> and review it. You can then use this template to create your own import file.
-</p>
+                        <p class="text-muted mb-4">
+                            To import your data, please use our sample file as a template.
+                            If you don’t already have it, you can
+                            <a class="text-decoration-underline"
+                                href="{{ asset('uploads/sample-files/tourists.xls') }}" download>
+                                download our sample file
+                            </a> and review it. You can then use this template to create your own import file.
+                        </p>
 
-                        
-    
+
+
                         <div>
                             <label class="form-label">Choose File (CSV or Excel)</label>
                             <input type="file" wire:model="import_file" class="form-control"
@@ -198,5 +226,5 @@
             </div>
         </div>
     @endif
-    
+
 </div>
