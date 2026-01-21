@@ -28,6 +28,8 @@ class Vendors extends Component
     public $cities = [], $vehicles;
     public $isEditing = false;
     public $pageTitle = 'Vendors';
+    public $sortBy = 'name';
+    public $sortDirection = 'asc';
 
     public $model = Model::class;
     public $view = 'livewire.common.master.vendors';
@@ -139,7 +141,7 @@ class Vendors extends Component
             )
             // ->where('soft_delete', 0)
             ->with(['vehicles', 'type'])
-            ->orderBy('name', 'asc')
+            ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view($this->view, compact('items'));
@@ -474,5 +476,21 @@ class Vendors extends Component
     public function clearFilters()
     {
         $this->reset(['type', 'vehicle', 'location', 'search']);
+        $this->resetPage();
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

@@ -171,8 +171,13 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th width="60">#</th>
+                                    <th  wire:click="sortby('title')" style="cursor: pointer;">Category Title
+                                        @if ($sortBy === 'title')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Hotel</th>
-                                    <th>Category Title</th>
                                     <th>Rates</th>
                                     <th>Status</th>
                                     <th width="80">Actions</th>
@@ -181,9 +186,9 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item?->rommtCategoryHotel?->name }}</td>
+                                        <td>{{ $items->firstItem() + $index }}</td>
                                         <td>{{ $item->title }}</td>
+                                        <td>{{ $item?->rommtCategoryHotel?->name }}</td>
                                         <td>
                                             @if($item->occupancies && $item->occupancies->count() > 0)
                                                 <small>
@@ -222,18 +227,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                         <x-pagination :paginator="$items" />
                     </div>
-
-                    @if ($items->hasPages())
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted">
-                                Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of
-                                {{ $items->total() }}
-                            </small>
-                            {{ $items->links('livewire::bootstrap') }}
-                        </div>
-                    @endif
-
                 </div>
             </div>
         </div>

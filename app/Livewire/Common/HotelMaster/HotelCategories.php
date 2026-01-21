@@ -16,6 +16,8 @@ class HotelCategories extends Component
     public $title, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Hotel Categories';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $model = Model::class;
     public $view = 'livewire.common.hotel-master.hotel-categories';
@@ -36,8 +38,8 @@ class HotelCategories extends Component
 
     public function render()
     {
-        $items = $this->model::where('title', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
-            ->latest()->paginate(10);
+        $items = $this->model::where('title', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate(10);
 
         return view($this->view, compact('items'));
     }
@@ -132,5 +134,20 @@ class HotelCategories extends Component
         $habitat->save();
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

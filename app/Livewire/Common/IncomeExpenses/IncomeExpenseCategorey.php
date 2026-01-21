@@ -16,7 +16,8 @@ class IncomeExpenseCategorey extends Component
     public $name, $type, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Income/Expense Category';
-
+    public $sortBy = 'name';
+    public $sortDirection = 'asc';
     public $model = Model::class;
     public $view = 'livewire.common.income-expenses.income-expenses-categorey';
 
@@ -47,7 +48,7 @@ class IncomeExpenseCategorey extends Component
             $query->where('type', 2);
         }
         $items = $query->where('name', 'like', "%{$this->search}%")
-            ->orderBy('name', 'asc')
+            ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         $expensecount = $this->model::where('type', '1')->count();
@@ -163,5 +164,20 @@ class IncomeExpenseCategorey extends Component
     public function setTab($tab)
     {
         $this->tab = $tab;
+    }
+
+    public function sortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

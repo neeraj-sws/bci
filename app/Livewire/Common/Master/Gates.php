@@ -19,6 +19,8 @@ class Gates extends Component
     public $isEditing = false;
     public $isadd = false;
     public $pageTitle = 'Gates';
+    public $sortBy = 'name';
+    public $sortDirection = 'asc';
 
     public $model = Model::class;
 
@@ -59,10 +61,7 @@ class Gates extends Component
     {
         $items = $this->model::query()
             ->where('name', 'like', "%{$this->search}%")
-            ->orderBy(
-                Parks::select('name')->whereColumn('parks.park_id', 'park_gates.park_id'),
-                'asc'
-            )
+            ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view($this->view, compact('items'));
@@ -242,5 +241,20 @@ class Gates extends Component
     {
         $this->updatedWeekdayPermit();
         $this->updatedWeekendPermit();
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

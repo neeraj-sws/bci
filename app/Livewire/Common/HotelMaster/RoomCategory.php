@@ -26,6 +26,8 @@ class RoomCategory extends Component
     public $search = '';
     public $isEditing = false;
     public $pageTitle = 'Room Categories';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $hotels = [], $rateTypes = [], $rate_type;
 
@@ -72,7 +74,7 @@ class RoomCategory extends Component
     public function render()
     {
         $items = Model::with(['rommtCategoryHotel'])->where('title', 'like', "%{$this->search}%")
-            ->orderBy('updated_at', 'desc')
+           ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view('livewire.common.hotel-master.room-category', compact('items'));
@@ -229,5 +231,15 @@ class RoomCategory extends Component
         $this->roomRatesData = array_values(array_filter($this->roomRatesData, function ($item) {
             return in_array($item['ocupancy_id'], $this->selected_occupancies);
         }));
+    }
+
+    public function sortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 }

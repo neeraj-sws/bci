@@ -51,12 +51,42 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Hotel Name</th>
-                                    <th>Hotel Type</th>
-                                    <th>Hotel Category</th>
-                                    <th>Hotel Rate Type</th>
+                                    <th wire:click="shortby('name')" style="cursor: pointer;">
+                                        Hotel Name
+                                        @if ($sortBy === 'name')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('hotel_type')" style="cursor:pointer">
+                                        Hotel Type
+                                        @if ($sortBy === 'hotel_type')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('hotel_category')" style="cursor:pointer">
+                                        Hotel Category
+                                        @if ($sortBy === 'hotel_category')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('rate_type')" style="cursor:pointer">
+                                        Hotel Rate Type
+                                        @if ($sortBy === 'rate_type')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Hotel Meal Type</th>
-                                    <th>Status</th>
+                                    <th wire:click="shortby('status')" style="cursor:pointer">
+                                        Status
+                                        @if ($sortBy === 'status')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th class="width80">Actions</th>
                                 </tr>
                             </thead>
@@ -64,7 +94,7 @@
                             <tbody style="overflow:visible!important;">
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td class="align-middle py-1">{{ $index + 1 }}</td>
+                                        <td class="align-middle py-1"> {{ $items->firstItem() + $index }}</td>
                                         <td class="align-middle py-1">{{ $item->name }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelType->title }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelCategory->title }}</td>
@@ -106,8 +136,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <x-pagination :paginator="$items" />
                     </div>
-                    {{ $items->links() }}
                 </div>
             </div>
         </div>

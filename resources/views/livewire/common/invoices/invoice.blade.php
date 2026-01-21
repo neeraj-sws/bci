@@ -78,13 +78,31 @@
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
                                 <th style="padding:12px 15px; font-weight: 600; color: #374151;">#</th>
-                                <th style="padding: 12px 15px; font-weight: 600; color: #374151;">Date</th>
-                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;">{{ $pageTitle }} #
+                                <th style="padding: 12px 15px; font-weight: 600; color: #374151;" wire:click="shortby('invoice_date')" style="cursor: pointer;">
+                                    Date
+                                    @if($sortBy === 'invoice_date')
+                                        <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                    @endif
+                                </th>
+                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('invoice_no')" style="cursor: pointer;">
+                                    {{ $pageTitle }} #
+                                    @if($sortBy === 'invoice_no')
+                                        <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                    @endif
                                 </th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Quotation #</th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Tourist</th>
-                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Status</th>
-                                <th style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;">Amount
+                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('status')" style="cursor: pointer;">
+                                    Status
+                                    @if($sortBy === 'status')
+                                        <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                    @endif
+                                </th>
+                                <th style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('amount')" style="cursor: pointer;">
+                                    Amount
+                                    @if($sortBy === 'amount')
+                                        <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                    @endif
                                 </th>
                             </tr>
                         </thead>
@@ -117,7 +135,7 @@
                                             {{ $item->quotation->quotation_no ?? 'NA' }}
                                         </a>
                                     </td>
-                                   
+
                                     <td class="p-3">
                                         <a href="{{ $invoiceRoute }}" class="fw-500 text-dark">
                                             {{ $item->tourist->primary_contact ?? 'NA' }}
@@ -194,7 +212,7 @@
 
 
 
-        
+
     </div>
 
 </div>

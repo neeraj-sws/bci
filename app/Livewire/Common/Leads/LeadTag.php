@@ -16,6 +16,8 @@ class LeadTag extends Component
     public $name, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Lead Tag';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $model = Model::class;
     public $view = 'livewire.common.leads.lead-tag';
@@ -36,8 +38,8 @@ class LeadTag extends Component
 
     public function render()
     {
-        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy('updated_at', 'desc')
-            ->latest()->paginate(10);
+        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate(10);
 
         return view($this->view, compact('items'));
     }
@@ -138,5 +140,20 @@ class LeadTag extends Component
         $habitat->save();
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
+    }
+
+    public function sortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+     public function updating()
+    {
+        $this->resetPage();
     }
 }

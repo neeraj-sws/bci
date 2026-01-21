@@ -17,12 +17,13 @@ class Quotation extends Component
     public $pageTitle;
     public $search = '';
     public $estimateSettings;
-
     public $statusFilter = null;
     public $startdate, $enddate;
     public $route;
     public $showModal = false, $leads;
     public $companies, $company_id;
+    public $sortBy = 'created_at';
+    public $sortDirection = 'desc';
 
     public function mount()
     {
@@ -65,7 +66,7 @@ class Quotation extends Component
         if ($this->search !== '') {
             $query->where('quotation_no', 'like', "%{$this->search}%");
         }
-        
+
         if ($this->company_id) {
             $query->where('company_id', $this->company_id);
         }
@@ -79,7 +80,7 @@ class Quotation extends Component
             $query->whereDate('quotation_date', '<=', $this->enddate);
         }
 
-        $items = $query->orderBy('created_at', 'desc')->paginate(10);
+        $items = $query->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
 
         $counts = [
             'draft' => Model::where('status', 0)->count(),
@@ -91,14 +92,29 @@ class Quotation extends Component
 
         return view('livewire.common.quotations.quotation', compact('items', 'counts'));
     }
-    
+
       public function add()
     {
         $this->showModal = true;
     }
-    
+
         public function convertEstimate($uuid)
     {
         $this->redirect(route($this->route . '.add-quotation', ['lead_id' => $uuid]));
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

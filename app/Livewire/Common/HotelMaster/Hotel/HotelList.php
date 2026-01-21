@@ -17,6 +17,8 @@ class HotelList extends Component
     public $search = '';
     public $tab = 'all';
     public $pageTitle = 'Hotel List';
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
 
     public $model = Model::class;
     public $view = 'livewire.common.hotel-master.hotel.hotel-list';
@@ -30,19 +32,40 @@ class HotelList extends Component
 
     public function render()
     {
-        $query = $this->model::query()->with(['hotelType','hotelCategory','hotelRateType','hotelMealType.mealType'])
-            ->where('name', 'like', "%{$this->search}%");
+        $query = $this->model::query()
+            ->leftJoin('hotel_types', 'hotels.hotel_type_id', '=', 'hotel_types.hotel_type_id')
+            ->leftJoin('hotel_categories', 'hotels.hotel_category_id', '=', 'hotel_categories.hotel_category_id')
+            ->leftJoin('rate_types', 'hotels.rate_type_id', '=', 'rate_types.rate_type_id')
+            ->with(['hotelType', 'hotelCategory', 'hotelRateType', 'hotelMealType.mealType'])
+            ->where('hotels.name', 'like', "%{$this->search}%");
 
-        $inactiveCount = $this->model::where('status', '0')->count();
-        $activeCount = $this->model::where('status', '1')->count();
-        $allCount = $this->model::count();
+        $sortable = [
+            'name'            => 'hotels.name',
+            'status'          => 'hotels.status',
+            'created_at'      => 'hotels.created_at',
+            'updated_at'      => 'hotels.updated_at',
+            'hotel_type'      => 'hotel_types.title',
+            'hotel_category'  => 'hotel_categories.title',
+            'rate_type'       => 'rate_types.title',
+        ];
+
+        $sortField = $sortable[$this->sortBy] ?? 'hotels.updated_at';
 
         if ($this->tab === 'active') {
-            $query->where('status', '1');
-        } else if ($this->tab === 'inactive') {
-            $query->where('status', '0');
+            $query->where('hotels.status', 1);
+        } elseif ($this->tab === 'inactive') {
+            $query->where('hotels.status', 0);
         }
-        $items = $query->orderBy('updated_at', 'desc')->paginate(10);
+
+        $items = $query
+            ->select('hotels.*')
+            ->orderBy($sortField, $this->sortDirection)
+            ->paginate(10);
+
+        $inactiveCount = $this->model::where('status', 0)->count();
+        $activeCount   = $this->model::where('status', 1)->count();
+        $allCount      = $this->model::count();
+
         return view($this->view, compact('items', 'inactiveCount', 'activeCount', 'allCount'));
     }
 
@@ -84,5 +107,23 @@ class HotelList extends Component
     public function setTab($tab)
     {
         $this->tab = $tab;
+    }
+
+    public function shortby($field)
+    {
+
+        $allowed = ['name', 'status', 'updated_at', 'created_at', 'hotel_type', 'hotel_category', 'rate_type'];
+        if (!in_array($field, $allowed)) return;
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }

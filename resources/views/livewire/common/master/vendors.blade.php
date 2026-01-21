@@ -366,9 +366,24 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
-                                    <th>Vendor Name</th>
-                                    <th>Primary Contact</th>
-                                    <th>Status</th>
+                                    <th wire:click="shortby('name')" style="cursor: pointer;">
+                                        Vendor Name
+                                        @if($sortBy === 'name')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('contact')" style="cursor: pointer;">
+                                        Primary Contact
+                                        @if($sortBy === 'contact')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('status')" style="cursor: pointer;">
+                                        Status
+                                        @if($sortBy === 'status')
+                                            <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th class="width80">Actions</th>
                                 </tr>
                             </thead>

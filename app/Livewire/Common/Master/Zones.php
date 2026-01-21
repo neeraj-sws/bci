@@ -18,6 +18,8 @@ class Zones extends Component
     public $nearest_airport, $nearest_railway, $total_cost;
     public $isEditing = false;
     public $pageTitle = 'Zones';
+    public $sortBy = 'name';
+    public $sortDirection = 'asc';
 
     public $model = Model::class;
     public $parks;
@@ -50,7 +52,7 @@ class Zones extends Component
 
     public function render()
     {
-        $items = $this->model::with('park')->where('name', 'like', "%{$this->search}%")->orderBy('name', 'asc')
+        $items = $this->model::with('park')->where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
         return view($this->view, compact('items'));
     }
@@ -171,5 +173,20 @@ class Zones extends Component
             'allowed_gates',
         ]);
         $this->resetValidation();
+    }
+
+    public function shortby($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    public function updating()
+    {
+        $this->resetPage();
     }
 }
