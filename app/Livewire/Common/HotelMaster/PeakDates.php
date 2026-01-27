@@ -82,7 +82,8 @@ class PeakDates extends Component
     public function mount()
     {
         $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
-        $this->occupances = Occupancy::where('status', 1)->pluck('title', 'occupancy_id')->toArray();
+        // Initially load all occupancies, will be filtered when room category is selected
+        $this->occupances = [];
     }
 
     public function render()
@@ -98,6 +99,33 @@ class PeakDates extends Component
     public function updatedHotelId($id)
     {
         $this->roomCategoys = RoomCategory::where('hotel_id', $id)->where('status', 1)->pluck('title', 'room_categoris_id')->toArray();
+        // Reset room category and occupancies when hotel changes
+        $this->room_category_id = null;
+        $this->occupances = [];
+        $this->selected_occupancies = [];
+        $this->roomRatesData = [];
+    }
+
+    public function updatedRoomCategoryId($roomCategoryId)
+    {
+        if ($roomCategoryId) {
+            // Get only occupancies that exist in the selected room category's occupancies
+            $roomCategory = RoomCategory::with('occupancies.occupancy')->find($roomCategoryId);
+            
+            if ($roomCategory && $roomCategory->occupancies->count() > 0) {
+                $this->occupances = $roomCategory->occupancies
+                    ->pluck('occupancy.title', 'occupancy.occupancy_id')
+                    ->toArray();
+            } else {
+                $this->occupances = [];
+            }
+        } else {
+            $this->occupances = [];
+        }
+        
+        // Reset selected occupancies and rates when room category changes
+        $this->selected_occupancies = [];
+        $this->roomRatesData = [];
     }
 
     public function store()
@@ -132,17 +160,37 @@ class PeakDates extends Component
         $this->end_date = $item->end_date;
         $this->is_new_year = $item->is_new_year;
         $this->status = $item->status;
+        $this->room_category_id = $item->room_category_id;
+        $this->notes = $item->notes;
+        
+        if ($this->notes) {
+            $this->show_notes = true;
+        }
+        
+        // Load room categories for the selected hotel
+        $this->roomCategoys = RoomCategory::where('hotel_id', $this->hotel_id)
+            ->where('status', 1)
+            ->pluck('title', 'room_categoris_id')
+            ->toArray();
+        
+        // Load occupancies for the selected room category
+        if ($this->room_category_id) {
+            $roomCategory = RoomCategory::with('occupancies.occupancy')->find($this->room_category_id);
+            
+            if ($roomCategory && $roomCategory->occupancies->count() > 0) {
+                $this->occupances = $roomCategory->occupancies
+                    ->pluck('occupancy.title', 'occupancy.occupancy_id')
+                    ->toArray();
+            }
+        }
+        
         $this->roomRatesData = $item->occupancies->map(fn($o) => [
             'ocupancy_id' => $o->occupancy_id,
             'rate'        => $o->rate,
             'weekend_rate' => $o->weekend_rate ?? 0,
         ])->toArray();
         $this->selected_occupancies = $item->occupancies->pluck('occupancy_id')->toArray();
-        $this->notes = $item->notes;
-        if ($this->notes) {
-            $this->show_notes = true;
-        }
-        $this->room_category_id = $item->room_category_id;
+        
         $this->isEditing = true;
     }
 

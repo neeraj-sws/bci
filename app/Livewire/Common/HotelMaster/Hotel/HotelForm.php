@@ -3,6 +3,8 @@
 namespace App\Livewire\Common\HotelMaster\Hotel;
 
 use App\Models\Chain;
+use App\Models\City;
+use App\Models\Country;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\Hotel;
@@ -12,6 +14,7 @@ use App\Models\HotelMealPlan;
 use App\Models\MarketingCompany;
 use App\Models\MealType;
 use App\Models\RateTypes;
+use App\Models\States;
 
 #[Layout('components.layouts.common-app')]
 class HotelForm extends Component
@@ -33,11 +36,11 @@ class HotelForm extends Component
     public $hotel_categories = [];
     public $rateTypes, $rate_type, $mealTypes, $meal_type = [];
     public $chainHotels = [];
-    public $marketedHotels = [];
+    public $marketedHotels = [], $countrys = [], $states = [], $citys = [];
     public $showModel = false;
     public $modalType = null;
     public $modalTitle;
-    public $newTitle;
+    public $newTitle,$country_id,$state,$city;
 
 
     protected function rules()
@@ -51,6 +54,9 @@ class HotelForm extends Component
             'location' => 'nullable|string|max:255',
             'status' => 'required|boolean',
             'rate_type' => 'nullable|exists:rate_types,rate_type_id',
+            'country_id' => 'required|exists:country,country_id',
+            'state' => 'required|exists:states,state_id',
+            'city' => 'required|exists:city,city_id',
         ];
     }
 
@@ -67,6 +73,8 @@ class HotelForm extends Component
         $this->hotel_categories = HotelCategories::where('status', 1)->get();
         $this->rateTypes = RateTypes::where('status', 1)->get();
         $this->mealTypes = MealType::where('status', 1)->get();
+        $this->countrys = Country::orderByRaw("CASE WHEN name = 'India' THEN 0 ELSE 1 END")
+            ->orderBy('name')->pluck('name', 'country_id')->toArray();
 
         if ($id) {
             $hotel = Hotel::findOrFail($id);
@@ -79,7 +87,11 @@ class HotelForm extends Component
             $this->hotel_category_id = $hotel->hotel_category_id;
             $this->parent_chain_id = $hotel->parent_chain_id;
             $this->marketing_company_id = $hotel->marketing_company_id;
-            $this->location = $hotel->location;
+            $this->country_id = $hotel->country_id;
+            $this->state = $hotel->state_id;
+            $this->city = $hotel->city_id;
+            $this->updatedCountryId($this->country_id);
+            $this->updatedState($this->state);
             $this->status = $hotel->status;
             $this->rate_type = $hotel->rate_type_id;
             $this->meal_type = HotelMealPlan::where('hotel_id', $hotel->id)
@@ -116,7 +128,7 @@ class HotelForm extends Component
         $this->validate();
 
         Hotel::findOrFail($this->hotelId)->update($this->payload());
-        HotelMealPlan::where('hotel_id',$this->hotelId)->delete();
+        HotelMealPlan::where('hotel_id', $this->hotelId)->delete();
         foreach ($this->meal_type as $mealTypeId) {
             HotelMealPlan::insert([
                 'hotel_id' => $this->hotelId,
@@ -160,7 +172,9 @@ class HotelForm extends Component
             'hotel_category_id' => $this->hotel_category_id,
             'parent_chain_id' => $this->parent_chain_id,
             'marketing_company_id' => $this->marketing_company_id,
-            'location' => $this->location,
+            'country_id' => $this->country_id,
+            'state_id' => $this->state,
+            'city_id' => $this->city,
             'status' => $this->status,
             'rate_type_id' => $this->rate_type,
         ];
@@ -217,6 +231,16 @@ class HotelForm extends Component
             'type' => 'success',
             'message' => 'Saved successfully'
         ]);
+    }
+
+    public function updatedCountryId($id)
+    {
+        $this->states = States::where('country_id', $id)->pluck('name', 'state_id')->toArray();
+    }
+
+    public function updatedState($id)
+    {
+        $this->citys = City::where('state_id', $id)->pluck('name', 'city_id')->toArray();
     }
 
 

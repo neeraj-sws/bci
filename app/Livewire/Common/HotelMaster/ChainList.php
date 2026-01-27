@@ -96,6 +96,18 @@ class ChainList extends Component
     {
         $this->itemId = $id;
 
+        // Check if chain is being used in hotels table
+        $hotelsCount = \App\Models\Hotel::where('parent_chain_id', $id)->count();
+        
+        if ($hotelsCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => 'Cannot Delete',
+                'message' => 'This chain is being used by ' . $hotelsCount . ' hotel(s). Please reassign them first.'
+            ]);
+            return;
+        }
+
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',
             'text' => 'This action cannot be undone.',

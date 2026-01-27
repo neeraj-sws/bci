@@ -17,15 +17,22 @@ class ChildPolicies extends Component
     public function render()
     {
         $childPolicies = ChildPolicy::where('hotel_id', $this->hotelId)
-            ->with('roomCategory')
+            ->with(['roomCategory', 'peakDate'])
             ->orderBy('free_child_age', 'asc')
             ->get();
 
-        $groupedPolicies = $childPolicies->groupBy('free_child_age');
+        // Group by room category first, then by peak date, then by age
+        $groupedByRoom = $childPolicies->groupBy('room_category_id');
+        
+        // Separate regular and peak date policies
+        $regularPolicies = $childPolicies->where('peak_date_id', null);
+        $peakPolicies = $childPolicies->where('peak_date_id', '!=', null);
 
         return view('livewire.common.hotel-master.hotel.child-policies', [
             'childPolicies'   => $childPolicies,
-            'groupedPolicies' => $groupedPolicies,
+            'groupedByRoom' => $groupedByRoom,
+            'regularPolicies' => $regularPolicies->groupBy('room_category_id'),
+            'peakPolicies' => $peakPolicies->groupBy('peak_date_id'),
         ]);
     }
 }

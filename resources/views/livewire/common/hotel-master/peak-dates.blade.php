@@ -53,8 +53,8 @@
                             </label>
                             <select id="room_category_id"
                                 class="form-select select2 @error('room_category_id') is-invalid @enderror"
-                                wire:model="room_category_id">
-                                <option value="">Select Ocupancy</option>
+                                wire:model.live="room_category_id">
+                                <option value="">Select Room Category</option>
                                 @foreach ($roomCategoys as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
@@ -109,8 +109,18 @@
                         {{-- Occupancy Selection --}}
                         <div class="mb-3">
                             <label class="form-label">Occupancy <span class="text-danger">*</span></label>
+                            @if(!$room_category_id)
+                                <div class="alert alert-info py-2 px-3 mb-2">
+                                    <i class="bx bx-info-circle"></i> Please select a Room Category first
+                                </div>
+                            @elseif(empty($occupances))
+                                <div class="alert alert-warning py-2 px-3 mb-2">
+                                    <i class="bx bx-error-circle"></i> No occupancies configured for this room category. Please add occupancies in Room Category first.
+                                </div>
+                            @endif
                             <select class="form-select select2" id="selected_occupancies"
-                                wire:model.live="selected_occupancies" multiple>
+                                wire:model.live="selected_occupancies" multiple
+                                @if(!$room_category_id || empty($occupances)) disabled @endif>
                                 @foreach ($occupances as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach

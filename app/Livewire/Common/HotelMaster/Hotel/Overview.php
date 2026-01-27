@@ -28,7 +28,7 @@ class Overview extends Component
 
     public function loadData()
     {
-        $this->hotel = Hotel::with(['hotelType', 'hotelCategory', 'hotelMealType', 'marketingCompany', 'parentChain'])->find($this->hotelId);
+        $this->hotel = Hotel::with(['hotelType', 'hotelCategory', 'hotelMealType', 'marketingCompany', 'parentChain','country','state','city'])->find($this->hotelId);
 
         // Load Marketing Company or Parent Chain using relationships
         $this->marketingCompany = $this->hotel->marketingCompany;

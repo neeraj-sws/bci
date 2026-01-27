@@ -3,6 +3,8 @@
 namespace App\Livewire\Common\HotelMaster;
 
 use App\Models\Occupancy as Model;
+use App\Models\PeakDateRoomCategoryOccupances;
+use App\Models\RoomCategoryOccupances;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
@@ -95,6 +97,22 @@ class Occupancy extends Component
     public function confirmDelete($id)
     {
         $this->itemId = $id;
+
+        $occupancy = $this->model::find($id);
+
+        if ($occupancy) {
+            $roomOccupancyCount = RoomCategoryOccupances::where('occupancy_id', $id)->count();
+            $peakOccupancyCount = PeakDateRoomCategoryOccupances::where('occupancy_id', $id)->count();
+
+            if ($roomOccupancyCount > 0 || $peakOccupancyCount > 0) {
+                $this->dispatch('swal:toast', [
+                    'type' => 'error',
+                    'title' => 'Cannot Delete',
+                    'message' => 'This occupancy is being used in ' . ($roomOccupancyCount + $peakOccupancyCount) . ' room/peak date configuration(s). Please remove those first.'
+                ]);
+                return;
+            }
+        }
 
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',
