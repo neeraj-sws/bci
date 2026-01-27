@@ -4,9 +4,9 @@
             const $this = $(this);
             const selectId = $this.attr("id");
             const placeholder = $this.attr("placeholder") || "Select an option";
- 
+
             if ($this.hasClass("select2-initialized")) return;
- 
+
             $this.select2({
                 placeholder
             }).on("change", function() {
@@ -15,16 +15,16 @@
                 const component = Livewire.find(compId);
                 if (component) component.set(selectId, value);
             });
- 
+
             if ($this.hasClass("is-invalid")) {
                 $this.next(".select2-container").find(".select2-selection").addClass("is-invalid");
             }
- 
+
             $this.addClass("select2-initialized");
         });
     }
-    
-        // NEW THING 
+
+    // NEW THING
     $(document).on('select2:open', function(e) {
         const $select = $(e.target);
         const label = $select.data('show-add');
@@ -54,21 +54,25 @@
             });
         }, 0);
     });
- 
+
     document.addEventListener("livewire:init", select2Initialize);
     document.addEventListener("livewire:navigated", select2Initialize);
     Livewire.hook("morphed", () => select2Initialize());
-    
-     window.addEventListener('open-new-item-modal', () => {
+
+    window.addEventListener('open-new-item-modal', () => {
         select2Initialize()
     });
-    
+
     // NEW DEV
-    $(document).on('select2:open', () => {
-        setTimeout(() => {
-            document.querySelector('.select2-search__field')?.focus();
-        }, 0);
+    $(document).on('select2:open', function(e) {
+        const searchField = $(e.target)
+            .data('select2')
+            ?.dropdown
+            .$search
+            ?.get(0);
+
+        if (searchField) {
+            setTimeout(() => searchField.focus(), 0);
+        }
     });
-    
-    
 </script>

@@ -100,6 +100,18 @@ class MealType extends Component
     {
         $this->itemId = $id;
 
+        // Check if meal type is being used in hotel_meal_plans table
+        $mealPlansCount = \App\Models\HotelMealPlan::where('meal_plan_id', $id)->count();
+        
+        if ($mealPlansCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => 'Cannot Delete',
+                'message' => 'This meal plan is being used by ' . $mealPlansCount . ' hotel(s). Please remove it from hotels first.'
+            ]);
+            return;
+        }
+
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',
             'text' => 'This action cannot be undone.',
