@@ -11,7 +11,7 @@ use App\Models\Hotel;
 use App\Models\PeackDate;
 use App\Models\RoomCategory;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class ChildPolicies extends Component
 {
     use WithPagination;
@@ -96,7 +96,7 @@ class ChildPolicies extends Component
         $this->child_without_bed_rate = $item->child_without_bed_rate;
         $this->status = $item->status;
         $this->peak_date_id = $item->peak_date_id;
-        
+
         if ($item->peak_date_id) {
             $this->is_peak_date = true;
         } else {

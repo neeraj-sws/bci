@@ -6,7 +6,7 @@ use App\Models\HotelCategories as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class HotelCategories extends Component
 {
     use WithPagination;
@@ -100,7 +100,7 @@ class HotelCategories extends Component
 
         // Check if hotel category is being used in hotels table
         $hotelsCount = \App\Models\Hotel::where('hotel_category_id', $id)->count();
-        
+
         if ($hotelsCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',

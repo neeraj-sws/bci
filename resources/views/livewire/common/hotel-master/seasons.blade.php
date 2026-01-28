@@ -27,24 +27,8 @@
                         <div class="mb-3">
                             <label class="form-label">Season Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                wire:model.defer="name" placeholder="e.g. Peak Season">
+                                wire:model.defer="name" placeholder="e.g. Season of Jan to Fab - {{ date('Y') }}">
                             @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Hotel -->
-                        <div class="mb-3">
-                            <label class="form-label">Hotel <span class="text-danger">*</span></label>
-                            <select class="form-select @error('hotel_id') is-invalid @enderror"
-                                wire:model.defer="hotel_id">
-                                <option value="">Select Hotel</option>
-                                @foreach ($hotels as $hotel)
-                                    <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
-                                @endforeach
-                            </select>
-
-                            @error('hotel_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -52,16 +36,16 @@
                         <div class="row gx-3">
                             <div class="col-lg-12 col-sm-6 mb-3">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" wire:model="start_date">
+                                <input type="text" class="form-control datepicker" wire:model="start_date"
+                                    data-role="start" data-group="dateRange" data-start-end="true" />
                                 @error('start_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="col-lg-12 col-sm-6 mb-3">
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control datepicker" data-role="end"
-                                    wire:model="end_date">
+                                <input type="text" class="form-control datepicker" wire:model="end_date"
+                                    data-role="end" data-group="dateRange" data-start-end="true" />
                                 @error('end_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -80,7 +64,7 @@
                         <!-- Actions -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
-                                {{ $isEditing ? 'Update '.$pageTitle : 'Save '.$pageTitle }}
+                                {{ $isEditing ? 'Update ' . $pageTitle : 'Save ' . $pageTitle }}
                                 <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
                             </button>
@@ -118,7 +102,6 @@
                                 <tr>
                                     <th class="width60">#</th>
                                     <th>Season</th>
-                                    <th>Hotel</th>
                                     <th>Duration</th>
                                     <th>Status</th>
                                     <th width="80">Actions</th>
@@ -129,7 +112,6 @@
                                     <tr wire:key="{{ $item->id }}">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $item->name }}</td>
-                                        <td>{{ $item->hotel->name ?? '-' }}</td>
                                         <td>{{ $item->start_date }} → {{ $item->end_date }}</td>
 
                                         <td>
@@ -148,7 +130,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center">No {{ $pageTitle }} found.</td>
+                                        <td colspan="6" class="text-center">No {{ $pageTitle }} found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

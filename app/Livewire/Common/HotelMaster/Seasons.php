@@ -8,14 +8,13 @@ use Livewire\Attributes\{Layout, On};
 use App\Models\Season;
 use App\Models\Hotel;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class Seasons extends Component
 {
     use WithPagination;
 
     public $itemId;
     public $name;
-    public $hotel_id;
     public $start_date;
     public $end_date;
     public $status = 1;
@@ -24,13 +23,11 @@ class Seasons extends Component
     public $isEditing = false;
     public $pageTitle = 'Season';
 
-    public $hotels = [];
 
     protected function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'hotel_id' => 'required|exists:hotels,hotels_id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:0,1',
@@ -44,10 +41,6 @@ class Seasons extends Component
         'end_date' => 'End Date',
     ];
 
-    public function mount()
-    {
-        $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
-    }
 
     public function render()
     {
@@ -74,7 +67,6 @@ class Seasons extends Component
 
         $this->itemId = $item->id;
         $this->name = $item->name;
-        $this->hotel_id = $item->hotel_id;
         $this->start_date = $item->start_date;
         $this->end_date = $item->end_date;
         $this->status = $item->status;
@@ -125,7 +117,6 @@ class Seasons extends Component
     {
         return [
             'name' => ucwords($this->name),
-            'hotel_id' => $this->hotel_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'status' => $this->status,
@@ -137,7 +128,6 @@ class Seasons extends Component
         $this->reset([
             'itemId',
             'name',
-            'hotel_id',
             'start_date',
             'end_date',
             'status',

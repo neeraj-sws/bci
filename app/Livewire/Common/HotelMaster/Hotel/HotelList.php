@@ -8,7 +8,7 @@ use App\Models\Hotel as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class HotelList extends Component
 {
     use WithPagination;
@@ -36,7 +36,8 @@ class HotelList extends Component
             ->leftJoin('hotel_types', 'hotels.hotel_type_id', '=', 'hotel_types.hotel_type_id')
             ->leftJoin('hotel_categories', 'hotels.hotel_category_id', '=', 'hotel_categories.hotel_category_id')
             ->leftJoin('rate_types', 'hotels.rate_type_id', '=', 'rate_types.rate_type_id')
-            ->with(['hotelType', 'hotelCategory', 'hotelRateType', 'hotelMealType.mealType'])
+            ->leftJoin('parks', 'hotels.park_id', '=', 'parks.park_id')
+            ->with(['hotelType', 'hotelCategory', 'hotelRateType', 'hotelMealType.mealType', 'park'])
             ->where('hotels.name', 'like', "%{$this->search}%");
 
         $sortable = [
@@ -47,6 +48,7 @@ class HotelList extends Component
             'hotel_type'      => 'hotel_types.title',
             'hotel_category'  => 'hotel_categories.title',
             'rate_type'       => 'rate_types.title',
+            'park'            => 'parks.name',
         ];
 
         $sortField = $sortable[$this->sortBy] ?? 'hotels.updated_at';
@@ -112,7 +114,7 @@ class HotelList extends Component
     public function shortby($field)
     {
 
-        $allowed = ['name', 'status', 'updated_at', 'created_at', 'hotel_type', 'hotel_category', 'rate_type'];
+        $allowed = ['name', 'status', 'updated_at', 'created_at', 'hotel_type', 'hotel_category', 'rate_type', 'park'];
         if (!in_array($field, $allowed)) return;
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

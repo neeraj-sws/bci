@@ -7,11 +7,9 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Layout, On};
 use App\Models\RoomCategory as Model;
 use App\Models\Hotel;
-use App\Models\Occupancy;
 use App\Models\RateTypes;
-use App\Models\RoomCategoryOccupances;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class RoomCategory extends Component
 {
     use WithPagination;
@@ -31,35 +29,12 @@ class RoomCategory extends Component
 
     public $hotels = [], $rateTypes = [], $rate_type;
 
-    public $selected_occupancies = [];
-    public $roomRatesData = [], $occupances = [];
     protected function rules()
     {
         return [
             'title' => 'required|string|max:255',
             'hotel_id' => 'required|exists:hotels,hotels_id',
             'status' => 'required|in:0,1',
-            'selected_occupancies' => 'required|array|min:1',
-            'roomRatesData' => 'required|array|min:1',
-            'roomRatesData.*.ocupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
-            'roomRatesData.*.rate'        => 'required|numeric|min:0',
-            'roomRatesData.*.weekend_rate' => 'required|numeric|min:0',
-        ];
-    }
-
-    protected function messages()
-    {
-        return [
-            'roomRatesData.*.rate.required' => 'Please enter rate for each occupancy.',
-            'roomRatesData.*.rate.numeric'  => 'Rate must be a number.',
-            'roomRatesData.*.rate.min'      => 'Rate cannot be negative.',
-
-            'roomRatesData.*.weekend_rate.required' => 'Please enter weekend rate for each occupancy.',
-            'roomRatesData.*.weekend_rate.numeric'  => 'Weekend rate must be a number.',
-            'roomRatesData.*.weekend_rate.min'      => 'Weekend rate cannot be negative.',
-
-            'roomRatesData.*.ocupancy_id.required' => 'Please select occupancy.',
-            'roomRatesData.*.ocupancy_id.distinct' => 'Duplicate occupancy is not allowed.',
         ];
     }
 
@@ -67,7 +42,6 @@ class RoomCategory extends Component
     public function mount()
     {
         $this->hotels = Hotel::where('status', 1)->get();
-        $this->occupances = Occupancy::where('status', 1)->pluck('title', 'occupancy_id')->toArray();
         $this->rateTypes = RateTypes::where('status', 1)->get();
     }
 
@@ -85,19 +59,8 @@ class RoomCategory extends Component
         $this->validate();
 
         $roomCat = Model::create($this->payload());
-        if (count($this->roomRatesData) > 0) {
-            foreach ($this->roomRatesData as $rate) {
-                RoomCategoryOccupances::create([
-                    'room_category_id' => $roomCat->id,
-                    'occupancy_id' => $rate['ocupancy_id'],
-                    'rate'         => $rate['rate'],
-                    'weekend_rate' => $rate['weekend_rate'] ?? 0,
-                ]);
-            }
-        }
 
         $this->resetForm();
-        $this->roomRatesData = [];
         $this->toast('Added Successfully');
     }
 
@@ -112,12 +75,6 @@ class RoomCategory extends Component
         $this->max_occupancy = $item->max_occupancy;
         $this->status = $item->status;
         $this->rate_type = $item->rate_type_id;
-        $this->roomRatesData = $item->occupancies->map(fn($o) => [
-            'ocupancy_id' => $o->occupancy_id,
-            'rate'        => $o->rate,
-            'weekend_rate' => $o->weekend_rate ?? 0,
-        ])->toArray();
-        $this->selected_occupancies = $item->occupancies->pluck('occupancy_id')->toArray();
 
         $this->isEditing = true;
     }
@@ -128,20 +85,6 @@ class RoomCategory extends Component
 
         $roomCat = Model::findOrFail($this->itemId);
         $roomCat->update($this->payload());
-
-        // Delete existing occupancies and recreate
-        RoomCategoryOccupances::where('room_category_id', $roomCat->id)->delete();
-
-        if (count($this->roomRatesData) > 0) {
-            foreach ($this->roomRatesData as $rate) {
-                RoomCategoryOccupances::create([
-                    'room_category_id' => $roomCat->id,
-                    'occupancy_id' => $rate['ocupancy_id'],
-                    'rate'         => $rate['rate'],
-                    'weekend_rate' => $rate['weekend_rate'] ?? 0,
-                ]);
-            }
-        }
 
         $this->resetForm();
 
@@ -199,9 +142,7 @@ class RoomCategory extends Component
             'status',
             'itemId',
             'isEditing',
-            'roomRatesData',
             'rate_type',
-            'selected_occupancies',
         ]);
         $this->resetValidation();
     }
@@ -212,25 +153,6 @@ class RoomCategory extends Component
             'type' => 'success',
             'message' => $this->pageTitle . ' ' . $msg
         ]);
-    }
-
-    public function updatedSelectedOccupancies()
-    {
-
-        $currentOccupancies = collect($this->roomRatesData)->pluck('ocupancy_id')->toArray();
-
-        foreach ($this->selected_occupancies as $occupancyId) {
-            if (!in_array($occupancyId, $currentOccupancies)) {
-                $this->roomRatesData[] = [
-                    'ocupancy_id' => $occupancyId,
-                    'rate' => 0,
-                    'weekend_rate' => 0,
-                ];
-            }
-        }
-        $this->roomRatesData = array_values(array_filter($this->roomRatesData, function ($item) {
-            return in_array($item['ocupancy_id'], $this->selected_occupancies);
-        }));
     }
 
     public function sortby($field)

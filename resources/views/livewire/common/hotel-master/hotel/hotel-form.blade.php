@@ -99,6 +99,20 @@
                                </div>
 
                                <div class="col-md-6">
+                                   <label class="form-label">Parks <span class="text-danger">*</span>  </label>
+                                   <select class="form-select select2" id="park_id" wire:model="park_id">
+                                       <option value="">Select</option>
+                                       @foreach ($parks as $park)
+                                           <option value="{{ $park->park_id }}" @selected($park->park_id == $park_id)>
+                                               {{ $park->name }}</option>
+                                       @endforeach
+                                   </select>
+                                   @error('park_id')
+                                       <small class="text-danger">{{ $message }}</small>
+                                   @enderror
+                               </div>
+
+                               <div class="col-md-6">
                                    <label class="form-label">Hotel Category <span class="text-danger">*</span></label>
                                    <select class="form-select select2" id="hotel_category_id"
                                        wire:model.defer="hotel_category_id">

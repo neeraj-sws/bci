@@ -6,7 +6,7 @@ use App\Models\MealType as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class MealType extends Component
 {
     use WithPagination;
@@ -102,7 +102,7 @@ class MealType extends Component
 
         // Check if meal type is being used in hotel_meal_plans table
         $mealPlansCount = \App\Models\HotelMealPlan::where('meal_plan_id', $id)->count();
-        
+
         if ($mealPlansCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',

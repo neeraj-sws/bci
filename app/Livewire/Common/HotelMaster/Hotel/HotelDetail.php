@@ -6,7 +6,7 @@ use App\Models\Hotel;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class HotelDetail extends Component
 {
     public $hotel;

@@ -10,16 +10,16 @@
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             let minDate = today;
             let maxDate = null;
-            
+
             let existingDate = null;
             if (el.value) {
                 existingDate = new Date(el.value);
                 existingDate.setHours(0, 0, 0, 0);
             }
-            
+
             // RULE 1: existing past date wins over everything
             if (existingDate && existingDate < today) {
                 minDate = null;
@@ -31,13 +31,13 @@
                 }
             }
 
-            
-            // NEW DEV 
+
+            // NEW DEV
             const startFrom = el.dataset.startFrom;
             if (startFrom) {
                 minDate = new Date(startFrom);
             }
-            
+
             const startYear = el.dataset.startYear ? parseInt(el.dataset.startYear) : null;
             let defaultDate = el.value || null;
             if (!defaultDate && startYear) {
@@ -48,7 +48,7 @@
             const instance = flatpickr(el, {
                 dateFormat,
                 allowInput: true,
-                defaultDate:defaultDate,
+                defaultDate: defaultDate,
                 minDate,
                 maxDate,
                 onReady: function(selectedDates, dateStr) {
@@ -160,8 +160,8 @@
     document.addEventListener("livewire:navigated", () => {
         setTimeout(() => datepickerInitialize(), 50);
     });
-    
-    window.addEventListener('open-new-item-modal', function () {
+
+    window.addEventListener('open-new-item-modal', function() {
         setTimeout(() => datepickerInitialize(), 50);
     });
 </script>

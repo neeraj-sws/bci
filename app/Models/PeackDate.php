@@ -18,8 +18,6 @@ class PeackDate extends Model
     protected $fillable = [
         "hotel_id",
         "title",
-        "start_date",
-        "end_date",
         "is_new_year",
         "status",
         "room_category_id",
