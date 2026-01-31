@@ -43,7 +43,8 @@ class HotelForm extends Component
     public $showModel = false;
     public $modalType = null;
     public $modalTitle;
-    public $newTitle,$country_id,$state,$city;
+    public $newTitle, $country_id, $state, $city;
+    public $preferred_railway_station, $preferred_airport;
 
 
     protected function rules()
@@ -54,7 +55,7 @@ class HotelForm extends Component
             'hotel_category_id' => 'required|exists:hotel_categories,hotel_category_id',
             'parent_chain_id' => 'nullable|integer',
             'marketing_company_id' => 'nullable|integer',
-            'park_id' => 'required|exists:parks,park_id',
+            'park_id' => 'nullable|exists:parks,park_id',
             'location' => 'nullable|string|max:255',
             'status' => 'required|boolean',
             'rate_type' => 'nullable|exists:rate_types,rate_type_id',
@@ -63,6 +64,8 @@ class HotelForm extends Component
             'country_id' => 'required|exists:country,country_id',
             'state' => 'required|exists:states,state_id',
             'city' => 'required|exists:city,city_id',
+            'preferred_airport' => 'nullable|string|max:255',
+            'preferred_railway_station' => 'nullable|string|max:255',
         ];
     }
 
@@ -104,6 +107,8 @@ class HotelForm extends Component
             $this->updatedState($this->state);
             $this->status = $hotel->status;
             $this->rate_type = $hotel->rate_type_id;
+            $this->preferred_airport = $hotel->preferred_airport;
+            $this->preferred_railway_station = $hotel->preferred_railway_station;
             $this->meal_type = HotelMealPlan::where('hotel_id', $hotel->id)
                 ->pluck('meal_plan_id')
                 ->toArray();
@@ -188,6 +193,8 @@ class HotelForm extends Component
             'city_id' => $this->city,
             'status' => $this->status,
             'rate_type_id' => $this->rate_type,
+            'preferred_airport' => $this->preferred_airport,
+            'preferred_railway_station' => $this->preferred_railway_station,
         ];
     }
 

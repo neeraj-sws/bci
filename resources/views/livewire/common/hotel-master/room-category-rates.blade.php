@@ -24,7 +24,12 @@
                                 id="room_category_id" wire:model="room_category_id">
                                 <option value="">Select Category</option>
                                 @foreach ($roomCategories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                    <option value="{{ $category->id }}">
+                                        {{ $category->title }}
+                                        @if ($category->rommtCategoryHotel)
+                                            - {{ $category->rommtCategoryHotel->name }}
+                                        @endif
+                                    </option>
                                 @endforeach
                             </select>
                             @error('room_category_id')
@@ -75,7 +80,7 @@
                                             @foreach ($roomRatesData as $index => $data)
                                                 <tr>
                                                     <td class="align-middle">
-                                                        <strong>{{ $occupancies[$data['ocupancy_id']] ?? 'N/A' }}</strong>
+                                                        <strong>{{ $occupancies[$data['occupancy_id']] ?? 'N/A' }}</strong>
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01"
@@ -134,7 +139,12 @@
                             <select class="form-select" wire:model.live="filter_room_category_id">
                                 <option value="">Filter by Category</option>
                                 @foreach ($roomCategories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                    <option value="{{ $category->id }}">
+                                        {{ $category->title }}
+                                        @if ($category->rommtCategoryHotel)
+                                            - {{ $category->rommtCategoryHotel->name }}
+                                        @endif
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -178,7 +188,10 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $rateSets->firstItem() + $index }}</td>
-                                        <td>{{ $set->roomCategory->title ?? 'N/A' }}</td>
+                                        <td>
+                                            <strong>{{ $set->roomCategory->title ?? 'N/A' }}</strong><br>
+                                            <small class="text-muted"> <i class="bx bx-door-open" style="font-size: 10px;"></i> {{ $set->roomCategory->rommtCategoryHotel->name ?? '-' }}</small>
+                                        </td>
                                         <td>
                                             @if ($set?->season?->name)
                                                 <div class="text-center">

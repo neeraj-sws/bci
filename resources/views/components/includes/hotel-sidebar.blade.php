@@ -1,33 +1,74 @@
- <div class="sidebar-wrapper" data-simplebar="init" style="background: linear-gradient(135deg, #000000 0%, #764ba2 100%)">
-     <div class="simplebar-wrapper m-0">
+ <div class="sidebar-wrapper" data-simplebar="init"
+     style="background: linear-gradient(135deg, #000000 0%, #764ba2 100%); max-height: 100vh; overflow-y: auto;">
+     <div class="simplebar-wrapper m-0" style="max-height: calc(100vh - 60px); overflow-y: auto;">
          <div class="simplebar-height-auto-observer-wrapper">
              <div class="simplebar-height-auto-observer"></div>
          </div>
-         <div class="simplebar-mask">
-             <div class="simplebar-offset">
-                 <div class="simplebar-content-wrapper">
-                     <div class="simplebar-content mm-active p-0">
+         <div class="simplebar-mask" style="overflow: hidden;">
+             <div class="simplebar-offset" style="max-height: 100%; overflow-y: auto;">
+                 <div class="simplebar-content-wrapper" style="overflow-y: auto;">
+                     <div class="simplebar-content mm-active p-0" style="overflow-y: auto;">
                          <style>
+                             .sidebar-wrapper {
+                                 overflow-y: auto !important;
+                                 max-height: 100vh;
+                                 -webkit-overflow-scrolling: touch;
+                             }
+
+                             .simplebar-wrapper,
+                             .simplebar-offset,
+                             .simplebar-content-wrapper,
+                             .simplebar-content {
+                                 overflow-y: auto !important;
+                                 max-height: 100%;
+                             }
+
+                             #menu {
+                                 max-height: calc(100vh - 120px);
+                                 overflow-y: auto !important;
+                                 padding-right: 8px;
+                             }
+
+                             /* Custom scrollbar styling */
+                             #menu::-webkit-scrollbar {
+                                 width: 6px;
+                             }
+
+                             #menu::-webkit-scrollbar-track {
+                                 background: rgba(255, 255, 255, 0.1);
+                                 border-radius: 10px;
+                             }
+
+                             #menu::-webkit-scrollbar-thumb {
+                                 background: rgba(255, 193, 7, 0.5);
+                                 border-radius: 10px;
+                                 transition: background 0.3s;
+                             }
+
+                             #menu::-webkit-scrollbar-thumb:hover {
+                                 background: rgba(255, 193, 7, 0.8);
+                             }
+
                              #menu li a:hover {
-                                 background: rgba(118,75,162,0.6) !important;
+                                 background: rgba(118, 75, 162, 0.6) !important;
                                  border-left-color: #ffc107 !important;
                                  transform: translateX(2px);
                              }
 
-                             #menu li.active > a,
-                             #menu li > a.active {
-                                 background: rgba(118,75,162,0.8) !important;
+                             #menu li.active>a,
+                             #menu li>a.active {
+                                 background: rgba(118, 75, 162, 0.8) !important;
                                  border-left-color: #ffc107 !important;
                                  border-left-width: 4px !important;
                                  font-weight: 600;
-                                 box-shadow: 0 0 15px rgba(255,193,7,0.3);
+                                 box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
                              }
 
-                             #menu li.mm-active > a {
-                                 background: rgba(118,75,162,0.8) !important;
+                             #menu li.mm-active>a {
+                                 background: rgba(118, 75, 162, 0.8) !important;
                                  border-left-color: #ffc107 !important;
                                  border-left-width: 4px !important;
-                                 box-shadow: 0 0 15px rgba(255,193,7,0.3);
+                                 box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
                              }
                          </style>
                          <div class="sidebar-header p-3">
@@ -40,6 +81,13 @@
                          </div>
                          <ul class="metismenu mm-show py-3 px-2" id="menu">
                              <!-- Hotel Configuration Items -->
+                             <li class="mb-2">
+                                 <a href="{{ route('common.dashboard') }}" class="text-white"
+                                     style="border-radius: 10px; padding: 12px 15px; transition: all 0.3s ease; display: flex; align-items: center; background: rgba(255,255,255,0.1); border-left: 3px solid rgba(255,255,255,0.3);">
+                                     <i class="lni lni-agenda" style="font-size: 20px; min-width: 30px;"></i>
+                                     <span style="margin-left: 10px;">Dashboard</span>
+                                 </a>
+                             </li>
                              <li class="mb-2">
                                  <a href="{{ route('common.hotel-list') }}" class="text-white"
                                      style="border-radius: 10px; padding: 12px 15px; transition: all 0.3s ease; display: flex; align-items: center; background: rgba(255,255,255,0.1); border-left: 3px solid rgba(255,255,255,0.3);">

@@ -201,7 +201,7 @@
                             <select class="form-select form-select-sm" wire:model.live="filter_season_id">
                                 <option value="">All Seasons</option>
                                 @foreach ($seasons as $season)
-                                    <option value="{{ $season->season_id }}">{{ $season->title }}</option>
+                                    <option value="{{ $season->season_id }}">{{ $season->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -253,7 +253,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <strong>{{ $firstItem->peakDate->title ?? '-' }}</strong><br>
-                                            <small class="text-muted">{{ $firstItem->peakDate->hotel->name ?? '-' }}</small>
+                                            <small class="text-muted">{{ $firstItem->peakDate->hotel->name ?? '-' }}</small><br>
+                                            <small class="text-muted"><i class="bx bx-door-open" style="font-size: 10px;"></i> {{ $firstItem->peakDate->roomCategory->title ?? '-' }}</small>
                                         </td>
                                         <td>{{ $firstItem->season->title ?? '-' }}</td>
                                         <td>

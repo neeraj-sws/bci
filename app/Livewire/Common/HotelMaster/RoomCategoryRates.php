@@ -39,7 +39,7 @@ class RoomCategoryRates extends Component
             'season_id' => 'required|exists:seasons,seasons_id',
             'selected_occupancies' => 'required|array|min:1',
             'roomRatesData' => 'required|array|min:1',
-            'roomRatesData.*.ocupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
+            'roomRatesData.*.occupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
             'roomRatesData.*.rate' => 'required|numeric|min:0',
             'roomRatesData.*.weekend_rate' => 'required|numeric|min:0',
         ];
@@ -47,7 +47,10 @@ class RoomCategoryRates extends Component
 
     public function mount(): void
     {
-        $this->roomCategories = RoomCategory::where('status', 1)->orderBy('title')->get();
+        $this->roomCategories = RoomCategory::where('status', 1)
+            ->with('rommtCategoryHotel')
+            ->orderBy('title')
+            ->get();
         $this->seasons = Season::where('status', 1)->orderBy('start_date')->get();
         $this->occupancies = Occupancy::where('status', 1)->pluck('title', 'occupancy_id')->toArray();
     }
@@ -103,7 +106,7 @@ class RoomCategoryRates extends Component
             RoomCategoryOccupances::create([
                 'room_category_id' => $this->room_category_id,
                 'season_id' => $this->season_id,
-                'occupancy_id' => $rate['ocupancy_id'],
+                'occupancy_id' => $rate['occupancy_id'],
                 'rate' => $rate['rate'],
                 'weekend_rate' => $rate['weekend_rate'] ?? 0,
             ]);
@@ -128,7 +131,7 @@ class RoomCategoryRates extends Component
         $this->season_id = $seasonId;
         $this->selected_occupancies = $existing->pluck('occupancy_id')->toArray();
         $this->roomRatesData = $existing->map(fn($rate) => [
-            'ocupancy_id' => $rate->occupancy_id,
+            'occupancy_id' => $rate->occupancy_id,
             'rate' => $rate->rate,
             'weekend_rate' => $rate->weekend_rate ?? 0,
         ])->toArray();
@@ -171,12 +174,12 @@ class RoomCategoryRates extends Component
 
         $this->resetValidation(['selected_occupancies', 'roomRatesData', 'roomRatesData.*']);
 
-        $currentOccupancies = collect($this->roomRatesData)->pluck('ocupancy_id')->toArray();
+        $currentOccupancies = collect($this->roomRatesData)->pluck('occupancy_id')->toArray();
 
         foreach ($this->selected_occupancies as $occupancyId) {
             if (!in_array($occupancyId, $currentOccupancies)) {
                 $this->roomRatesData[] = [
-                    'ocupancy_id' => $occupancyId,
+                    'occupancy_id' => $occupancyId,
                     'rate' => 0,
                     'weekend_rate' => 0,
                 ];
@@ -184,7 +187,7 @@ class RoomCategoryRates extends Component
         }
 
         $this->roomRatesData = array_values(array_filter($this->roomRatesData, function ($item) {
-            return in_array($item['ocupancy_id'], $this->selected_occupancies);
+            return in_array($item['occupancy_id'], $this->selected_occupancies);
         }));
     }
 
@@ -222,7 +225,7 @@ class RoomCategoryRates extends Component
 
         $this->selected_occupancies = $existing->pluck('occupancy_id')->toArray();
         $this->roomRatesData = $existing->map(fn($rate) => [
-            'ocupancy_id' => $rate->occupancy_id,
+            'occupancy_id' => $rate->occupancy_id,
             'rate' => $rate->rate,
             'weekend_rate' => $rate->weekend_rate ?? 0,
         ])->toArray();
@@ -231,28 +234,38 @@ class RoomCategoryRates extends Component
 
     private function ensureRateCountMatchesOccupancy(): void
     {
-        $selected = array_values(array_unique($this->selected_occupancies));
-        $rates = array_column($this->roomRatesData, 'ocupancy_id');
-        $ratesUnique = array_values(array_unique($rates));
+        $selected = collect($this->selected_occupancies)
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values();
 
-        if (count($selected) === 0 || count($ratesUnique) === 0 || count($this->roomRatesData) === 0) {
+        $rates = collect($this->roomRatesData)
+            ->pluck('occupancy_id')
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        // 1. Empty check
+        if ($selected->isEmpty()) {
             throw ValidationException::withMessages([
-                'roomRatesData' => 'Rates must be provided for each selected occupancy.',
+                'selected_occupancies' => 'Please select at least one occupancy.',
             ]);
         }
 
-        if (count($selected) !== count($ratesUnique) || count($selected) !== count($this->roomRatesData)) {
+        // 2. Missing rates
+        $missing = $selected->diff($rates);
+        if ($missing->isNotEmpty()) {
             throw ValidationException::withMessages([
-                'roomRatesData' => 'Rate count must match selected occupancies.',
+                'roomRatesData' => 'Please enter rates for all selected occupancies.',
             ]);
         }
 
-        foreach ($ratesUnique as $occupancyId) {
-            if (!in_array($occupancyId, $selected, true)) {
-                throw ValidationException::withMessages([
-                    'roomRatesData' => 'Rate entries must match the selected occupancies.',
-                ]);
-            }
+        // 3. Extra rates (orphan rows)
+        $extra = $rates->diff($selected);
+        if ($extra->isNotEmpty()) {
+            throw ValidationException::withMessages([
+                'roomRatesData' => 'Some rate entries do not match the selected occupancies.',
+            ]);
         }
     }
 

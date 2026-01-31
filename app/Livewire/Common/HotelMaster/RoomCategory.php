@@ -8,6 +8,10 @@ use Livewire\Attributes\{Layout, On};
 use App\Models\RoomCategory as Model;
 use App\Models\Hotel;
 use App\Models\RateTypes;
+use App\Models\RoomCategoryOccupances;
+use App\Models\ChildPolicy;
+use App\Models\PeackDate;
+use App\Models\HotelRate;
 
 #[Layout('components.layouts.hotel-app')]
 class RoomCategory extends Component
@@ -109,6 +113,29 @@ class RoomCategory extends Component
     #[On('delete')]
     public function delete()
     {
+        $occupanciesCount = RoomCategoryOccupances::where('room_category_id', $this->itemId)->count();
+        $childPoliciesCount = ChildPolicy::where('room_category_id', $this->itemId)->count();
+        $peakDatesCount = PeackDate::where('room_category_id', $this->itemId)->count();
+        $hotelRatesCount = HotelRate::where('room_category_id', $this->itemId)->count();
+
+        $totalRelatedRecords = $occupanciesCount + $childPoliciesCount + $peakDatesCount + $hotelRatesCount;
+
+        if ($totalRelatedRecords > 0) {
+            $details = [];
+            if ($occupanciesCount > 0) $details[] = "{$occupanciesCount} occupancy rate(s)";
+            if ($childPoliciesCount > 0) $details[] = "{$childPoliciesCount} child polic(ies)";
+            if ($peakDatesCount > 0) $details[] = "{$peakDatesCount} peak date(s)";
+            if ($hotelRatesCount > 0) $details[] = "{$hotelRatesCount} hotel rate(s)";
+
+            $message = "Cannot delete this room category. It is being used in: " . implode(', ', $details) . ".";
+
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => $message
+            ]);
+            return;
+        }
+
         Model::destroy($this->itemId);
         $this->toast('Deleted Successfully');
     }

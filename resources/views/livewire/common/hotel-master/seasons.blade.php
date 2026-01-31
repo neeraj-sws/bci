@@ -36,16 +36,16 @@
                         <div class="row gx-3">
                             <div class="col-lg-12 col-sm-6 mb-3">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control datepicker" wire:model="start_date"
-                                    data-role="start" data-group="dateRange" data-start-end="true" />
+                                <input type="text" class="form-control datepicker" data-role="start"
+                                    data-group="booking1" data-range="proper" wire:model="start_date">
                                 @error('start_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="col-lg-12 col-sm-6 mb-3">
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control datepicker" wire:model="end_date"
-                                    data-role="end" data-group="dateRange" data-start-end="true" />
+                                <input type="text" class="form-control datepicker" data-role="end"
+                                    data-group="booking1" data-range="proper" wire:model="end_date">
                                 @error('end_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -120,10 +120,10 @@
                                                 @checked($item->status)>
                                         </td>
                                         <td class="text-center">
-                                            <a wire:click="edit({{ $item->id }})" class="me-1" title="Edit">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" class="me-1" title="Edit">
                                                 <i class="bx bx-edit text-dark  fs-5"></i>
                                             </a>
-                                            <a wire:click="confirmDelete({{ $item->id }})" title="Delete">
+                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>

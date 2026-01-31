@@ -18,8 +18,6 @@ class HotelDetail extends Component
     {
         $this->hotelId = $id;
         $this->route = session('role') ?? 'common';
-
-        // Load hotel - basic info only, child components handle their own data
         $this->hotel = Hotel::findOrFail($id);
     }
 

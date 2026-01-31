@@ -54,14 +54,16 @@
                             <select id="selected_room_categories"
                                 class="form-select select2 @error('selected_room_categories') is-invalid @enderror"
                                 wire:model.live="selected_room_categories" multiple
-                                @if(!$hotel_id) disabled @endif>
+                                @if (!$hotel_id) disabled @endif>
                                 <option value="">Select Room Categories</option>
                                 @foreach ($roomCategoys as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    <option value="{{ $id }}" @selected(in_array($id, $selected_room_categories))>
+                                        {{ $name }}</option>
                                 @endforeach
                             </select>
-                            @if(!$hotel_id)
-                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a Hotel first</small>
+                            @if (!$hotel_id)
+                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a
+                                    Hotel first</small>
                             @endif
                             @error('selected_room_categories')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -117,8 +119,8 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th>#</th>
-                                    <th wire:click="sortby('title')" style="cursor: pointer;" >Title
-                                         @if ($sortBy === 'title')
+                                    <th wire:click="sortby('title')" style="cursor: pointer;">Title
+                                        @if ($sortBy === 'title')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
@@ -133,7 +135,7 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td>{{  $items->firstItem() + $index }}</td>
+                                        <td>{{ $items->firstItem() + $index }}</td>
                                         <td>{{ $item->title }}</td>
                                         <td>{{ $item->hotel->name ?? '-' }}</td>
                                         <td>{{ $item->roomCategory->title ?? '-' }}</td>
@@ -143,8 +145,10 @@
                                                 @checked($item->status)>
                                         </td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"><i class="bx bx-edit fs-5"></i></a>
-                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})"><i
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"><i
+                                                    class="bx bx-edit fs-5"></i></a>
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})"><i
                                                     class="bx bx-trash text-danger fs-5"></i></a>
                                         </td>
                                     </tr>
@@ -155,7 +159,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                         <x-pagination :paginator="$items" />
+                        <x-pagination :paginator="$items" />
                     </div>
                 </div>
             </div>

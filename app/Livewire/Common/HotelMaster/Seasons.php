@@ -7,6 +7,8 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Layout, On};
 use App\Models\Season;
 use App\Models\Hotel;
+use App\Models\PeakDateRoomCategoryOccupances;
+use App\Models\RoomCategoryOccupances;
 
 #[Layout('components.layouts.hotel-app')]
 class Seasons extends Component
@@ -86,6 +88,17 @@ class Seasons extends Component
 
     public function confirmDelete($id)
     {
+        // Check if season is being used in peak_date_room_category_occupances table
+        $seasonUsageCount = PeakDateRoomCategoryOccupances::where('season_id', $id)->count();
+
+        if ($seasonUsageCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' price entry(ies).'
+            ]);
+            return;
+        }
+
         $this->itemId = $id;
 
         $this->dispatch('swal:confirm', [
@@ -102,6 +115,17 @@ class Seasons extends Component
     #[On('delete')]
     public function delete()
     {
+        // Double-check before deletion
+        $seasonUsageCount = PeakDateRoomCategoryOccupances::where('season_id', $this->itemId)->count();
+
+        if ($seasonUsageCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' price entry(ies).'
+            ]);
+            return;
+        }
+
         Season::destroy($this->itemId);
         $this->toast('Deleted Successfully');
     }

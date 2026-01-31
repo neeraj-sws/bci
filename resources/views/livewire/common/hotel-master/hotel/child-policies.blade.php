@@ -17,11 +17,11 @@
                 <div class="col-md-4 text-center">
                     <div class="d-flex gap-3 justify-content-center">
                         <div>
-                            <div style="font-size: 24px; font-weight: 700;">{{ $regularPolicies->count() }}</div>
+                            <div style="font-size: 24px; font-weight: 700;">{{ $regularPoliciesCount ?? 0 }}</div>
                             <small style="opacity: 0.9;">Regular</small>
                         </div>
                         <div>
-                            <div style="font-size: 24px; font-weight: 700;">{{ $peakPolicies->count() }}</div>
+                            <div style="font-size: 24px; font-weight: 700;">{{ $peakPoliciesCount ?? 0 }}</div>
                             <small style="opacity: 0.9;">Peak Season</small>
                         </div>
                     </div>
@@ -260,12 +260,12 @@
                 </div>
                 <div class="col-md-3 text-center">
                     <i class="bx bx-calendar" style="font-size: 32px; opacity: 0.9;"></i>
-                    <h3 class="mt-2 mb-0" style="font-weight: 700;">{{ $regularPolicies->count() }}</h3>
+                    <h3 class="mt-2 mb-0" style="font-weight: 700;">{{ $regularPoliciesCount ?? 0 }}</h3>
                     <small style="opacity: 0.9;">Regular Season</small>
                 </div>
                 <div class="col-md-3 text-center">
                     <i class="bx bx-trending-up" style="font-size: 32px; opacity: 0.9;"></i>
-                    <h3 class="mt-2 mb-0" style="font-weight: 700;">{{ $peakPolicies->count() }}</h3>
+                    <h3 class="mt-2 mb-0" style="font-weight: 700;">{{ $peakPoliciesCount ?? 0 }}</h3>
                     <small style="opacity: 0.9;">Peak Season</small>
                 </div>
                 <div class="col-md-3 text-center">
