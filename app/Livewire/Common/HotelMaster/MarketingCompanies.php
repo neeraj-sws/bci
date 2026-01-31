@@ -6,7 +6,7 @@ use App\Models\MarketingCompanies as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class MarketingCompanies extends Component
 {
     use WithPagination;

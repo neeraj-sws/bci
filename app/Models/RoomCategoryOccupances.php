@@ -18,6 +18,7 @@ class RoomCategoryOccupances extends Model
     protected $fillable = [
         'room_category_id',
         'occupancy_id',
+        'season_id',
         'rate',
         'weekend_rate',
     ];
@@ -36,5 +37,10 @@ class RoomCategoryOccupances extends Model
     public function occupancy()
     {
         return $this->belongsTo(Occupancy::class, 'occupancy_id', 'occupancy_id');
+    }
+
+    public function season()
+    {
+        return $this->belongsTo(Season::class, 'season_id', 'seasons_id');
     }
 }

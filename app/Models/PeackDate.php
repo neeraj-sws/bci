@@ -18,8 +18,6 @@ class PeackDate extends Model
     protected $fillable = [
         "hotel_id",
         "title",
-        "start_date",
-        "end_date",
         "is_new_year",
         "status",
         "room_category_id",
@@ -37,17 +35,17 @@ class PeackDate extends Model
     {
         return $this->peak_dates_id;
     }
-    
+
     public function roomCategory()
     {
         return $this->belongsTo(RoomCategory::class, 'room_category_id', 'room_categoris_id');
     }
-    
+
     public function occupancies()
     {
-        return $this->hasMany(PeakDateRoomCategoryOccupances::class, 'peak_date_id', 'peak_dates_id');
+        return $this->hasMany(PeakDateRoomCategoryOccupances::class, 'peak_date_id', 'peak_dates_id')->whereNull('soft_delete');
     }
-    
+
     public function childPolicies()
     {
         return $this->hasMany(ChildPolicy::class, 'peak_date_id', 'peak_dates_id');

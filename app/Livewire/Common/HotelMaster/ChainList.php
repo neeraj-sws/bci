@@ -6,7 +6,7 @@ use App\Models\Chain as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class ChainList extends Component
 {
     use WithPagination;
@@ -98,7 +98,7 @@ class ChainList extends Component
 
         // Check if chain is being used in hotels table
         $hotelsCount = \App\Models\Hotel::where('parent_chain_id', $id)->count();
-        
+
         if ($hotelsCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',

@@ -79,6 +79,13 @@
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    <th wire:click="shortby('park')" style="cursor:pointer">
+                                        Park
+                                        @if ($sortBy === 'park')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Hotel Meal Type</th>
                                     <th wire:click="shortby('status')" style="cursor:pointer">
                                         Status
@@ -99,6 +106,7 @@
                                         <td class="align-middle py-1">{{ $item->hotelType->title }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelCategory->title }}</td>
                                         <td class="align-middle py-1">{{ $item?->hotelRateType?->title ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">{{ $item?->park?->name ?? 'NA' }}</td>
                                         <td class="align-middle py-1">
                                             @if (!empty($item?->hotelMealType))
                                                 @forelse ($item?->hotelMealType as $plan)
@@ -131,7 +139,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">No Tours found.</td>
+                                        <td colspan="9" class="text-center">No Hotel List found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

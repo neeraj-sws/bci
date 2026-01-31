@@ -6,7 +6,7 @@ use App\Models\MarketingCompany as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class MarketingCompanyList extends Component
 {
     use WithPagination;
@@ -98,7 +98,7 @@ class MarketingCompanyList extends Component
 
         // Check if marketing company is being used in hotels table
         $hotelsCount = \App\Models\Hotel::where('marketing_company_id', $id)->count();
-        
+
         if ($hotelsCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',

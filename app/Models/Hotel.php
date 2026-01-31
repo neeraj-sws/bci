@@ -16,7 +16,7 @@ class Hotel extends Model
     const DELETED_AT = 'soft_delete';
     protected $primaryKey = 'hotels_id';
 
-    protected $fillable = ["name", "hotel_type_id", "hotel_category_id", "parent_chain_id",    "marketing_company_id", "country_id","state_id","city_id", "status","rate_type_id"];
+    protected $fillable = ["name", "hotel_type_id", "hotel_category_id", "parent_chain_id",    "marketing_company_id", "country_id","state_id","city_id", "status","rate_type_id","park_id","preferred_airport","preferred_railway_station"];
 
     protected static function boot()
     {
@@ -37,8 +37,6 @@ class Hotel extends Model
             $hotel->hotelMealType()->delete();
             $hotel->hotelRates()->delete();
             $hotel->childPolicies()->delete();
-            Supplement::where('hotel_id', $hotel->hotels_id)->delete();
-            Season::where('hotel_id', $hotel->hotels_id)->delete();
         });
 
         static::forceDeleting(function ($hotel) {
@@ -57,8 +55,6 @@ class Hotel extends Model
             $hotel->hotelMealType()->forceDelete();
             $hotel->hotelRates()->forceDelete();
             $hotel->childPolicies()->forceDelete();
-            Supplement::withTrashed()->where('hotel_id', $hotel->hotels_id)->forceDelete();
-            Season::withTrashed()->where('hotel_id', $hotel->hotels_id)->forceDelete();
         });
     }
 
@@ -100,6 +96,11 @@ class Hotel extends Model
     public function parentChain()
     {
         return $this->belongsTo(Chain::class, 'parent_chain_id', 'chain_id');
+    }
+
+    public function park()
+    {
+        return $this->belongsTo(Parks::class, 'park_id', 'park_id');
     }
 
     public function roomCategories()
