@@ -19,22 +19,43 @@
                 <div class="card-body">
                     <form wire:submit.prevent="save">
                         <div class="mb-3">
-                            <label class="form-label">Room Category <span class="text-danger">*</span></label>
-                            <select class="form-select select2 @error('room_category_id') is-invalid @enderror"
-                                id="room_category_id" wire:model="room_category_id">
-                                <option value="">Select Category</option>
-                                @foreach ($roomCategories as $category)
-                                    <option value="{{ $category->id }}">
-                                        {{ $category->title }}
-                                        @if ($category->rommtCategoryHotel)
-                                            - {{ $category->rommtCategoryHotel->name }}
-                                        @endif
-                                    </option>
+                            <label class="form-label">Hotel <span class="text-danger">*</span></label>
+                            <select class="form-select select2 @error('hotel_id') is-invalid @enderror" id="hotel_id"
+                                wire:model="hotel_id">
+                                <option value="">Select Hotel</option>
+                                @foreach ($hotels as $hotel)
+                                    <option value="{{ $hotel->hotels_id }}">{{ $hotel->name }}</option>
                                 @endforeach
+                            </select>
+                            @error('hotel_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">Room Category <span class="text-danger">*</span></label>
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0"
+                                    wire:click="openAddCategoryModal" @if (!$hotel_id) disabled @endif>
+                                    <i class="bx bx-plus-circle"></i> Add Room Category
+                                </button>
+                            </div>
+                            <select class="form-select select2 @error('room_category_id') is-invalid @enderror"
+                                id="room_category_id" wire:model="room_category_id"
+                                @if (!$hotel_id) disabled @endif>
+                                <option value="">Select Category</option>
+                                @forelse ($roomCategories as $category)
+                                    <option value="{{ $category->room_categoris_id }}" @selected($category->room_categoris_id == $room_category_id)>
+                                        {{ $category->title }}</option>
+                                @empty
+                                @endforelse
                             </select>
                             @error('room_category_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            @if (!$hotel_id)
+                                <small class="text-muted">Please select a hotel first</small>
+                            @endif
                         </div>
 
                         <div class="mb-3">
@@ -42,9 +63,10 @@
                             <select class="form-select select2 @error('season_id') is-invalid @enderror" id="season_id"
                                 wire:model="season_id">
                                 <option value="">Select Season</option>
-                                @foreach ($seasons as $season)
-                                    <option value="{{ $season->id }}">{{ $season->name }}</option>
-                                @endforeach
+                                @forelse ($seasons as $season)
+                                    <option value="{{ $season->seasons_id }}">{{ $season->name }}</option>
+                                @empty
+                                @endforelse
                             </select>
                             @error('season_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -77,7 +99,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($roomRatesData as $index => $data)
+                                            @forelse ($roomRatesData as $index => $data)
                                                 <tr>
                                                     <td class="align-middle">
                                                         <strong>{{ $occupancies[$data['occupancy_id']] ?? 'N/A' }}</strong>
@@ -101,7 +123,8 @@
                                                         @enderror
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            @empty
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -113,7 +136,7 @@
 
                         <div class="mt-2 mb-3">
                             <label class="form-label">Status</label>
-                            <p class="text-muted small mb-0">Status is inherited from Room Category and Season.</p>
+                            <p class="text-muted small mb-0">Status is inherited from Room Category.</p>
                         </div>
 
                         <div class="d-flex gap-2">
@@ -135,26 +158,42 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row g-2">
-                        <div class="col-md-6">
-                            <select class="form-select" wire:model.live="filter_room_category_id">
-                                <option value="">Filter by Category</option>
-                                @foreach ($roomCategories as $category)
-                                    <option value="{{ $category->id }}">
-                                        {{ $category->title }}
-                                        @if ($category->rommtCategoryHotel)
-                                            - {{ $category->rommtCategoryHotel->name }}
-                                        @endif
-                                    </option>
-                                @endforeach
+                        <div class="col-md-4">
+                            <select class="form-select" wire:model.live="filter_hotel_id">
+                                <option value="">Filter by Hotel</option>
+                                @forelse ($hotels as $hotel)
+                                    <option value="{{ $hotel->hotels_id }}">{{ $hotel->name }}</option>
+                                @empty
+                                @endforelse
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <select class="form-select" wire:model.live="filter_room_category_id"
+                                @if (!$filter_hotel_id && !count($filterRoomCategories)) disabled @endif>
+                                <option value="">Filter by Category</option>
+                                @if ($filter_hotel_id && count($filterRoomCategories) > 0)
+                                    @forelse ($filterRoomCategories as $category)
+                                        <option value="{{ $category['room_categoris_id'] }}">{{ $category['title'] }}
+                                        </option>
+                                    @empty
+                                    @endforelse
+                                @endif
+                            </select>
+                        </div>
+                        <div class="col-md-3">
                             <select class="form-select" wire:model.live="filter_season_id">
                                 <option value="">Filter by Season</option>
-                                @foreach ($seasons as $season)
-                                    <option value="{{ $season->id }}">{{ $season->name }}</option>
-                                @endforeach
+                                @forelse ($seasons as $season)
+                                    <option value="{{ $season->seasons_id }}">{{ $season->name }}</option>
+                                @empty
+                                @endforelse
                             </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-secondary w-100 p-2"
+                                wire:click="clearFilters" title="Clear All Filters">
+                                <i class="bx bx-x fs-5"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -177,6 +216,7 @@
                                         @endif
                                     </th>
                                     <th>Rates</th>
+                                    <th>Status</th>
                                     <th width="120">Actions</th>
                                 </tr>
                             </thead>
@@ -190,33 +230,40 @@
                                         <td>{{ $rateSets->firstItem() + $index }}</td>
                                         <td>
                                             <strong>{{ $set->roomCategory->title ?? 'N/A' }}</strong><br>
-                                            <small class="text-muted"> <i class="bx bx-door-open" style="font-size: 10px;"></i> {{ $set->roomCategory->rommtCategoryHotel->name ?? '-' }}</small>
+                                            <small class="text-muted"> <i class="bx bx-door-open"
+                                                    style="font-size: 10px;"></i>
+                                                {{ $set->roomCategory->rommtCategoryHotel->name ?? '-' }}</small>
                                         </td>
                                         <td>
                                             @if ($set?->season?->name)
                                                 <div class="text-center">
                                                     <p class="mb-1"> {{ $set->season->name }}</p>
-                                                    <span>{{ $set?->season?->start_date }}</span> →
-                                                    <span>{{ $set?->season?->end_date }}</span>
+                                                    <span class="small">{{ $set->season->start_date }}</span> →
+                                                    <span class="small">{{ $set->season->end_date }}</span>
                                                 </div>
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($rates->count() > 0)
+                                            @if ($rates->isNotEmpty())
                                                 <small>
                                                     @foreach ($rates as $rate)
                                                         <div class="mb-1">
                                                             <strong>{{ $rate->occupancy->title ?? 'N/A' }}:</strong>
-                                                            Weekday:
-                                                            {{ \App\Helpers\SettingHelper::formatCurrency($rate->rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }},
-                                                            Weekend:
-                                                            {{ \App\Helpers\SettingHelper::formatCurrency($rate->weekend_rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }}
+                                                            <span class="text-nowrap">Weekday:
+                                                                {{ \App\Helpers\SettingHelper::formatCurrency($rate->rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }},</span>
+                                                            <span class="text-nowrap">Weekend:
+                                                                {{ \App\Helpers\SettingHelper::formatCurrency($rate->weekend_rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }}</span>
                                                         </div>
                                                     @endforeach
                                                 </small>
                                             @else
                                                 <small class="text-muted">No rates</small>
                                             @endif
+                                        </td>
+                                        <td class="text-center" id="{{ $index }}">
+                                            <input class="form-check-input" type="checkbox" id="{{ $index }}"
+                                                wire:change="toggleStatus({{ $set->roomCategory->room_categoris_id }})"
+                                                @checked($set->roomCategory->status)>
                                         </td>
                                         <td class="text-center">
                                             <a href="javascript:void(0)"
@@ -233,7 +280,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">No {{ $pageTitle }} found.</td>
+                                        <td colspan="6" class="text-center">No {{ $pageTitle }} found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -244,26 +291,68 @@
             </div>
         </div>
     </div>
+    <!-- Add Room Category Modal -->
+    <div class="modal fade @if ($showAddCategoryModal) show @endif" id="addCategoryModal" tabindex="-1"
+        style="@if ($showAddCategoryModal) display: block; @endif"
+        @if ($showAddCategoryModal) aria-modal="true" role="dialog" @endif>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Room Category</h5>
+                    <button type="button" class="btn-close" wire:click="closeAddCategoryModal"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="saveNewCategory">
+                        <div class="mb-3">
+                            <label class="form-label">Category Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('newCategoryTitle') is-invalid @enderror"
+                                wire:model.defer="newCategoryTitle" placeholder="e.g., Deluxe Room">
+                            @error('newCategoryTitle')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rate Type </label>
+                            <select class="form-select @error('newCategoryRateType') is-invalid @enderror"
+                                wire:model.defer="newCategoryRateType">
+                                <option value="">Select Type</option>
+                                @forelse ($rateTypes as $rateType)
+                                    <option value="{{ $rateType->rate_type_id }}">{{ $rateType->title }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                            @error('newCategoryRateType')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" wire:model.defer="newCategoryStatus">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer px-0 pb-0">
+                            <button type="button" class="btn btn-secondary" wire:click="closeAddCategoryModal">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled"
+                                wire:target="saveNewCategory">
+                                <span wire:loading.remove wire:target="saveNewCategory">Create Category</span>
+                                <span wire:loading wire:target="saveNewCategory">
+                                    <i class="spinner-border spinner-border-sm"></i> Creating...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if ($showAddCategoryModal)
+        <div class="modal-backdrop fade show"></div>
+    @endif
 </div>
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeSelect2();
-        });
-
-        function initializeSelect2() {
-            $('#room_category_id, #season_id').select2().on('change', function(e) {
-                @this.set($(this).attr('id'), $(this).val());
-            });
-
-            $('#selected_occupancies').select2().on('change', function(e) {
-                @this.set('selected_occupancies', $(this).val());
-            });
-        }
-
-        Livewire.hook('morph.updated', () => {
-            initializeSelect2();
-        });
-    </script>
-@endpush

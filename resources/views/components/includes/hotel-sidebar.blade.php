@@ -96,13 +96,13 @@
                                  </a>
                              </li>
 
-                             <li class="mb-2">
+                             {{-- <li class="mb-2">
                                  <a href="{{ route('common.room-category') }}" class="text-white"
                                      style="border-radius: 10px; padding: 12px 15px; transition: all 0.3s ease; display: flex; align-items: center; background: rgba(255,255,255,0.1); border-left: 3px solid rgba(255,255,255,0.3);">
                                      <i class="lni lni-layers" style="font-size: 20px; min-width: 30px;"></i>
                                      <span style="margin-left: 10px;">Room Category</span>
                                  </a>
-                             </li>
+                             </li> --}}
 
                              <li class="mb-2">
                                  <a href="{{ route('common.room-category-rates') }}" class="text-white"
