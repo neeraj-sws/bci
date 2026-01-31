@@ -88,7 +88,15 @@
                                      <span style="margin-left: 10px;">Dashboard</span>
                                  </a>
                              </li>
-                             <li class="mb-2">
+                             @php
+                                 $hotelActive = in_array(request()->route()->getName(), [
+                                     'common.hotel-list',
+                                     'common.create-hotel',
+                                     'common.update-hotel',
+                                     'common.hotel-detail',
+                                 ]);
+                             @endphp
+                             <li class="mb-2 {{ $hotelActive ? 'active mm-active' : '' }}">
                                  <a href="{{ route('common.hotel-list') }}" class="text-white"
                                      style="border-radius: 10px; padding: 12px 15px; transition: all 0.3s ease; display: flex; align-items: center; background: rgba(255,255,255,0.1); border-left: 3px solid rgba(255,255,255,0.3);">
                                      <i class="lni lni-home" style="font-size: 20px; min-width: 30px;"></i>

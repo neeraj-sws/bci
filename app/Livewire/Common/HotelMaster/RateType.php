@@ -6,7 +6,7 @@ use App\Models\RateTypes as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class RateType extends Component
 {
     use WithPagination;
@@ -98,7 +98,7 @@ class RateType extends Component
 
         // Check if rate type is being used in hotels table
         $hotelsCount = \App\Models\Hotel::where('rate_type_id', $id)->count();
-        
+
         if ($hotelsCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',

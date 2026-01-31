@@ -5,6 +5,10 @@ namespace App\Livewire\Common\HotelMaster\Hotel;
 use App\Helpers\SettingHelper;
 use App\Models\Clients;
 use App\Models\Hotel as Model;
+use App\Models\Country;
+use App\Models\States;
+use App\Models\City;
+use App\Models\Parks;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
@@ -19,6 +23,18 @@ class HotelList extends Component
     public $pageTitle = 'Hotel List';
     public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
+    
+    // Filters
+    public $filterPark = '';
+    public $filterCountry = '';
+    public $filterState = '';
+    public $filterCity = '';
+    
+    // Filter Data
+    public $parks = [];
+    public $countries = [];
+    public $states = [];
+    public $cities = [];
 
     public $model = Model::class;
     public $view = 'livewire.common.hotel-master.hotel.hotel-list';
@@ -28,6 +44,55 @@ class HotelList extends Component
     public function mount($id = null)
     {
         $this->route = 'common';
+        // Load only essential data on mount
+        $this->parks = Parks::where('status', 1)->orderBy('name')->pluck('name', 'park_id');
+        $this->countries = Country::orderByRaw("CASE WHEN name = 'India' THEN 0 ELSE 1 END")->orderBy('name')->pluck('name', 'country_id');
+    }
+    
+    public function loadStates()
+    {
+        if ($this->filterCountry) {
+            $this->states = States::where('country_id', $this->filterCountry)->orderBy('name')->pluck('name', 'state_id');
+        } else {
+            $this->states = [];
+        }
+    }
+    
+    public function loadCities()
+    {
+        if ($this->filterState) {
+            $this->cities = City::where('state_id', $this->filterState)->orderBy('name')->pluck('name', 'city_id');
+        } else {
+            $this->cities = [];
+        }
+    }
+    
+    public function updatedFilterCountry()
+    {
+        $this->filterState = '';
+        $this->filterCity = '';
+        $this->loadStates();
+        $this->loadCities();
+        $this->resetPage();
+    }
+    
+    public function updatedFilterState()
+    {
+        $this->filterCity = '';
+        $this->loadCities();
+        $this->resetPage();
+    }
+    
+    public function clearFilters()
+    {
+        $this->filterPark = '';
+        $this->filterCountry = '';
+        $this->filterState = '';
+        $this->filterCity = '';
+        $this->search = '';
+        $this->states = [];
+        $this->cities = [];
+        $this->resetPage();
     }
 
     public function render()
@@ -37,8 +102,25 @@ class HotelList extends Component
             ->leftJoin('hotel_categories', 'hotels.hotel_category_id', '=', 'hotel_categories.hotel_category_id')
             ->leftJoin('rate_types', 'hotels.rate_type_id', '=', 'rate_types.rate_type_id')
             ->leftJoin('parks', 'hotels.park_id', '=', 'parks.park_id')
-            ->with(['hotelType', 'hotelCategory', 'hotelRateType', 'hotelMealType.mealType', 'park'])
+            ->leftJoin('country', 'hotels.country_id', '=', 'country.country_id')
+            ->leftJoin('states', 'hotels.state_id', '=', 'states.state_id')
+            ->leftJoin('city', 'hotels.city_id', '=', 'city.city_id')
+            ->with(['hotelType', 'hotelCategory', 'hotelRateType', 'hotelMealType.mealType', 'park', 'country', 'state', 'city'])
             ->where('hotels.name', 'like', "%{$this->search}%");
+        
+        // Apply filters
+        if ($this->filterPark) {
+            $query->where('hotels.park_id', $this->filterPark);
+        }
+        if ($this->filterCountry) {
+            $query->where('hotels.country_id', $this->filterCountry);
+        }
+        if ($this->filterState) {
+            $query->where('hotels.state_id', $this->filterState);
+        }
+        if ($this->filterCity) {
+            $query->where('hotels.city_id', $this->filterCity);
+        }
 
         $sortable = [
             'name'            => 'hotels.name',
@@ -49,6 +131,9 @@ class HotelList extends Component
             'hotel_category'  => 'hotel_categories.title',
             'rate_type'       => 'rate_types.title',
             'park'            => 'parks.name',
+            'country'         => 'country.name',
+            'state'           => 'states.name',
+            'city'            => 'city.name',
         ];
 
         $sortField = $sortable[$this->sortBy] ?? 'hotels.updated_at';
@@ -114,7 +199,7 @@ class HotelList extends Component
     public function shortby($field)
     {
 
-        $allowed = ['name', 'status', 'updated_at', 'created_at', 'hotel_type', 'hotel_category', 'rate_type', 'park'];
+        $allowed = ['name', 'status', 'updated_at', 'created_at', 'hotel_type', 'hotel_category', 'rate_type', 'park', 'country', 'state', 'city'];
         if (!in_array($field, $allowed)) return;
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
