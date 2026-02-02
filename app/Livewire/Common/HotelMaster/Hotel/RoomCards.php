@@ -45,6 +45,7 @@ class RoomCards extends Component
     public function updateSeason($seasonId)
     {
         $this->selectedSeason = $seasonId;
+        $this->loadRoomCategories();
     }
 
     public function toggleRoom($roomId)

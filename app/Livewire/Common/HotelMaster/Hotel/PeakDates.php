@@ -48,6 +48,7 @@ class PeakDates extends Component
     public function updateSeason($seasonId)
     {
         $this->selectedSeason = $seasonId;
+        $this->loadRoomCategories();
     }
 
     public function togglePeak($peakId)
