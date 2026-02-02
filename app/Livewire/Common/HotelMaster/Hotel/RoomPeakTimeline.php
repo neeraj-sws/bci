@@ -38,32 +38,20 @@ class RoomPeakTimeline extends Component
             ->map(function ($room) {
                 // Filter peak dates by selected season
                 $room->peakDates = $room->peakDates->filter(function ($peak) {
-                    // Get occupancies matching the selected season
-                    $filteredOccs = $peak->occupancies->filter(function ($occ) {
-                        return is_null($occ->season_id) 
-                            || $occ->season_id == $this->selectedSeason;
-                    });
-
-                    // Only include peak dates that have at least one matching occupancy
-                    if ($filteredOccs->count() === 0) {
-                        return false;
+                    // Filter by selected season - check peak_date's season_id directly
+                    if ($this->selectedSeason) {
+                        return $peak->season_id == $this->selectedSeason;
                     }
-
-                    // Filter out past peak dates (check end_date from occupancies)
-                    $hasUpcoming = $filteredOccs->filter(function ($occ) {
-                        if (!$occ->end_date) return true;
-                        return Carbon::parse($occ->end_date)->gte(now());
-                    })->count() > 0;
-
-                    return $hasUpcoming;
+                    return true;
+                })
+                ->filter(function ($peak) {
+                    // Filter out past peak dates - check end_date from peak_dates table
+                    if (!$peak->end_date) return true;
+                    return Carbon::parse($peak->end_date)->gte(now());
                 })
                 ->sortBy(function ($peak) {
-                    // Sort by earliest start_date from occupancies
-                    $occupancies = $peak->occupancies->filter(function ($occ) {
-                        return is_null($occ->season_id) 
-                            || $occ->season_id == $this->selectedSeason;
-                    });
-                    return $occupancies->min('start_date') ?? '';
+                    // Sort by earliest start_date from peak_dates table
+                    return $peak->start_date ?? '';
                 })
                 ->values();
 

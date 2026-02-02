@@ -137,8 +137,8 @@ class PeakDatePrices extends Component
         }
 
         if ($this->filter_season_id) {
-            $query->whereHas('peakDate', function ($q) {
-                $q->where('season_id', $this->filter_season_id);
+            $query->whereHas('peakDate.season', function ($q) {
+                $q->where('seasons_id', $this->filter_season_id);
             });
         }
 
@@ -160,8 +160,8 @@ class PeakDatePrices extends Component
                 $q->whereHas('peakDate', function ($subQ) {
                     $subQ->where('title', 'like', "%{$this->search}%");
                 })
-                    ->orWhereHas('season', function ($subQ) {
-                        $subQ->where('title', 'like', "%{$this->search}%");
+                    ->orWhereHas('peakDate.season', function ($subQ) {
+                        $subQ->where('name', 'like', "%{$this->search}%");
                     })
                     ->orWhereHas('occupancy', function ($subQ) {
                         $subQ->where('title', 'like', "%{$this->search}%");

@@ -47,9 +47,7 @@ class KpiCards extends Component
             ->where('status', 1);
 
         if ($this->selectedSeason) {
-            $peakDateQuery->whereHas('occupancies', function($query) {
-                $query->where('season_id', $this->selectedSeason);
-            });
+            $peakDateQuery->where('season_id', $this->selectedSeason);
         }
 
         $this->totalPeakDates = $peakDateQuery->count();
@@ -62,7 +60,7 @@ class KpiCards extends Component
                 $query->whereHas('roomCategory.occupancies', function($q) {
                     $q->where('season_id', $this->selectedSeason);
                 })
-                ->orWhereHas('peakDate.occupancies', function($q) {
+                ->orWhereHas('peakDate', function($q) {
                     $q->where('season_id', $this->selectedSeason);
                 });
             });

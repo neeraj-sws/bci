@@ -77,9 +77,7 @@ class PeakDates extends Component
 
     public function getPeakOccupancies($peak)
     {
-        return $peak->occupancies->filter(function ($occ) {
-            return is_null($occ->season_id) || $occ->season_id == $this->selectedSeason;
-        });
+        return $peak->occupancies;
     }
 
 
@@ -93,12 +91,9 @@ class PeakDates extends Component
 
     public function getPeakDateRange($peak)
     {
-        $occupancies = $this->getPeakOccupancies($peak);
-        $firstOcc = $occupancies->first();
-
         return [
-            'start_date' => $firstOcc->start_date ?? null,
-            'end_date' => $firstOcc->end_date ?? null,
+            'start_date' => $peak->start_date ?? null,
+            'end_date' => $peak->end_date ?? null,
         ];
     }
 

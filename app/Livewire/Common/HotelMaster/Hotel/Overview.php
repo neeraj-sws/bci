@@ -56,9 +56,6 @@ class Overview extends Component
         $roomCategories = RoomCategory::where('hotel_id', $this->hotelId)
             ->where('status', 1)
             ->with(['occupancies' => function ($query) {
-                if ($this->selectedSeason) {
-                    $query->where('season_id', $this->selectedSeason);
-                }
                 return $query->with('occupancy');
             }])
             ->get();
@@ -76,12 +73,7 @@ class Overview extends Component
 
         $peakDates = PeackDate::where('hotel_id', $this->hotelId)
             ->where('status', 1)
-            ->with(['occupancies' => function ($query) {
-                if ($this->selectedSeason) {
-                    $query->where('season_id', $this->selectedSeason);
-                }
-                return $query->with('occupancy');
-            }])
+            ->with(['occupancies.occupancy'])
             ->get();
 
         $maxSurcharge = 0;
