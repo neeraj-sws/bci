@@ -69,6 +69,14 @@ class PeakDates extends Component
     public function getFilteredPeakDates($room)
     {
         return $room->peakDates->filter(function ($peak) {
+            // Filter by selected season - check peak_date's season_id directly
+            if ($this->selectedSeason) {
+                if ($peak->season_id != $this->selectedSeason) {
+                    return false;
+                }
+            }
+            
+            // Check that peak has occupancies
             $filteredOccs = $this->getPeakOccupancies($peak);
             return $filteredOccs->count() > 0;
         });

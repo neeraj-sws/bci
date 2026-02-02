@@ -55,15 +55,15 @@
         <!-- Right Side - Season Filter & Actions -->
         <div class="d-flex gap-3 align-items-center ms-4">
             <!-- Season Selector -->
-            <div style="min-width: 200px;" wire:ignore>
+            <div style="min-width: 200px;">
                 <label
                     style="font-size: 11px; color: #6B7280; font-weight: 500; display: block; margin-bottom: 6px;">Select
                     Season</label>
-                <select class="form-select select2" id="selectedSeason" placeholder="Select Season"
+                <select class="form-select" wire:model.live="selectedSeason"
                     style="font-size: 14px;">
                     <option value="">All Seasons</option>
                     @foreach ($seasons as $season)
-                        <option value="{{ $season->seasons_id }}" {{ $selectedSeason == $season->seasons_id ? 'selected' : '' }}>
+                        <option value="{{ $season->seasons_id }}">
                             {{ $season->name }} ({{ \Carbon\Carbon::parse($season->start_date)->format('M d') }} - {{ \Carbon\Carbon::parse($season->end_date)->format('M d') }})
                         </option>
                     @endforeach
