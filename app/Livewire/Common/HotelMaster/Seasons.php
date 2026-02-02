@@ -53,10 +53,27 @@ class Seasons extends Component
         return view('livewire.common.hotel-master.seasons', compact('items'));
     }
 
+    private function seasonOverlaps(): bool
+    {
+        return Season::where(function ($q) {
+            $q->whereDate('start_date', '<=', $this->end_date)
+                ->whereDate('end_date', '>=', $this->start_date);
+        })
+            ->when($this->itemId, fn($q) => $q->where('id', '!=', $this->itemId))
+            ->exists();
+    }
+
+
     public function store()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::create($this->payload());
 
         $this->resetForm();
@@ -79,7 +96,13 @@ class Seasons extends Component
     public function update()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::findOrFail($this->itemId)->update($this->payload());
 
         $this->resetForm();
