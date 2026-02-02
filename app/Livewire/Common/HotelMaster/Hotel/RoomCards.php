@@ -89,6 +89,11 @@ class RoomCards extends Component
         return $this->getFilteredPeakDates($room)->take(1);
     }
 
+    public function getPeakOccupancies($peak)
+    {
+        return $peak->occupancies;
+    }
+
     public function getPeakDateRange($peak)
     {
         return [
