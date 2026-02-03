@@ -354,6 +354,8 @@ public function messages()
                 if (str_starts_with($particular, 'day')) {
                     $days[] = [
                         'particular'        => $r['Particular'] ?? '',
+                        'hotel'     => $r['Hotel'] ?? '',
+                        'rooms'     => $r['Rooms'] ?? '',
                         'activitiesCovered' => $r['Activities Covered'] ?? '',
                         'roomPerNight'      => (int)($r['Room per Night'] ?? 0),
                         'numberOfRooms'     => (int)($r['No of Rooms'] ?? 0),
@@ -370,6 +372,8 @@ public function messages()
                 } else {
                     $key = $r['Particular'] ?? 'unknown';
                     $summary[$key] = [
+                        'Hotel'          => $r['Hotel'] ?? '',
+                        'Rooms'          => $r['Rooms'] ?? '',
                         'Activities Covered'          => $r['Activities Covered'] ?? '',
                         'Room per Night'              => $r['Room per Night'] ?? '',
                         'No of Rooms'                 => $r['No of Rooms'] ?? '',
