@@ -236,6 +236,9 @@
                                                             @if (in_array($key, ['particular', 'activitiesCovered']))
                                                                 <textarea class="form-control textarea-cell"
                                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
+                                                            @elseif (in_array($key, ['hotel','rooms']))
+                                                                <textarea class="form-control textarea-cell"
+                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
                                                             @elseif (in_array($key, ['totalForTheDay', 'hotelTotal', 'hotelBalance']))
                                                                 <input type="text" class="form-control short-input"
                                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"

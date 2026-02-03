@@ -100,7 +100,7 @@ class Quotation extends Component
 
         public function convertEstimate($uuid)
     {
-        $this->redirect(route($this->route . '.add-quotation', ['lead_id' => $uuid]));
+        $this->redirect(route($this->route . '.add-hotel-quotation', ['lead_id' => $uuid]));
     }
 
     public function shortby($field)

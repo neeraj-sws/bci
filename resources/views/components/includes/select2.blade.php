@@ -19,11 +19,64 @@
             if ($this.hasClass("is-invalid")) {
                 $this.next(".select2-container").find(".select2-selection").addClass("is-invalid");
             }
- 
+            addClearButton($this); // ✅ HERE
             $this.addClass("select2-initialized");
         });
     }
-    
+    function addClearButton($select) {
+        if (!$select.data('clearable')) return;
+
+        const $container = $select.next('.select2-container');
+        const $selection = $container.find('.select2-selection');
+
+        if ($selection.find('.select2-clear-btn').length) return;
+
+        const $clear = $(`
+            <span class="select2-clear-btn"
+                style="
+                    position:absolute;
+                    right:25px;
+                    top:50%;
+                    transform:translateY(-50%);
+                    cursor:pointer;
+                    font-size:12px;
+                    color:red;
+                    display:none;
+                    z-index:3;
+                ">×</span>
+        `);
+
+        $clear.on('click', function (e) {
+            e.stopPropagation();
+
+            $select.val(null).trigger('change.select2');
+
+            const compId = $select.closest('[wire\\:id]').attr('wire:id');
+            const component = Livewire.find(compId);
+            if (component) component.set($select.attr('id'), null);
+
+            $clear.hide();
+        });
+
+        // make room for ❌
+        $selection.css({
+            position: 'relative',
+            paddingRight: '22px'
+        });
+
+        $selection.append($clear);
+
+        // toggle visibility on value change
+        $select.on('change.select2', function () {
+            const hasValue = !!$(this).val();
+            $clear.toggle(hasValue);
+        });
+
+        // initial state
+        if ($select.val()) {
+            $clear.show();
+        }
+    }
         // NEW THING 
     $(document).on('select2:open', function(e) {
         const $select = $(e.target);
