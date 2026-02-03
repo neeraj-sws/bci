@@ -98,7 +98,8 @@
                                 Child With Bed Rate <span class="text-danger">*</span>
                             </label>
                             <input type="number"
-                                class="form-control @error('child_with_bed_rate') is-invalid @enderror"
+                                onfocus="Number(this.value) <= 0 && this.select()"
+                                class="form-control text-end @error('child_with_bed_rate') is-invalid @enderror"
                                 wire:model.defer="child_with_bed_rate" placeholder="Amount">
                             @error('child_with_bed_rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -111,7 +112,8 @@
                                 Child Without Bed Rate
                             </label>
                             <input type="number"
-                                class="form-control @error('child_without_bed_rate') is-invalid @enderror"
+                                onfocus="Number(this.value) <= 0 && this.select()"
+                                class="form-control text-end @error('child_without_bed_rate') is-invalid @enderror"
                                 wire:model.defer="child_without_bed_rate" placeholder="Amount">
                             @error('child_without_bed_rate')
                                 <div class="invalid-feedback">{{ $message }}</div>

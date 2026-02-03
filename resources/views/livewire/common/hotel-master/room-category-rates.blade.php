@@ -106,7 +106,8 @@
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
+                                                            onfocus="Number(this.value) <= 0 && this.select()"
+                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
                                                             wire:model.defer="roomRatesData.{{ $index }}.rate"
                                                             placeholder="Enter weekday rate">
                                                         @error('roomRatesData.' . $index . '.rate')
@@ -115,7 +116,8 @@
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
+                                                            onfocus="Number(this.value) <= 0 && this.select()"
+                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
                                                             wire:model.defer="roomRatesData.{{ $index }}.weekend_rate"
                                                             placeholder="Enter weekend rate">
                                                         @error('roomRatesData.' . $index . '.weekend_rate')
