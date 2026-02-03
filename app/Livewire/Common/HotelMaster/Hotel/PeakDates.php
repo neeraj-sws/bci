@@ -48,6 +48,7 @@ class PeakDates extends Component
     public function updateSeason($seasonId)
     {
         $this->selectedSeason = $seasonId;
+        $this->loadRoomCategories();
     }
 
     public function togglePeak($peakId)
@@ -69,6 +70,14 @@ class PeakDates extends Component
     public function getFilteredPeakDates($room)
     {
         return $room->peakDates->filter(function ($peak) {
+            // Filter by selected season - check peak_date's season_id directly
+            if ($this->selectedSeason) {
+                if ($peak->season_id != $this->selectedSeason) {
+                    return false;
+                }
+            }
+            
+            // Check that peak has occupancies
             $filteredOccs = $this->getPeakOccupancies($peak);
             return $filteredOccs->count() > 0;
         });
@@ -77,9 +86,7 @@ class PeakDates extends Component
 
     public function getPeakOccupancies($peak)
     {
-        return $peak->occupancies->filter(function ($occ) {
-            return is_null($occ->season_id) || $occ->season_id == $this->selectedSeason;
-        });
+        return $peak->occupancies;
     }
 
 
@@ -93,12 +100,9 @@ class PeakDates extends Component
 
     public function getPeakDateRange($peak)
     {
-        $occupancies = $this->getPeakOccupancies($peak);
-        $firstOcc = $occupancies->first();
-
         return [
-            'start_date' => $firstOcc->start_date ?? null,
-            'end_date' => $firstOcc->end_date ?? null,
+            'start_date' => $peak->start_date ?? null,
+            'end_date' => $peak->end_date ?? null,
         ];
     }
 

@@ -23,91 +23,86 @@
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
 
-                        <!-- Peak Date -->
+                        <!-- Title -->
                         <div class="mb-3">
-                            <label class="form-label">Peak Date <span class="text-danger">*</span></label>
-                            <select class="form-select select2 @error('peak_date_id') is-invalid @enderror"
-                                wire:model.live="peak_date_id" id="peak_date_id">
-                                <option value="">Select Peak Date</option>
-                                @foreach ($peakDates as $peakDate)
-                                    <option value="{{ $peakDate->id }}">
-                                        {{ $peakDate->title }} - {{ $peakDate->hotel->name ?? '' }} - {{ $peakDate->roomCategory->title ?? '' }}
-                                    </option>
+                            <label class="form-label">Peak Date Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                wire:model.defer="title" placeholder="e.g. Christmas Peak">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- Hotel -->
+                        <div class="mb-3">
+                            <label class="form-label">Hotel <span class="text-danger">*</span></label>
+                            <select id="hotel_id" class="form-select select2 @error('hotel_id') is-invalid @enderror"
+                                wire:model.live="hotel_id">
+                                <option value="">Select Hotel</option>
+                                @foreach ($hotels as $hotel)
+                                    <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
                                 @endforeach
                             </select>
-                            @error('peak_date_id')
+                            @error('hotel_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        @if (!$peak_date_id)
-                            <div class="alert alert-info py-2 px-3 mb-3">
-                                <i class="bx bx-info-circle"></i> Please select a Peak Date first
-                            </div>
-                        @elseif (empty($occupancies))
-                            <div class="alert alert-warning py-2 px-3 mb-3">
-                                <i class="bx bx-error-circle"></i> No occupancies configured for this peak date's room
-                                category. Please add occupancies first.
-                            </div>
-                        @endif
-
-                        <!-- Season -->
                         <div class="mb-3">
-                            <label class="form-label">Season <span class="text-danger">*</span></label>
-                            <select class="form-select @error('season_id') is-invalid @enderror"
-                                wire:model.defer="season_id">
-                                <option value="">Select Season</option>
-                                @foreach ($seasons as $season)
-                                    <option value="{{ $season->season_id }}">{{ $season->title }}</option>
+                            <label class="form-label">
+                                Room Categories <span class="text-danger">*</span>
+                            </label>
+                            <select id="selected_room_categories"
+                                class="form-select select2 @error('selected_room_categories') is-invalid @enderror"
+                                wire:model.live="selected_room_categories"
+                                @if (!$hotel_id) disabled @endif>
+                                <option value="">Select Room Categories</option>
+                                @foreach ($roomCategories as $id => $name)
+                                    <option value="{{ $id }}">
+                                        {{ $name }}</option>
                                 @endforeach
                             </select>
-                            @error('season_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            @if (!$hotel_id)
+                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a
+                                    Hotel first</small>
+                            @endif
+                            @error('selected_room_categories')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <!-- Dates -->
                         <div class="row mb-3">
+                            @if ($lowestStartDate && $highestEndDate)
+                                <div class="col-12 mb-2">
+                                    <small class="text-muted">
+                                        <i class="bx bx-info-circle"></i>
+                                        Season will be auto-detected based on selected date range.
+                                        Valid range: {{ $lowestStartDate }} to {{ $highestEndDate }}
+                                    </small>
+                                </div>
+                            @endif
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" data-range="proper" wire:model="start_date">
+                                    data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
+                                    wire:model.defer="start_date"
+                                    wire:key="start-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
+                                    @if (!$selected_room_categories) disabled @endif>
                                 @error('start_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="end"
-                                    data-group="booking1" data-range="proper" wire:model="end_date">
+                                    data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
+                                    data-end-to="{{ $highestEndDate }}" wire:model.defer="end_date"
+                                    wire:key="end-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
+                                    @if (!$selected_room_categories) disabled @endif>
                                 @error('end_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <!-- Occupancy Selection -->
-                        <div class="mb-3">
-                            <label class="form-label">Occupancy <span class="text-danger">*</span></label>
-                            @if(!$peak_date_id)
-                                <div class="alert alert-info py-2 px-3 mb-2">
-                                    <i class="bx bx-info-circle"></i> Please select a Peak Date first
-                                </div>
-                            @elseif(empty($occupancies))
-                                <div class="alert alert-warning py-2 px-3 mb-2">
-                                    <i class="bx bx-error-circle"></i> No occupancies configured for this room category. Please add occupancies in Room Category first.
-                                </div>
-                            @endif
-                            <select class="form-select select2" id="selected_occupancies"
-                                wire:model.live="selected_occupancies" multiple
-                                @if(!$peak_date_id || empty($occupancies)) disabled @endif>
-                                @foreach ($occupancies as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
-                            @error('selected_occupancies')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <!-- Dynamic Rate Inputs -->
@@ -131,7 +126,8 @@
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
+                                                            onfocus="Number(this.value) <= 0 && this.select()"
+                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
                                                             wire:model.defer="roomRatesData.{{ $index }}.rate"
                                                             placeholder="Enter weekday rate">
                                                         @error('roomRatesData.' . $index . '.rate')
@@ -140,7 +136,8 @@
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
+                                                            onfocus="Number(this.value) <= 0 && this.select()"
+                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
                                                             wire:model.defer="roomRatesData.{{ $index }}.weekend_rate"
                                                             placeholder="Enter weekend rate">
                                                         @error('roomRatesData.' . $index . '.weekend_rate')
@@ -155,10 +152,20 @@
                             </div>
                         @endif
 
+                        <!-- Status -->
+                        <div class="mt-2 mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" wire:model.defer="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+
+
                         <!-- Actions -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled"
-                                @if (!$peak_date_id || empty($occupancies)) disabled @endif>
+                                @if (!$peak_date_id && empty($roomRatesData)) disabled @endif>
                                 {{ $isEditing ? 'Update ' . $pageTitle : 'Save ' . $pageTitle }}
                                 <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
@@ -192,8 +199,8 @@
                         <div class="col-md-3">
                             <select class="form-select form-select-sm" wire:model.live="filter_room_category_id">
                                 <option value="">All Room Categories</option>
-                                @foreach ($roomCategories as $category)
-                                    <option value="{{ $category->room_categoris_id }}">{{ $category->title }}</option>
+                                @foreach ($roomCategories as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -213,8 +220,8 @@
                         </div>
                         <div class="col-md-2">
                             <div class="position-relative">
-                                <input type="text" class="form-control form-control-sm ps-4" placeholder="Search..."
-                                    wire:model.live="search">
+                                <input type="text" class="form-control form-control-sm ps-4"
+                                    placeholder="Search..." wire:model.live="search">
                                 <span class="position-absolute product-show translate-middle-y">
                                     <i class="bx bx-search"></i>
                                 </span>
@@ -240,9 +247,8 @@
 
                             <tbody>
                                 @php
-                                    $groupedItems = $items->groupBy(function ($item) {
-                                        return $item->peak_date_id . '-' . $item->season_id . '-' . $item->start_date . '-' . $item->end_date;
-                                    });
+                                    // Group by peak_date_id only since season/dates are now in peak_dates table
+                                    $groupedItems = $items->groupBy('peak_date_id');
                                 @endphp
 
                                 @forelse ($groupedItems as $key => $group)
@@ -253,12 +259,16 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <strong>{{ $firstItem->peakDate->title ?? '-' }}</strong><br>
-                                            <small class="text-muted">{{ $firstItem->peakDate->hotel->name ?? '-' }}</small><br>
-                                            <small class="text-muted"><i class="bx bx-door-open" style="font-size: 10px;"></i> {{ $firstItem->peakDate->roomCategory->title ?? '-' }}</small>
+                                            <small
+                                                class="text-muted">{{ $firstItem->peakDate->hotel->name ?? '-' }}</small><br>
+                                            <small class="text-muted"><i class="bx bx-door-open"
+                                                    style="font-size: 10px;"></i>
+                                                {{ $firstItem->peakDate->roomCategory->title ?? '-' }}</small>
                                         </td>
-                                        <td>{{ $firstItem->season->title ?? '-' }}</td>
+                                        <td>{{ $firstItem->peakDate->season->title ?? '-' }}</td>
                                         <td>
-                                            <small>{{ $firstItem->start_date }} → {{ $firstItem->end_date }}</small>
+                                            <small>{{ $firstItem->peakDate->start_date ?? '-' }} →
+                                                {{ $firstItem->peakDate->end_date ?? '-' }}</small>
                                         </td>
                                         <td>
                                             @foreach ($group as $item)
@@ -274,9 +284,10 @@
                                             @endforeach
                                         </td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0)" wire:click="edit({{ $firstItem->id }})" class="me-1" ><i
-                                                    class="bx bx-edit fs-5"></i></a>
-                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $firstItem->id }})"><i
+                                            <a href="javascript:void(0)" wire:click="edit({{ $firstItem->id }})"
+                                                class="me-1"><i class="bx bx-edit fs-5"></i></a>
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $firstItem->id }})"><i
                                                     class="bx bx-trash text-danger fs-5"></i></a>
                                         </td>
                                     </tr>

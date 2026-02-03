@@ -45,6 +45,7 @@ class RoomCards extends Component
     public function updateSeason($seasonId)
     {
         $this->selectedSeason = $seasonId;
+        $this->loadRoomCategories();
     }
 
     public function toggleRoom($roomId)
@@ -66,23 +67,20 @@ class RoomCards extends Component
     public function getFilteredPeakDates($room)
     {
         return $room->peakDates
-
             ->filter(function ($peak) {
-                $filteredOccs = $peak->occupancies->filter(function ($occ) {
-                    return is_null($occ->season_id) || $occ->season_id == $this->selectedSeason;
-                });
-
-                if ($filteredOccs->count() === 0) return false;
-                $hasUpcoming = $filteredOccs->filter(function ($occ) {
-                    if (!$occ->end_date) return true;
-                    return Carbon::parse($occ->end_date)->gte(now());
-                })->count() > 0;
-
-                return $hasUpcoming;
+                // Filter by selected season - check peak_date's season_id directly
+                if ($this->selectedSeason) {
+                    return $peak->season_id == $this->selectedSeason;
+                }
+                return true;
+            })
+            ->filter(function ($peak) {
+                // Filter out past peak dates - check end_date from peak_dates table
+                if (!$peak->end_date) return true;
+                return Carbon::parse($peak->end_date)->gte(now());
             })
             ->sortBy(function ($peak) {
-                $occupancies = $this->getPeakOccupancies($peak);
-                return $occupancies->min('start_date') ?? '';
+                return $peak->start_date ?? '';
             });
     }
 
@@ -92,22 +90,16 @@ class RoomCards extends Component
         return $this->getFilteredPeakDates($room)->take(1);
     }
 
-
     public function getPeakOccupancies($peak)
     {
-        return $peak->occupancies->filter(function ($occ) {
-            return is_null($occ->season_id) || $occ->season_id == $this->selectedSeason;
-        });
+        return $peak->occupancies;
     }
 
     public function getPeakDateRange($peak)
     {
-        $occupancies = $this->getPeakOccupancies($peak);
-        $firstOcc = $occupancies->first();
-
         return [
-            'start_date' => $firstOcc->start_date ?? null,
-            'end_date' => $firstOcc->end_date ?? null,
+            'start_date' => $peak->start_date ?? null,
+            'end_date' => $peak->end_date ?? null,
         ];
     }
 

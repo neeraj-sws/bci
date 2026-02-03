@@ -20,9 +20,8 @@ class PeakDateRoomCategoryOccupances extends Model
         'occupancy_id',
         'rate',
         'weekend_rate',
-        'season_id',
-        'start_date',
-        'end_date',
+        'room_category_id',
+        'status',
     ];
 
     // ID ALIAS
@@ -39,10 +38,5 @@ class PeakDateRoomCategoryOccupances extends Model
     public function occupancy()
     {
         return $this->belongsTo(Occupancy::class, 'occupancy_id', 'occupancy_id');
-    }
-
-    public function season()
-    {
-        return $this->belongsTo(Season::class, 'season_id', 'seasons_id');
     }
 }

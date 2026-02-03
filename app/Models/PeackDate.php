@@ -21,12 +21,20 @@ class PeackDate extends Model
         "is_new_year",
         "status",
         "room_category_id",
+        "season_id",
+        "start_date",
+        "end_date",
         "notes"
     ];
 
     public function hotel()
     {
         return $this->belongsTo(Hotel::class, 'hotel_id', 'hotels_id');
+    }
+
+    public function season()
+    {
+        return $this->belongsTo(Season::class, 'season_id', 'seasons_id');
     }
 
 

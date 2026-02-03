@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Layout, On};
 use App\Models\Season;
 use App\Models\Hotel;
-use App\Models\PeakDateRoomCategoryOccupances;
+use App\Models\PeackDate;
 use App\Models\RoomCategoryOccupances;
 
 #[Layout('components.layouts.hotel-app')]
@@ -53,10 +53,27 @@ class Seasons extends Component
         return view('livewire.common.hotel-master.seasons', compact('items'));
     }
 
+    private function seasonOverlaps(): bool
+    {
+        return Season::where(function ($q) {
+            $q->whereDate('start_date', '<=', $this->end_date)
+                ->whereDate('end_date', '>=', $this->start_date);
+        })
+            ->when($this->itemId, fn($q) => $q->where('id', '!=', $this->itemId))
+            ->exists();
+    }
+
+
     public function store()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::create($this->payload());
 
         $this->resetForm();
@@ -79,7 +96,13 @@ class Seasons extends Component
     public function update()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::findOrFail($this->itemId)->update($this->payload());
 
         $this->resetForm();
@@ -88,13 +111,13 @@ class Seasons extends Component
 
     public function confirmDelete($id)
     {
-        // Check if season is being used in peak_date_room_category_occupances table
-        $seasonUsageCount = PeakDateRoomCategoryOccupances::where('season_id', $id)->count();
+        // Check if season is being used in peak_dates table
+        $seasonUsageCount = PeackDate::where('season_id', $id)->count();
 
         if ($seasonUsageCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',
-                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' price entry(ies).'
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' peak date(s).'
             ]);
             return;
         }
@@ -116,12 +139,12 @@ class Seasons extends Component
     public function delete()
     {
         // Double-check before deletion
-        $seasonUsageCount = PeakDateRoomCategoryOccupances::where('season_id', $this->itemId)->count();
+        $seasonUsageCount = PeackDate::where('season_id', $this->itemId)->count();
 
         if ($seasonUsageCount > 0) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',
-                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' price entry(ies).'
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' peak date(s).'
             ]);
             return;
         }

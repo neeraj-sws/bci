@@ -48,7 +48,7 @@ class ChildPolicies extends Component
             ->whereNotNull('peak_date_id');
 
         if ($this->selectedSeason && $this->selectedSeason !== '') {
-            $query->whereHas('peakDate.occupancies', function ($query) {
+            $query->whereHas('peakDate', function ($query) {
                 $query->where('season_id', $this->selectedSeason);
             });
         }
