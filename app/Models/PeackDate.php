@@ -18,11 +18,12 @@ class PeackDate extends Model
     protected $fillable = [
         "hotel_id",
         "title",
-        "start_date",
-        "end_date",
         "is_new_year",
         "status",
         "room_category_id",
+        "season_id",
+        "start_date",
+        "end_date",
         "notes"
     ];
 
@@ -31,23 +32,28 @@ class PeackDate extends Model
         return $this->belongsTo(Hotel::class, 'hotel_id', 'hotels_id');
     }
 
+    public function season()
+    {
+        return $this->belongsTo(Season::class, 'season_id', 'seasons_id');
+    }
+
 
     // ID ALIAS
     public function getIdAttribute()
     {
         return $this->peak_dates_id;
     }
-    
+
     public function roomCategory()
     {
         return $this->belongsTo(RoomCategory::class, 'room_category_id', 'room_categoris_id');
     }
-    
+
     public function occupancies()
     {
-        return $this->hasMany(PeakDateRoomCategoryOccupances::class, 'peak_date_id', 'peak_dates_id');
+        return $this->hasMany(PeakDateRoomCategoryOccupances::class, 'peak_date_id', 'peak_dates_id')->whereNull('soft_delete');
     }
-    
+
     public function childPolicies()
     {
         return $this->hasMany(ChildPolicy::class, 'peak_date_id', 'peak_dates_id');

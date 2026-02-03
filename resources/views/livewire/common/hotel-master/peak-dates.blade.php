@@ -49,121 +49,27 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">
-                                Room Category <span class="text-danger">*</span>
+                                Room Categories <span class="text-danger">*</span>
                             </label>
-                            <select id="room_category_id"
-                                class="form-select select2 @error('room_category_id') is-invalid @enderror"
-                                wire:model="room_category_id">
-                                <option value="">Select Ocupancy</option>
+                            <select id="selected_room_categories"
+                                class="form-select select2 @error('selected_room_categories') is-invalid @enderror"
+                                wire:model.live="selected_room_categories" multiple
+                                @if (!$hotel_id) disabled @endif>
+                                <option value="">Select Room Categories</option>
                                 @foreach ($roomCategoys as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    <option value="{{ $id }}" @selected(in_array($id, $selected_room_categories))>
+                                        {{ $name }}</option>
                                 @endforeach
                             </select>
-                            @error('room_category_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            @if (!$hotel_id)
+                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a
+                                    Hotel first</small>
+                            @endif
+                            @error('selected_room_categories')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Dates -->
-                        <div class="row my-3">
-                            <div class="col-lg-6 col-sm-6">
-                                <label class="form-label mb-1">Start Date <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" data-range="proper" wire:model="start_date">
-                                @error('start_date')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <label class="form-label mb-1">End Date <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control datepicker" data-role="end"
-                                    data-group="booking1" data-range="proper" wire:model="end_date">
-                                @error('end_date')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                        </div>
-                        <!-- Notes -->
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" wire:model.live="show_notes"
-                                id="show_notes">
-                            <label class="form-check-label" for="show_notes">
-                                Show Notes
-                            </label>
-                        </div>
-                        @if ($show_notes)
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    Notes <span class="text-danger">*</span>
-                                </label>
-                                <textarea class="form-control @error('notes') is-invalid @enderror" wire:model.defer="notes"
-                                    placeholder="Explain why this period is peak..."></textarea>
-
-                                @error('notes')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        @endif
-
-                        {{-- Occupancy Selection --}}
-                        <div class="mb-3">
-                            <label class="form-label">Occupancy <span class="text-danger">*</span></label>
-                            <select class="form-select select2" id="selected_occupancies"
-                                wire:model.live="selected_occupancies" multiple>
-                                @foreach ($occupances as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
-                            @error('selected_occupancies')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        {{-- Dynamic Rate Inputs --}}
-                        @if (count($roomRatesData) > 0)
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Rates for Selected Occupancies</label>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Occupancy</th>
-                                                <th>Weekday Rate <span class="text-danger">*</span></th>
-                                                <th>Weekend Rate <span class="text-danger">*</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($roomRatesData as $index => $data)
-                                                <tr>
-                                                    <td class="align-middle">
-                                                        <strong>{{ $occupances[$data['ocupancy_id']] ?? 'N/A' }}</strong>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
-                                                            wire:model.defer="roomRatesData.{{ $index }}.rate"
-                                                            placeholder="Enter weekday rate">
-                                                        @error('roomRatesData.' . $index . '.rate')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01"
-                                                            class="form-control form-control-sm @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
-                                                            wire:model.defer="roomRatesData.{{ $index }}.weekend_rate"
-                                                            placeholder="Enter weekend rate">
-                                                        @error('roomRatesData.' . $index . '.weekend_rate')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        @endif
                         <!-- Status -->
                         <div class="mt-2 mb-3">
                             <label class="form-label">Status</label>
@@ -213,15 +119,14 @@
                             <thead class="lightgradient">
                                 <tr>
                                     <th>#</th>
-                                    <th wire:click="sortby('title')" style="cursor: pointer;" >Title
-                                         @if ($sortBy === 'title')
+                                    <th wire:click="sortby('title')" style="cursor: pointer;">Title
+                                        @if ($sortBy === 'title')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
                                     <th>Hotel</th>
-                                    <th>Duration</th>
-                                    <th>Rates</th>
+                                    <th>Room Category</th>
                                     <th>Status</th>
                                     <th width="80">Actions</th>
                                 </tr>
@@ -230,46 +135,31 @@
                             <tbody>
                                 @forelse ($items as $index => $item)
                                     <tr wire:key="{{ $item->id }}">
-                                        <td>{{  $items->firstItem() + $index }}</td>
+                                        <td>{{ $items->firstItem() + $index }}</td>
                                         <td>{{ $item->title }}</td>
                                         <td>{{ $item->hotel->name ?? '-' }}</td>
-                                        <td>{{ $item->start_date }} → {{ $item->end_date }}</td>
-                                        <td>
-                                            @if ($item->occupancies && $item->occupancies->count() > 0)
-                                                <small>
-                                                    @foreach ($item->occupancies as $occ)
-                                                        <div class="mb-1">
-                                                            <strong>{{ $occ->occupancy->title ?? 'N/A' }}:</strong>
-                                                            Weekday:
-                                                            {{ \App\Helpers\SettingHelper::formatCurrency($occ->rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }},
-                                                            Weekend:
-                                                            {{ \App\Helpers\SettingHelper::formatCurrency($occ->weekend_rate ?? 0, \App\Helpers\SettingHelper::getGenrealSettings('number_format')) }}
-                                                        </div>
-                                                    @endforeach
-                                                </small>
-                                            @else
-                                                <small class="text-muted">No rates</small>
-                                            @endif
-                                        </td>
+                                        <td>{{ $item->roomCategory->title ?? '-' }}</td>
                                         <td>
                                             <input type="checkbox" class="form-check-input"
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
                                         <td class="text-center">
-                                            <a wire:click="edit({{ $item->id }})"><i class="bx bx-edit"></i></a>
-                                            <a wire:click="confirmDelete({{ $item->id }})"><i
-                                                    class="bx bx-trash text-danger"></i></a>
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"><i
+                                                    class="bx bx-edit fs-5"></i></a>
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})"><i
+                                                    class="bx bx-trash text-danger fs-5"></i></a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">No Peak Dates found.</td>
+                                        <td colspan="6" class="text-center">No Peak Dates found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
-                         <x-pagination :paginator="$items" />
+                        <x-pagination :paginator="$items" />
                     </div>
                 </div>
             </div>

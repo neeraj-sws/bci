@@ -7,15 +7,16 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Layout, On};
 use App\Models\Season;
 use App\Models\Hotel;
+use App\Models\PeackDate;
+use App\Models\RoomCategoryOccupances;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class Seasons extends Component
 {
     use WithPagination;
 
     public $itemId;
     public $name;
-    public $hotel_id;
     public $start_date;
     public $end_date;
     public $status = 1;
@@ -24,13 +25,11 @@ class Seasons extends Component
     public $isEditing = false;
     public $pageTitle = 'Season';
 
-    public $hotels = [];
 
     protected function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'hotel_id' => 'required|exists:hotels,hotels_id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:0,1',
@@ -44,10 +43,6 @@ class Seasons extends Component
         'end_date' => 'End Date',
     ];
 
-    public function mount()
-    {
-        $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
-    }
 
     public function render()
     {
@@ -58,10 +53,27 @@ class Seasons extends Component
         return view('livewire.common.hotel-master.seasons', compact('items'));
     }
 
+    private function seasonOverlaps(): bool
+    {
+        return Season::where(function ($q) {
+            $q->whereDate('start_date', '<=', $this->end_date)
+                ->whereDate('end_date', '>=', $this->start_date);
+        })
+            ->when($this->itemId, fn($q) => $q->where('id', '!=', $this->itemId))
+            ->exists();
+    }
+
+
     public function store()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::create($this->payload());
 
         $this->resetForm();
@@ -74,7 +86,6 @@ class Seasons extends Component
 
         $this->itemId = $item->id;
         $this->name = $item->name;
-        $this->hotel_id = $item->hotel_id;
         $this->start_date = $item->start_date;
         $this->end_date = $item->end_date;
         $this->status = $item->status;
@@ -85,7 +96,13 @@ class Seasons extends Component
     public function update()
     {
         $this->validate();
-
+        if ($this->seasonOverlaps()) {
+            $this->addError(
+                'start_date',
+                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
+            );
+            return;
+        }
         Season::findOrFail($this->itemId)->update($this->payload());
 
         $this->resetForm();
@@ -94,6 +111,17 @@ class Seasons extends Component
 
     public function confirmDelete($id)
     {
+        // Check if season is being used in peak_dates table
+        $seasonUsageCount = PeackDate::where('season_id', $id)->count();
+
+        if ($seasonUsageCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' peak date(s).'
+            ]);
+            return;
+        }
+
         $this->itemId = $id;
 
         $this->dispatch('swal:confirm', [
@@ -110,6 +138,17 @@ class Seasons extends Component
     #[On('delete')]
     public function delete()
     {
+        // Double-check before deletion
+        $seasonUsageCount = PeackDate::where('season_id', $this->itemId)->count();
+
+        if ($seasonUsageCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete this season. It is being used in ' . $seasonUsageCount . ' peak date(s).'
+            ]);
+            return;
+        }
+
         Season::destroy($this->itemId);
         $this->toast('Deleted Successfully');
     }
@@ -125,7 +164,6 @@ class Seasons extends Component
     {
         return [
             'name' => ucwords($this->name),
-            'hotel_id' => $this->hotel_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'status' => $this->status,
@@ -137,7 +175,6 @@ class Seasons extends Component
         $this->reset([
             'itemId',
             'name',
-            'hotel_id',
             'start_date',
             'end_date',
             'status',

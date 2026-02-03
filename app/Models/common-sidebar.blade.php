@@ -127,7 +127,7 @@
                                      </a>
                                  </li>
                              @endcan
-                             @can('customer-trips list')
+							 	 @can('customer-trips list')
                                  <li class="mb-1">
                                      <a href="{{ route('common.trip') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -160,6 +160,7 @@
                                      </a>
                                  </li>
                              @endcan
+						
 
                              @canany(['parks list', 'zones list', 'gates list'])
                                  <li class="mb-1">
@@ -246,7 +247,7 @@
                              @endcanany
 
 
-                             @can('resort-master list')
+                             {{-- @can('resort-master list')
                                  <li class="mb-1">
                                      <a href="{{ route('common.resort') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -255,7 +256,7 @@
                                          <div class="menu-title"><span>Resort Master</span></div>
                                      </a>
                                  </li>
-                             @endcan
+                             @endcan --}}
 
 
                              @canany(['expenses list', 'income list'])
@@ -285,7 +286,6 @@
                                                  </a>
                                              </li>
                                          @endcan
-
                                      </ul>
                                  </li>
                              @endcanany
@@ -374,7 +374,7 @@
                                              </li>
                                          @endcan
 
-                                         @can('income-expense-subcategory list')
+                                          @can('income-expense-subcategory list')
                                              <li class="mt-1">
                                                  <a href="{{ route('common.income-expense-sub-categorey') }}"
                                                      class="text-white ps-4">
@@ -387,14 +387,7 @@
                                  </li>
                              @endcanany
 
-                             <li class="mb-1">
-                                 <a href="{{ route('common.hotel-list') }}" class="text-white">
-                                     <div class="parent-icon d-flex align-items-center justify-content-center me-2">
-                                         <i class="lni lni-apartment"></i>
-                                     </div>
-                                     <div class="menu-title"><span>Hotel Master</span></div>
-                                 </a>
-                             </li>
+
 
                              @can('calculator view')
                                  <li class="mb-1">
@@ -406,6 +399,8 @@
                                      </a>
                                  </li>
                              @endcan
+
+
 
                              @can('items list')
                                  <li class="mb-1">
@@ -420,6 +415,10 @@
 
 
                          </ul>
+
+
+
+
                      </div>
                  </div>
              </div>

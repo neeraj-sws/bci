@@ -35,9 +35,9 @@
                                 Room Category <span class="text-danger">*</span>
                             </label>
                              <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model.live="room_category_id">
-                                <option value="">Select Ocupancy</option>
+                                <option value="">Select Room Category</option>
                                 @foreach ($roomCategoys as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    <option value="{{ $id }}" @selected($room_category_id == $id)>{{ $name }}</option>
                                 @endforeach
                             </select>
                             @error('room_category_id')
@@ -55,7 +55,7 @@
                                 >
                                     <option value="">Select Peak Date</option>
                                     @foreach ($peakDates as $id => $title)
-                                        <option value="{{ $id }}" @if ($peak_date_id == $id) selected @endif>{{ $title }}</option>
+                                        <option value="{{ $id }}" @selected($peak_date_id == $id)>{{ $title }}</option>
                                     @endforeach
                                 </select>
 
@@ -163,6 +163,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Hotel</th>
+                                    <th>Room Category</th>
+                                    <th>Peak Date</th>
                                     <th>Free Age</th>
                                     <th>With Bed</th>
                                     <th>Without Bed</th>
@@ -175,6 +177,20 @@
                                     <tr wire:key="{{ $item->id }}">
                                         <td>{{ $items->firstItem() + $index }}</td>
                                         <td>{{ $item->hotel->name ?? '-' }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">
+                                                {{ $item->roomCategory->title ?? '-' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if($item->peakDate)
+                                                <span class="badge bg-warning text-dark">
+                                                    {{ $item->peakDate->title }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $item->free_child_age }} </td>
                                         <td>₹{{ number_format($item->child_with_bed_rate, 2) }}</td>
                                         <td>₹{{ number_format($item->child_without_bed_rate, 2) }}</td>
@@ -194,7 +210,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">
+                                        <td colspan="9" class="text-center">
                                             No Child Policies Found
                                         </td>
                                     </tr>

@@ -6,7 +6,7 @@ use App\Models\MealType as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class MealType extends Component
 {
     use WithPagination;
@@ -99,6 +99,18 @@ class MealType extends Component
     public function confirmDelete($id)
     {
         $this->itemId = $id;
+
+        // Check if meal type is being used in hotel_meal_plans table
+        $mealPlansCount = \App\Models\HotelMealPlan::where('meal_plan_id', $id)->count();
+
+        if ($mealPlansCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => 'Cannot Delete',
+                'message' => 'This meal plan is being used by ' . $mealPlansCount . ' hotel(s). Please remove it from hotels first.'
+            ]);
+            return;
+        }
 
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',

@@ -20,6 +20,8 @@ class PeakDateRoomCategoryOccupances extends Model
         'occupancy_id',
         'rate',
         'weekend_rate',
+        'room_category_id',
+        'status',
     ];
 
     // ID ALIAS

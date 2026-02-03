@@ -26,8 +26,18 @@
                         @if($room->peakDates && $room->peakDates->count() > 0)
                             <div style="font-size: 11px; color: #6B7280; line-height: 1.4;">
                                 @foreach($room->peakDates as $peak)
+                                    @php
+                                        $startDate = $peak->start_date ?? null;
+                                        $endDate = $peak->end_date ?? null;
+                                    @endphp
                                     <div style="margin-bottom: 2px;">
-                                        {{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($peak->end_date)->format('d M') }}
+                                        @if($peak->title)
+                                            {{ $peak->title }}
+                                        @elseif($startDate && $endDate)
+                                            {{ \Carbon\Carbon::parse($startDate)->format('d M') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M') }}
+                                        @else
+                                            {{ $peak->title ?? 'Peak Date' }}
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

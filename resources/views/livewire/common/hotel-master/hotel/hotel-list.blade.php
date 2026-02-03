@@ -16,7 +16,49 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap">
+                <!-- Filters Section -->
+                <div class="card-header">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-600">Park</label>
+                            <select class="form-select select2" id="filterPark" wire:model.live="filterPark">
+                                <option value="">All Parks</option>
+                                @foreach ($parks as $parkId => $parkName)
+                                    <option value="{{ $parkId }}">{{ $parkName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-600">Country</label>
+                            <select class="form-select select2" id="filterCountry" wire:model.live="filterCountry">
+                                <option value="">All Countries</option>
+                                @foreach ($countries as $countryId => $countryName)
+                                    <option value="{{ $countryId }}">{{ $countryName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-600">State</label>
+                            <select class="form-select select2" id="filterState" wire:model.live="filterState" {{ !$filterCountry ? 'disabled' : '' }}>
+                                <option value="">{{ $filterCountry ? 'All States' : 'Select Country First' }}</option>
+                                @foreach ($states as $stateId => $stateName)
+                                    <option value="{{ $stateId }}">{{ $stateName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-600">City</label>
+                            <select class="form-select select2" id="filterCity" wire:model.live="filterCity" {{ !$filterState ? 'disabled' : '' }}>
+                                <option value="">{{ $filterState ? 'All Cities' : 'Select State First' }}</option>
+                                @foreach ($cities as $cityId => $cityName)
+                                    <option value="{{ $cityId }}">{{ $cityName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body border-bottom d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap">
                     {{-- <div class="btn-group p-2 rounded border mb-xxl-0 mb-2" role="group">
                         <button wire:click="setTab('all')"
                             class="btn btn-sm {{ $tab === 'all' ? 'bluegradientbtn active shadow' : 'lightgradientbtn' }} px-4 py-2 rounded-start">
@@ -37,12 +79,20 @@
                         </button>
                     </div> --}}
 
-                    <div class="position-relative">
-                        <input type="text" class="form-control ps-5" placeholder="Search..."
-                            wire:model.live.debounce.300ms="search">
-                        <span class="position-absolute product-show translate-middle-y">
-                            <i class="bx bx-search"></i>
-                        </span>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="position-relative">
+                            <input type="text" class="form-control ps-5" placeholder="Search..."
+                                wire:model.live.debounce.300ms="search">
+                            <span class="position-absolute product-show translate-middle-y">
+                                <i class="bx bx-search"></i>
+                            </span>
+                        </div>
+
+                        @if($filterPark || $filterCountry || $filterState || $filterCity || $search)
+                            <button wire:click="clearFilters" class="btn btn-outline-secondary" title="Clear all filters">
+                                <i class="bx bx-x"></i> Clear Filters
+                            </button>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body" style="overflow:visible!important;">
@@ -79,6 +129,34 @@
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    <th wire:click="shortby('park')" style="cursor:pointer">
+                                        Park
+                                        @if ($sortBy === 'park')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('country')" style="cursor:pointer">
+                                        Country
+                                        @if ($sortBy === 'country')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('state')" style="cursor:pointer">
+                                        State
+                                        @if ($sortBy === 'state')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
+                                    <th wire:click="shortby('city')" style="cursor:pointer">
+                                        City
+                                        @if ($sortBy === 'city')
+                                            <i
+                                                class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
+                                        @endif
+                                    </th>
                                     <th>Hotel Meal Type</th>
                                     <th wire:click="shortby('status')" style="cursor:pointer">
                                         Status
@@ -99,6 +177,10 @@
                                         <td class="align-middle py-1">{{ $item->hotelType->title }}</td>
                                         <td class="align-middle py-1">{{ $item->hotelCategory->title }}</td>
                                         <td class="align-middle py-1">{{ $item?->hotelRateType?->title ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">{{ $item?->park?->name ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">{{ $item?->country?->name ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">{{ $item?->state?->name ?? 'NA' }}</td>
+                                        <td class="align-middle py-1">{{ $item?->city?->name ?? 'NA' }}</td>
                                         <td class="align-middle py-1">
                                             @if (!empty($item?->hotelMealType))
                                                 @forelse ($item?->hotelMealType as $plan)
@@ -131,7 +213,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">No Tours found.</td>
+                                        <td colspan="12" class="text-center">No Hotel List found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

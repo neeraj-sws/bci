@@ -16,9 +16,14 @@
 
                                         @php
                                             $upcomingPeaks = $this->getUpcomingPeaks($room);
+                                            $filteredOccupancies = $this->getFilteredOccupancies($room);
+                                            $filteredPeakDates = $this->getFilteredPeakDates($room);
                                         @endphp
 
                                         @foreach ($upcomingPeaks as $peak)
+                                            @php
+                                                $dateRange = $this->getPeakDateRange($peak);
+                                            @endphp
                                             <div
                                                 style="
                         background:#FEF2F2;
@@ -28,9 +33,9 @@
                         line-height:1.2;
                     ">
                                                 <div style="font-size:11px;font-weight:600;color:#DC2626;">
-                                                    {{ $peak->start_date ? \Carbon\Carbon::parse($peak->start_date)->format('d M') : '' }}
+                                                    {{ $dateRange['start_date'] ? \Carbon\Carbon::parse($dateRange['start_date'])->format('d M') : '' }}
                                                     –
-                                                    {{ $peak->end_date ? \Carbon\Carbon::parse($peak->end_date)->format('d M Y') : '' }}
+                                                    {{ $dateRange['end_date'] ? \Carbon\Carbon::parse($dateRange['end_date'])->format('d M Y') : '' }}
                                                 </div>
                                                 <div style="font-size:10px;color:#991B1B;">
                                                     {{ $peak->title }}
@@ -47,56 +52,86 @@
                                             Max: {{ $room->max_occupancy ?? 'N/A' }}
                                         </span>
 
-                                        @if ($room->peakDates && $room->peakDates->count() > 0)
-                                            <span style="color: #DC2626;">• {{ $room->peakDates->count() }} peak
-                                                period{{ $room->peakDates->count() > 1 ? 's' : '' }}</span>
+                                        @if ($filteredPeakDates->count() > 0)
+                                            <span style="color: #DC2626;">• {{ $filteredPeakDates->count() }} peak
+                                                period{{ $filteredPeakDates->count() > 1 ? 's' : '' }}</span>
                                         @endif
                                     </div>
                                 </div>
 
                                 <!-- TOGGLE BUTTON -->
-                                <button wire:click="toggleRoom({{ $room->id }})" class="btn btn-sm"
+                                <button wire:click="toggleRoom({{ $room->room_categoris_id }})" class="btn btn-sm"
                                     style="background:#F3F4F6;color:#374151;border-radius:6px;padding:6px 12px;">
-                                    <i class="bx bx-chevron-{{ $expandedRoom === $room->id ? 'up' : 'down' }}"></i>
+                                    <i
+                                        class="bx bx-chevron-{{ $expandedRoom === $room->room_categoris_id ? 'up' : 'down' }}"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    @if ($room->occupancies && $room->occupancies->count() > 0)
+                    @if ($filteredOccupancies->count() > 0)
                         <!-- Regular Rates -->
                         <div class="mt-2">
-                            <small style="font-size: 10px; color: #6B7280; font-weight: 600; display: block; margin-bottom: 4px;">REGULAR RATES</small>
+                            <small
+                                style="font-size: 10px; color: #6B7280; font-weight: 600; display: block; margin-bottom: 4px;">REGULAR
+                                RATES</small>
                             <div class="d-flex flex-wrap gap-2">
-                                @foreach ($room->occupancies as $occ)
+                                @foreach ($filteredOccupancies as $occ)
                                     <div
                                         style="background: #F0FDF4; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
                                         <span
                                             style="font-size: 11px; color: #166534; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
-                                        <span class="crm-success"
-                                            style="font-size: 13px; font-weight: 700;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                        <div class="d-flex flex-column" style="line-height:1.2;">
+                                            <span style="font-size:11px;color:#166534;font-weight:600;">
+                                                Weekday: ₹{{ number_format($occ->rate ?? 0, 0) }}
+                                            </span>
+
+                                            <span style="font-size:11px;color:#166534;">
+                                                Weekend: ₹{{ number_format($occ->weekend_rate ?? 0, 0) }}
+                                            </span>
+                                        </div>
+
+                                        {{-- <span class="crm-success"
+                                            style="font-size: 13px; font-weight: 700;">₹{{ number_format($occ->rate ?? 0, 0) }}</span> --}}
                                     </div>
                                 @endforeach
                             </div>
                         </div>
 
                         <!-- Peak Date Rates -->
-                        @if ($upcomingPeaks && $upcomingPeaks->count() > 0)
+                        @if ($upcomingPeaks->count() > 0)
                             @foreach ($upcomingPeaks as $peak)
-                                @if ($peak->occupancies && $peak->occupancies->count() > 0)
+                                @php
+                                    $peakOccupancies = $this->getPeakOccupancies($peak);
+                                    $dateRange = $this->getPeakDateRange($peak);
+                                @endphp
+                                @if ($peakOccupancies->count() > 0)
                                     <div class="mt-3">
-                                        <small style="font-size: 10px; color: #DC2626; font-weight: 600; display: block; margin-bottom: 4px;">
+                                        <small
+                                            style="font-size: 10px; color: #DC2626; font-weight: 600; display: block; margin-bottom: 4px;">
                                             <i class="bx bx-calendar-star" style="font-size: 11px;"></i>
-                                            {{ strtoupper($peak->title) }} ({{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($peak->end_date)->format('d M Y') }})
+                                            {{ strtoupper($peak->title) }}
+                                            ({{ $dateRange['start_date'] ? \Carbon\Carbon::parse($dateRange['start_date'])->format('d M') : '' }}
+                                            -
+                                            {{ $dateRange['end_date'] ? \Carbon\Carbon::parse($dateRange['end_date'])->format('d M Y') : '' }})
                                         </small>
                                         <div class="d-flex flex-wrap gap-2">
-                                            @foreach ($peak->occupancies as $occ)
+                                            @foreach ($peakOccupancies as $occ)
                                                 <div
                                                     style="background: #FEF2F2; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #FECACA;">
                                                     <span
                                                         style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
-                                                    <span
-                                                        style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                                    {{-- <span
+                                                        style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span> --}}
+                                                    <div class="d-flex flex-column" style="line-height:1.2;">
+                                                        <span style="font-size:11px;color:#DC2626;font-weight:600;">
+                                                            Weekday: ₹{{ number_format($occ->rate ?? 0, 0) }}
+                                                        </span>
+
+                                                        <span style="font-size:11px;color:#DC2626;">
+                                                            Weekend: ₹{{ number_format($occ->weekend_rate ?? 0, 0) }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -109,35 +144,8 @@
                     @endif
                 </div>
 
-                @if ($expandedRoom === $room->id)
+                @if ($expandedRoom === $room->room_categoris_id)
                     <div style="padding: 16px; border-top: 1px solid #F3F4F6; background: #FAFBFC;">
-
-                        <!-- Extra Charges -->
-                        @php
-                            // You may need to adjust this based on your actual data structure
-                            $hasExtraCharges = false;
-                        @endphp
-
-                        @if ($hasExtraCharges)
-                            <div class="mb-4">
-                                <h6 class="mb-3" style="font-size: 15px; font-weight: 600; color: #F59E0B;">
-                                    <i class="bx bx-plus-circle me-2"></i>Extra Charges
-                                </h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div
-                                            style="background: #FEF3C7; padding: 14px; border-radius: 8px; border-left: 3px solid #F59E0B;">
-                                            <small
-                                                style="font-size: 12px; color: #92400E; font-weight: 500; display: block; margin-bottom: 6px;">Extra
-                                                Bed</small>
-                                            <h4 class="mb-0 crm-warning" style="font-size: 24px; font-weight: 700;">
-                                                ₹1,500</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
                         @if ($room->childPolicies && $room->childPolicies->count() > 0)
                             <div class="mb-3">
                                 <h6 class="mb-2" style="font-size: 13px; font-weight: 600; color: #374151;">
@@ -177,35 +185,58 @@
                             </div>
                         @endif
 
-                        @if ($room->peakDates && $room->peakDates->count() > 0)
+                        @if ($filteredPeakDates->count() > 0)
                             <div>
                                 <h6 class="mb-2" style="font-size: 13px; font-weight: 600; color: #374151;">
                                     <i class="bx bx-calendar-star me-1"
                                         style="font-size: 14px; color: #DC2626;"></i>Peak Periods
                                 </h6>
                                 <div class="d-flex flex-column gap-3">
-                                    @foreach ($room->peakDates as $peak)
-                                        <div style="background: #FEF2F2; padding: 12px; border-radius: 8px; border-left: 3px solid #DC2626;">
+                                    @foreach ($filteredPeakDates as $peak)
+                                        @php
+                                            $peakOccupancies = $this->getPeakOccupancies($peak);
+                                            $dateRange = $this->getPeakDateRange($peak);
+                                        @endphp
+                                        <div
+                                            style="background: #FEF2F2; padding: 12px; border-radius: 8px; border-left: 3px solid #DC2626;">
                                             <div class="d-flex align-items-center gap-2 mb-2">
-                                                <span style="font-size: 12px; color: #DC2626; font-weight: 600;">{{ $peak->title }}</span>
+                                                <span
+                                                    style="font-size: 12px; color: #DC2626; font-weight: 600;">{{ $peak->title }}</span>
                                                 @if ($peak->is_new_year)
                                                     <i class="bx bx-party" style="font-size: 13px; color: #DC2626;"></i>
                                                 @endif
                                                 <span style="font-size: 10px; color: #991B1B;">
-                                                    {{ \Carbon\Carbon::parse($peak->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($peak->end_date)->format('d M Y') }}
+                                                    {{ $dateRange['start_date'] ? \Carbon\Carbon::parse($dateRange['start_date'])->format('d M') : '' }}
+                                                    -
+                                                    {{ $dateRange['end_date'] ? \Carbon\Carbon::parse($dateRange['end_date'])->format('d M Y') : '' }}
                                                 </span>
                                             </div>
-                                            @if ($peak->occupancies && $peak->occupancies->count() > 0)
+                                            @if ($peakOccupancies->count() > 0)
                                                 <div class="d-flex flex-wrap gap-2">
-                                                    @foreach ($peak->occupancies as $occ)
-                                                        <div style="background: white; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #FECACA;">
-                                                            <span style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
-                                                            <span style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span>
+                                                    @foreach ($peakOccupancies as $occ)
+                                                        <div
+                                                            style="background: white; padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #FECACA;">
+                                                            <span
+                                                                style="font-size: 11px; color: #DC2626; font-weight: 500;">{{ $occ->occupancy->title ?? 'N/A' }}</span>
+                                                            {{-- <span style="font-size: 13px; font-weight: 700; color: #DC2626;">₹{{ number_format($occ->rate ?? 0, 0) }}</span> --}}
+                                                            <div class="d-flex flex-column" style="line-height:1.2;">
+                                                                <span
+                                                                    style="font-size:11px;color:#DC2626;font-weight:600;">
+                                                                    Weekday: ₹{{ number_format($occ->rate ?? 0, 0) }}
+                                                                </span>
+
+                                                                <span style="font-size:11px;color:#DC2626;">
+                                                                    Weekend:
+                                                                    ₹{{ number_format($occ->weekend_rate ?? 0, 0) }}
+                                                                </span>
+                                                            </div>
+
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <small style="font-size: 10px; color: #991B1B;">No rates configured</small>
+                                                <small style="font-size: 10px; color: #991B1B;">No rates
+                                                    configured</small>
                                             @endif
                                         </div>
                                     @endforeach

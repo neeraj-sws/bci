@@ -17,21 +17,27 @@ class Season extends Model
 
     protected $fillable = [
         'name',
-        'hotel_id',
         'start_date',
         'end_date',
         'status'
     ];
-
-    public function hotel()
-    {
-        return $this->belongsTo(Hotel::class, 'hotel_id', 'hotels_id');
-    }
 
 
     // ID ALIAS
     public function getIdAttribute()
     {
         return $this->seasons_id;
+    }
+
+    // SEASON_ID ALIAS for consistency
+    public function getSeasonIdAttribute()
+    {
+        return $this->seasons_id;
+    }
+
+    // TITLE ACCESSOR for consistency
+    public function getTitleAttribute()
+    {
+        return $this->name;
     }
 }

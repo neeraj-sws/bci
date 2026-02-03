@@ -11,7 +11,7 @@ use App\Models\Hotel;
 use App\Models\PeackDate;
 use App\Models\RoomCategory;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class ChildPolicies extends Component
 {
     use WithPagination;
@@ -59,7 +59,7 @@ class ChildPolicies extends Component
 
     public function render()
     {
-        $items = ChildPolicy::with('hotel')
+        $items = ChildPolicy::with(['hotel', 'roomCategory', 'peakDate'])
             ->whereHas('hotel', function ($q) {
                 $q->where('name', 'like', "%{$this->search}%");
             })
@@ -90,17 +90,35 @@ class ChildPolicies extends Component
 
         $this->itemId = $item->id;
         $this->hotel_id = $item->hotel_id;
+        $this->room_category_id = $item->room_category_id;
         $this->free_child_age = $item->free_child_age;
         $this->child_with_bed_rate = $item->child_with_bed_rate;
         $this->child_without_bed_rate = $item->child_without_bed_rate;
         $this->status = $item->status;
         $this->peak_date_id = $item->peak_date_id;
+
         if ($item->peak_date_id) {
             $this->is_peak_date = true;
         } else {
             $this->is_peak_date = false;
         }
-        $this->room_category_id = $item->room_category_id;
+
+        // Load room categories for the selected hotel
+        if ($this->hotel_id) {
+            $this->roomCategoys = RoomCategory::where('hotel_id', $this->hotel_id)
+                ->where('status', 1)
+                ->pluck('title', 'room_categoris_id')
+                ->toArray();
+        }
+
+        // Load peak dates for the selected room category
+        if ($this->room_category_id && $this->hotel_id) {
+            $this->peakDates = PeackDate::where('hotel_id', $this->hotel_id)
+                ->where('room_category_id', $this->room_category_id)
+                ->where('status', 1)
+                ->pluck('title', 'peak_dates_id')
+                ->toArray();
+        }
 
         $this->isEditing = true;
     }

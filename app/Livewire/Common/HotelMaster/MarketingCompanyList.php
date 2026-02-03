@@ -6,7 +6,7 @@ use App\Models\MarketingCompany as Model;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.hotel-app')]
 class MarketingCompanyList extends Component
 {
     use WithPagination;
@@ -95,6 +95,18 @@ class MarketingCompanyList extends Component
     public function confirmDelete($id)
     {
         $this->itemId = $id;
+
+        // Check if marketing company is being used in hotels table
+        $hotelsCount = \App\Models\Hotel::where('marketing_company_id', $id)->count();
+
+        if ($hotelsCount > 0) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => 'Cannot Delete',
+                'message' => 'This marketing company is being used by ' . $hotelsCount . ' hotel(s). Please reassign them first.'
+            ]);
+            return;
+        }
 
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',
