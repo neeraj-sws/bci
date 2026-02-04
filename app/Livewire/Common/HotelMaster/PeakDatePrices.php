@@ -106,6 +106,7 @@ class PeakDatePrices extends Component
     /**
      * Auto-detect season based on start_date and end_date
      * Returns season_id if found, null otherwise
+     * Falls back to nearest season if exact match not found
      */
     private function detectSeason()
     {
@@ -117,6 +118,84 @@ class PeakDatePrices extends Component
         $season = Season::where('status', 1)
             ->whereDate('start_date', '<=', $this->start_date)
             ->whereDate('end_date', '>=', $this->end_date)
+            ->first();
+
+        if ($season) {
+            return $season->seasons_id;
+        }
+
+        // Fallback: Find nearest season based on start_date
+        $season = Season::where('status', 1)
+            ->orderBy('start_date', 'desc')
+            ->where('start_date', '<=', $this->start_date)
+            ->first();
+
+        return $season ? $season->seasons_id : null;
+    }
+
+    /**
+     * Get season based on selected date range or fallback to current/nearest season
+     * Priority:
+     * 1. Season matching the selected date range
+     * 2. Nearest available season
+     */
+    private function resolveSeasonForDateRange()
+    {
+        // If dates are set, detect season from them
+        if ($this->start_date && $this->end_date) {
+            // Find season that fully contains the date range
+            $season = Season::where('status', 1)
+                ->whereDate('start_date', '<=', $this->start_date)
+                ->whereDate('end_date', '>=', $this->end_date)
+                ->first();
+
+            if ($season) {
+                return $season->seasons_id;
+            }
+
+            // Fallback: Find nearest season based on start_date
+            $season = Season::where('status', 1)
+                ->orderBy('start_date', 'desc')
+                ->where('start_date', '<=', $this->start_date)
+                ->first();
+
+            if ($season) {
+                return $season->seasons_id;
+            }
+
+            // Last resort: Get any future season
+            $season = Season::where('status', 1)
+                ->orderBy('start_date', 'asc')
+                ->where('start_date', '>', $this->start_date)
+                ->first();
+
+            return $season ? $season->seasons_id : null;
+        }
+
+        // If no dates set, try current season
+        $currentDate = now();
+        $currentSeason = Season::where('status', 1)
+            ->whereDate('start_date', '<=', $currentDate)
+            ->whereDate('end_date', '>=', $currentDate)
+            ->first();
+
+        if ($currentSeason) {
+            return $currentSeason->seasons_id;
+        }
+
+        // Fallback: Get nearest future season
+        $season = Season::where('status', 1)
+            ->orderBy('start_date', 'asc')
+            ->where('start_date', '>', $currentDate)
+            ->first();
+
+        if ($season) {
+            return $season->seasons_id;
+        }
+
+        // Last fallback: Get any season (most recent)
+        $season = Season::where('status', 1)
+            ->orderBy('start_date', 'desc')
             ->first();
 
         return $season ? $season->seasons_id : null;
@@ -212,10 +291,10 @@ class PeakDatePrices extends Component
     {
         $this->validate();
 
-        // Auto-detect season
+        // Auto-detect season with fallback
         $season_id = $this->detectSeason();
         if (!$season_id) {
-            $this->addError('start_date', 'No season found for the selected date range.');
+            $this->addError('start_date', 'No season available. Please create a season first.');
             return;
         }
 
@@ -305,10 +384,10 @@ class PeakDatePrices extends Component
     {
         $this->validate();
 
-        // Auto-detect season
+        // Auto-detect season with fallback
         $season_id = $this->detectSeason();
         if (!$season_id) {
-            $this->addError('start_date', 'No season found for the selected date range.');
+            $this->addError('start_date', 'No season available. Please create a season first.');
             return;
         }
 
@@ -434,6 +513,26 @@ class PeakDatePrices extends Component
         $this->highestEndDate = null;
     }
 
+    /**
+     * Watch start_date and reload rates if room category is selected
+     */
+    public function updatedStartDate($value)
+    {
+        if ($this->selected_room_categories) {
+            $this->updatedSelectedRoomCategories($this->selected_room_categories);
+        }
+    }
+
+    /**
+     * Watch end_date and reload rates if room category is selected
+     */
+    public function updatedEndDate($value)
+    {
+        if ($this->selected_room_categories) {
+            $this->updatedSelectedRoomCategories($this->selected_room_categories);
+        }
+    }
+
     public function updatedSelectedRoomCategories($roomCategoryId)
     {
         $this->occupancies   = [];
@@ -473,27 +572,39 @@ class PeakDatePrices extends Component
             'highestEndDate' => $this->highestEndDate,
         ]);
 
-        $currentDate = now();
+        // Resolve season using date range (with fallback)
+        $seasonId = $this->resolveSeasonForDateRange();
 
-        $currentSeason = Season::where('status', 1)
-            ->whereDate('start_date', '<=', $currentDate)
-            ->whereDate('end_date', '>=', $currentDate)
-            ->first();
-
-        if (!$currentSeason) {
+        if (!$seasonId) {
+            // No season available at all
             return;
         }
 
         $seasonRates = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
-            ->where('season_id', $currentSeason->seasons_id)
+            ->where('season_id', $seasonId)
             ->with('occupancy')
             ->get();
 
         if ($seasonRates->isEmpty()) {
-            return;
+            // No rates for resolved season, try to find any available season with rates
+            $seasonRates = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
+                ->with('occupancy', 'season')
+                ->get();
+
+            if ($seasonRates->isEmpty()) {
+                // No rates available for this room category at all
+                return;
+            }
+
+            // Get the first available season with rates
+            $seasonRates = $seasonRates->groupBy('season_id')->first();
+
+            if (!$seasonRates) {
+                return;
+            }
         }
 
-        // Auto-populate occupancies and rates from current season
+        // Auto-populate occupancies and rates from resolved season
         foreach ($seasonRates as $rateRow) {
             if (!$rateRow->occupancy) {
                 continue;

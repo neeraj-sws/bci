@@ -85,7 +85,7 @@
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="start"
                                     data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
-                                    wire:model.defer="start_date"
+                                    wire:model.live="start_date"
                                     wire:key="start-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
                                     @if (!$selected_room_categories) disabled @endif>
                                 @error('start_date')
@@ -96,7 +96,7 @@
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="end"
                                     data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
-                                    data-end-to="{{ $highestEndDate }}" wire:model.defer="end_date"
+                                    data-end-to="{{ $highestEndDate }}" wire:model.live="end_date"
                                     wire:key="end-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
                                     @if (!$selected_room_categories) disabled @endif>
                                 @error('end_date')
