@@ -237,11 +237,12 @@
                                             <span>0.00</span>
                                         @endif
                                         
-                                        
+                                       @can('proforma-invoice manage')
                                         @if ($item->total_remaning_amount && in_array($item->status, [0,1,3]) )
                                             <i title="Add Payment" wire:click='showRecordPaymentModal({{ $item->id }})'
                                                 role="button" class="fadeIn animated bx bx-plus-medical ms-2 text-success"></i>
                                         @endif
+                                        @endcan
                                         
                                     </td>
 

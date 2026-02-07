@@ -10,9 +10,11 @@
                 </ol>
             </nav>
         </div>
+        @can('tourists manage')
         <a href="{{ route($route . '.tourist-create') }}" class="btn bluegradientbtn">
             <i class="bx bx-plus me-1"></i> Add New Tourist
         </a>
+        @endcan
     </div>
 
     <div class="card border-0 shadow-sm radius12 overflow-hidden">
@@ -93,7 +95,8 @@
                                     <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                 @endif
                             </th>
-                            <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
+                                @can('tourists manage')
+                            <th class="tableheadingcolor px-3 py-2 width80">Actions</th>@endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -123,6 +126,7 @@
                                         )
                                         : 'NA' }}
                                 </td>
+                                @can('tourists manage')
                                 <td class="text-center px-3 py-1">
                                     <a href="{{ route($route . '.tourist-edit', $item->id) }}" title="Edit">
                                         <i class="bx bx-edit text-dark fs-5"></i>
@@ -135,6 +139,7 @@
                                         <i class="bx bx-trash text-danger fs-5"></i>
                                     </a>
                                 </td>
+                                @endcan
                             </tr>
                         @empty
                             <tr>

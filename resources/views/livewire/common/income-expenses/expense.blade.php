@@ -14,6 +14,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('expenses manage')
         <div class="col-md-5">
             <div class="card">
                 <div class="card-body">
@@ -219,9 +220,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('expenses manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
 
 
@@ -279,7 +281,9 @@
                                     @endif
                                     <th>Amount</th>
                                     <th>Notes</th>
+        @can('expenses manage')
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -315,6 +319,7 @@
                                                 {{ $item?->notes }}
                                             </span>
                                         </td>
+        @can('expenses manage')
                                         <td class="align-middle py-1 text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">
@@ -325,6 +330,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

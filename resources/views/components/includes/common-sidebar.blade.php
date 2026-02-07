@@ -291,7 +291,7 @@
                              @endcanany
 
 
-                             @canany(['users list'])
+                             @canany(['users list','roles list','permissions list'])
                                  <li class="mb-1">
                                      <a class="has-arrow text-white" href="javascript:;">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -302,21 +302,27 @@
                                          </div>
                                      </a>
                                      <ul class="mm-collapse ps-3 list-unstyled border-0">
+                                        @can('users list')
                                          <li class="mt-1">
                                              <a href="{{ route('admin.users') }}" class="text-white ps-4">
                                                  <i class="lni lni-envato me-2"></i>Users
                                              </a>
                                          </li>
+                                        @endcan
+                                            @can('roles list')
                                          <li class="mt-1">
                                              <a href="{{ route('admin.roles') }}" class="text-white ps-4">
                                                  <i class="lni lni-grid me-2"></i>Roles
                                              </a>
                                          </li>
+                                            @endcan
+                                            @can('permissions list')
                                          <li class="mt-1">
                                              <a href="{{ route('admin.permisions') }}" class="text-white ps-4">
                                                  <i class="lni lni-grid me-2"></i>Permissions
                                              </a>
                                          </li>
+                                            @endcan
                                      </ul>
                                  </li>
                              @endcanany
@@ -338,7 +344,7 @@
 
 
 
-                             @canany(['leads list', 'lead-tags list'])
+                             @canany(['lead-setting list','lead-tags list','income-expense-category list','income-expense-subcategory list'])
                                  <li class="mb-1">
                                      <a class="has-arrow text-white" href="javascript:;">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -349,7 +355,7 @@
                                          </div>
                                      </a>
                                      <ul class="mm-collapse ps-3 list-unstyled border-0">
-                                         @can('leads list')
+                                         @canany(['lead-setting list'])
                                              <li class="mt-1">
                                                  <a href="{{ route('common.leads-pipeline') }}" class="text-white ps-4">
                                                      <i class="bx bx-cog me-2"></i>Lead Setting
@@ -387,6 +393,7 @@
                                  </li>
                              @endcanany
 
+                             @can('hotel-master manage')
                              <li class="mb-1">
                                  <a href="{{ route('common.hotel-list') }}" class="text-white">
                                      <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -395,6 +402,7 @@
                                      <div class="menu-title"><span>Hotel Master</span></div>
                                  </a>
                              </li>
+                             @endcan
 
                              @can('calculator view')
                                  <li class="mb-1">

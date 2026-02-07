@@ -18,6 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('items manage')
         <div class="col-md-5">
             <div class="card">
                 <div class="card-body">
@@ -120,9 +121,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('items manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap">
                     <div class="btn-group p-2 rounded border mb-xxl-0 mb-2" role="group">
@@ -166,8 +168,13 @@
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+        @can('items manage')
                                     <th>Status</th>
+
+                                    @endcan
+        @can('items manage')
                                     <th class="width60">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -189,6 +196,7 @@
                                                 {{ $item->rate }}
                                             </span>
                                         </td>
+        @can('items manage')
                                         <td class="align-middle py-1">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" role="switch"
@@ -197,6 +205,8 @@
                                                     @checked($item->status)>
                                             </div>
                                         </td>
+                                        @endcan
+        @can('items manage')
                                         <td class="text-center align-middle py-1">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">
@@ -207,6 +217,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

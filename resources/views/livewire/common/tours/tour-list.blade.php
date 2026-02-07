@@ -9,9 +9,11 @@
                 </ol>
             </nav>
         </div>
+        @can('tour-master manage')
         <a href="{{ route($route.'.tour-create') }}" class="btn bluegradientbtn">
             <i class="bx bx-plus me-1"></i> Add New Tour
         </a>
+        @endcan
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -109,6 +111,7 @@
                                             <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    @can('tour-master manage')
                                     <th wire:click="shortby('status')" style="cursor: pointer;">
                                         Status
                                         @if($sortBy === 'status')
@@ -116,6 +119,7 @@
                                         @endif
                                     </th>
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
 
@@ -124,13 +128,14 @@
                                     <tr wire:key="{{ $item->id }}">
                                         <td class="align-middle py-1">{{ $index + 1 }}</td>
                                         <td class="align-middle py-1">{{ $item->name }}</td>
+                                            @can('tour-master manage')
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
-
+            
                                         <td class="align-middle py-1 text-center"
                                             style="overflow:visible; position:relative;">
                                             <div class="btn-group dropup d-inline-block me-2 mb-2" style="overflow:visible;">
@@ -151,6 +156,7 @@
                                             <a href="{{ route('common.tour-copy', $item->id) }}"><i
                                                     class="fadeIn animated bx bx-copy fs-5"></i></a>
                                         </td>
+                                            @endcan
                                     </tr>
                                 @empty
                                     <tr>

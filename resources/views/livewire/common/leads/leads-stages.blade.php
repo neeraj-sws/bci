@@ -5,7 +5,7 @@
       @include('livewire.common.leads.leads-master')
     <div> 
     <div class="row g-4">
-        @can('lead-stages manage')
+        @can('lead-setting manage')
         <!-- Form Card -->
         <div class="col-md-5">
             <div class="card">
@@ -72,7 +72,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('lead-stages manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('lead-setting manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -93,7 +93,7 @@
                                 <tr>
                                     <th style="width: 60px;">#</th>
                                     <th>Stage</th>
-                                    @can('lead-stages manage')
+                                    @can('lead-setting manage')
                                     <th style="width: 80px;">Actions</th>
                                     @endcan
                                 </tr>
@@ -110,7 +110,7 @@
                                             </div>
                                         </td>
                                   
-                                        @can('lead-stages manage')
+                                        @can('lead-setting manage')
                                         <td class="text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">

@@ -24,6 +24,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Season;
 
 #[Layout('components.layouts.common-app')]
 class AddHotelQuotation extends Component
@@ -82,6 +83,11 @@ class AddHotelQuotation extends Component
     // 
     public $parks = [];
     public $selectedPark = null;
+    // 
+    
+    // NEW DEV IF ERROR COMES REMOVE IT 
+        public $tableDataJsonDraft = [];
+        public $tableDataJsonLatestChanges = [];
     // 
     public function loadRevised()
     {
@@ -332,10 +338,19 @@ class AddHotelQuotation extends Component
     }
     public function edit()
     {
-        $this->countries = Country::all();
-        $this->parks = Parks::orderBy('name')->get();
-        $this->updatedSelectedCountry();
         $this->showModal = !$this->showModal;
+        if($this->showModal){
+            // REMOVE IF IT ERROR 
+            $this->tableDataJsonDraft = $this->tableDataJson;
+            //
+            $this->countries = Country::all();
+            $this->parks = Parks::orderBy('name')->get();
+            $this->updatedSelectedCountry();
+        } else{
+            // REMOVE IF ERROR 
+            $this->tableDataJson = $this->tableDataJsonDraft;
+            //
+        }
         $this->dispatch('open-new-item-modal');
     }
     public function rules()
@@ -950,7 +965,7 @@ class AddHotelQuotation extends Component
         }
         $this->calculateTotals();
     }
-    public function restoreTourAmountsFromJson()
+    public function restoreTourAmountsFromJson($isClose = false)
     {
         
         $rate = $this->usdammount ?? 80;
@@ -989,6 +1004,13 @@ class AddHotelQuotation extends Component
             $this->end_date = $this->tourDays;
             $this->dispatch('tour-days-updated');
         }
+        
+        if($isClose){
+            $this->showModal = !$this->showModal;
+        }
+        // REMOVE IF ERROR COMES 
+        $this->tableDataJsonDraft = $this->tableDataJson;
+        //
     }
     // NEW DEV HOTEL MODEL 
     public function openHotelModal()
@@ -1116,7 +1138,7 @@ class AddHotelQuotation extends Component
             'roomRows.*.rate.min'                   => 'Rate must be greater than 0',
         ];
     }
-    public function saveHotelSelection()
+    public function saveHotelSelection($isClose = false)
     {
         $this->validate(
             $this->rules2(),
@@ -1202,6 +1224,9 @@ class AddHotelQuotation extends Component
                         $this->selectedDays[] = $dayIndex;
                     }
                 }
+            }
+            if($isClose){
+                $this->showHotelModal = false;
             }
         } catch (\Exception $e) {
             $this->dispatch('swal:toast', [
@@ -1306,13 +1331,57 @@ class AddHotelQuotation extends Component
                 if (!$date) {
                     return;
                 }
+                
+                // ===============================
+                // 🔥 SEASON CHECK (NEW LOGIC)
+                // ===============================
 
-                $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
-                    ->where('room_category_id', $roomCategoryId)
+                // $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
+                //     ->where('room_category_id', $roomCategoryId)
+                //     ->whereDate('start_date', '<=', $date)
+                //     ->whereDate('end_date', '>=', $date)
+                //     ->first();
+
+                // if ($peakDate) {
+                //     $this->roomRows[$rowIndex]['occupancies_list'] =
+                //         $peakDate->occupancies->map(fn ($o) => [
+                //             'id'   => $o->occupancy_id,
+                //             'name' => $o->occupancy->title,
+                //             'rate' => $o->rate ?? 0,
+                //         ])->toArray();
+
+                //     $this->roomRows[$rowIndex]['is_peak_date'] = 1;
+                // } else {
+                //     $this->roomRows[$rowIndex]['occupancies_list'] =
+                //         RoomCategory::find($roomCategoryId)
+                //             ?->occupancies
+                //             ->map(fn ($o) => [
+                //                 'id'   => $o->occupancy_id,
+                //                 'name' => $o->occupancy->title,
+                //                 'rate' => $o->rate ?? 0,
+                //             ])
+                //             ->toArray() ?? [];
+
+                //     $this->roomRows[$rowIndex]['is_peak_date'] = 0;
+                // }
+                
+                $season = Season::where('status', 1)
                     ->whereDate('start_date', '<=', $date)
                     ->whereDate('end_date', '>=', $date)
                     ->first();
-
+                    
+                $peakDate = null;
+                
+                if ($season) {
+                    $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
+                        ->where('season_id', $season->id)
+                        ->where('room_category_id', $roomCategoryId)
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereDate('end_date', '>=', $date)
+                        ->first();
+                        
+                }
+                
                 if ($peakDate) {
                     $this->roomRows[$rowIndex]['occupancies_list'] =
                         $peakDate->occupancies->map(fn ($o) => [
@@ -1320,21 +1389,22 @@ class AddHotelQuotation extends Component
                             'name' => $o->occupancy->title,
                             'rate' => $o->rate ?? 0,
                         ])->toArray();
-
                     $this->roomRows[$rowIndex]['is_peak_date'] = 1;
-                } else {
+                } elseif ($season) {
                     $this->roomRows[$rowIndex]['occupancies_list'] =
                         RoomCategory::find($roomCategoryId)
                             ?->occupancies
+                            ->where('season_id', $season->id)
                             ->map(fn ($o) => [
                                 'id'   => $o->occupancy_id,
                                 'name' => $o->occupancy->title,
                                 'rate' => $o->rate ?? 0,
                             ])
                             ->toArray() ?? [];
-
+                
                     $this->roomRows[$rowIndex]['is_peak_date'] = 0;
                 }
+                // 
 
                 // reset when room category changes
                 $this->roomRows[$rowIndex]['occupancy_id'] = null;
@@ -1563,7 +1633,7 @@ class AddHotelQuotation extends Component
         $this->roomRows = [];
         
         // REMOVE BELOW CODE IF ERROR COMES UP 
-        if(!$this->showEditHotelModal && !$value){
+        if(!$this->showEditHotelModal){
         $this->selectedDays = [];
         if (!empty($this->tableDataJson['tourPackage']['days'])) {
             foreach ($this->tableDataJson['tourPackage']['days'] as $dayIndex => $day) {
