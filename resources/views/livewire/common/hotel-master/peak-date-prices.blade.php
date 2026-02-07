@@ -70,24 +70,48 @@
                             @enderror
                         </div>
 
+                        <!-- Season -->
+                        <div class="mb-3">
+                            <label class="form-label">Season <span class="text-danger">*</span></label>
+                            <select id="season_id" class="form-select @error('season_id') is-invalid @enderror"
+                                wire:model.live="season_id" @if (!$selected_room_categories) disabled @endif>
+                                <option value="">Select Season</option>
+                                @foreach ($availableSeasons as $season)
+                                    <option value="{{ $season['season_id'] }}">{{ $season['title'] }}</option>
+                                @endforeach
+                            </select>
+                            @if ($selected_room_categories && count($availableSeasons) === 0)
+                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> No active
+                                    seasons configured for this room category.</small>
+                            @elseif (!$selected_room_categories)
+                                <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a
+                                    Room Category first</small>
+                            @endif
+                            @error('season_id')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Dates -->
                         <div class="row mb-3">
-                            @if ($lowestStartDate && $highestEndDate)
+                            @if ($seasonStartDate && $seasonEndDate)
                                 <div class="col-12 mb-2">
                                     <small class="text-muted">
                                         <i class="bx bx-info-circle"></i>
                                         Season will be auto-detected based on selected date range.
-                                        Valid range: {{ $lowestStartDate }} to {{ $highestEndDate }}
+                                        Valid range: {{ $seasonStartDate }} to {{ $seasonEndDate }}
                                     </small>
                                 </div>
                             @endif
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
+                                    data-group="booking1" data-range="proper"
+                                    data-start-from="{{ $seasonStartDate }}" data-end-to="{{ $seasonEndDate }}"
+                                    data-min-strict="true"
                                     wire:model.live="start_date"
-                                    wire:key="start-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
-                                    @if (!$selected_room_categories) disabled @endif>
+                                    wire:key="start-date-{{ $seasonStartDate }}-{{ $seasonEndDate }}"
+                                    @if (!$season_id) disabled @endif>
                                 @error('start_date')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -95,10 +119,12 @@
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="end"
-                                    data-group="booking1" data-range="proper" data-start-from="{{ $lowestStartDate }}"
-                                    data-end-to="{{ $highestEndDate }}" wire:model.live="end_date"
-                                    wire:key="end-date-{{ $lowestStartDate }}-{{ $highestEndDate }}"
-                                    @if (!$selected_room_categories) disabled @endif>
+                                    data-group="booking1" data-range="proper"
+                                    data-start-from="{{ $seasonStartDate }}" data-end-to="{{ $seasonEndDate }}"
+                                    data-min-strict="true"
+                                    wire:model.live="end_date"
+                                    wire:key="end-date-{{ $seasonStartDate }}-{{ $seasonEndDate }}"
+                                    @if (!$season_id) disabled @endif>
                                 @error('end_date')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
