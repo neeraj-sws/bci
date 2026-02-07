@@ -43,8 +43,10 @@ class PeakDatePrices extends Component
     public $occupancies = [];
     public $roomRatesData = [];
     public $selected_room_categories = [];
-
-    public $highestEndDate, $lowestStartDate;
+    public $season_id;
+    public $availableSeasons = [];
+    public $seasonStartDate;
+    public $seasonEndDate;
 
     protected function rules()
     {
@@ -52,8 +54,42 @@ class PeakDatePrices extends Component
             'title' => 'required|string|max:255',
             'hotel_id' => 'required|exists:hotels,hotels_id',
             'selected_room_categories' => 'required',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
+            'season_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $allowedSeasonIds = collect($this->availableSeasons)->pluck('season_id')->all();
+                    if (!in_array((int) $value, $allowedSeasonIds, true)) {
+                        $fail('Selected season is not available for this room category.');
+                    }
+                },
+            ],
+            'start_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    if (!$this->seasonStartDate || !$this->seasonEndDate) {
+                        return;
+                    }
+
+                    if ($value < $this->seasonStartDate || $value > $this->seasonEndDate) {
+                        $fail('Start Date must be within the selected season range.');
+                    }
+                },
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after:start_date',
+                function ($attribute, $value, $fail) {
+                    if (!$this->seasonStartDate || !$this->seasonEndDate) {
+                        return;
+                    }
+
+                    if ($value < $this->seasonStartDate || $value > $this->seasonEndDate) {
+                        $fail('End Date must be within the selected season range.');
+                    }
+                },
+            ],
             'status' => 'required|in:0,1',
             'roomRatesData' => 'required|array|min:1',
             'roomRatesData.*.occupancy_id' => 'required|distinct|exists:occupances,occupancy_id',
@@ -87,6 +123,7 @@ class PeakDatePrices extends Component
 
     protected $validationAttributes = [
         'peak_date_id' => 'Peak Date',
+        'season_id' => 'Season',
         'start_date' => 'Start Date',
         'end_date' => 'End Date',
     ];
@@ -96,109 +133,44 @@ class PeakDatePrices extends Component
         $this->loadDropdowns();
     }
 
+    /**
+     * Check if peak date overlaps with existing records
+     * for the same hotel + room_category + season
+     */
+    private function checkDateOverlap($excludePeakDateId = null)
+    {
+        $roomCategoryId = is_array($this->selected_room_categories)
+            ? (count($this->selected_room_categories) > 0 ? $this->selected_room_categories[0] : null)
+            : $this->selected_room_categories;
+
+        if (!$roomCategoryId || !$this->season_id || !$this->start_date || !$this->end_date) {
+            return false;
+        }
+
+        $query = PeackDate::where('hotel_id', $this->hotel_id)
+            ->where('room_category_id', $roomCategoryId)
+            ->where('season_id', $this->season_id)
+            ->where(function ($q) {
+                $q->where(function ($subQ) {
+                    // Check if new date range overlaps with existing ones
+                    $subQ->whereDate('start_date', '<=', $this->end_date)
+                        ->whereDate('end_date', '>=', $this->start_date);
+                });
+            });
+
+        // Exclude current record when updating
+        if ($excludePeakDateId) {
+            $query->where('peak_dates_id', '!=', $excludePeakDateId);
+        }
+
+        return $query->exists();
+    }
+
     private function loadDropdowns()
     {
         $this->hotels = Hotel::where('status', 1)->orderBy('name')->get();
         $this->peakDates = PeackDate::where('status', 1)->orderBy('title')->get();
         $this->seasons = Season::where('status', 1)->orderBy('name')->get();
-    }
-
-    /**
-     * Auto-detect season based on start_date and end_date
-     * Returns season_id if found, null otherwise
-     * Falls back to nearest season if exact match not found
-     */
-    private function detectSeason()
-    {
-        if (!$this->start_date || !$this->end_date) {
-            return null;
-        }
-
-        // Find season that fully contains the date range
-        $season = Season::where('status', 1)
-            ->whereDate('start_date', '<=', $this->start_date)
-            ->whereDate('end_date', '>=', $this->end_date)
-            ->first();
-
-        if ($season) {
-            return $season->seasons_id;
-        }
-
-        // Fallback: Find nearest season based on start_date
-        $season = Season::where('status', 1)
-            ->orderBy('start_date', 'desc')
-            ->where('start_date', '<=', $this->start_date)
-            ->first();
-
-        return $season ? $season->seasons_id : null;
-    }
-
-    /**
-     * Get season based on selected date range or fallback to current/nearest season
-     * Priority:
-     * 1. Season matching the selected date range
-     * 2. Nearest available season
-     */
-    private function resolveSeasonForDateRange()
-    {
-        // If dates are set, detect season from them
-        if ($this->start_date && $this->end_date) {
-            // Find season that fully contains the date range
-            $season = Season::where('status', 1)
-                ->whereDate('start_date', '<=', $this->start_date)
-                ->whereDate('end_date', '>=', $this->end_date)
-                ->first();
-
-            if ($season) {
-                return $season->seasons_id;
-            }
-
-            // Fallback: Find nearest season based on start_date
-            $season = Season::where('status', 1)
-                ->orderBy('start_date', 'desc')
-                ->where('start_date', '<=', $this->start_date)
-                ->first();
-
-            if ($season) {
-                return $season->seasons_id;
-            }
-
-            // Last resort: Get any future season
-            $season = Season::where('status', 1)
-                ->orderBy('start_date', 'asc')
-                ->where('start_date', '>', $this->start_date)
-                ->first();
-
-            return $season ? $season->seasons_id : null;
-        }
-
-        // If no dates set, try current season
-        $currentDate = now();
-        $currentSeason = Season::where('status', 1)
-            ->whereDate('start_date', '<=', $currentDate)
-            ->whereDate('end_date', '>=', $currentDate)
-            ->first();
-
-        if ($currentSeason) {
-            return $currentSeason->seasons_id;
-        }
-
-        // Fallback: Get nearest future season
-        $season = Season::where('status', 1)
-            ->orderBy('start_date', 'asc')
-            ->where('start_date', '>', $currentDate)
-            ->first();
-
-        if ($season) {
-            return $season->seasons_id;
-        }
-
-        // Last fallback: Get any season (most recent)
-        $season = Season::where('status', 1)
-            ->orderBy('start_date', 'desc')
-            ->first();
-
-        return $season ? $season->seasons_id : null;
     }
 
     public function render()
@@ -291,10 +263,9 @@ class PeakDatePrices extends Component
     {
         $this->validate();
 
-        // Auto-detect season with fallback
-        $season_id = $this->detectSeason();
-        if (!$season_id) {
-            $this->addError('start_date', 'No season available. Please create a season first.');
+        // Check for date overlap
+        if ($this->checkDateOverlap()) {
+            $this->addError('start_date', 'Peak Date already exists for the selected room category and season within the selected date range.');
             return;
         }
 
@@ -308,7 +279,7 @@ class PeakDatePrices extends Component
             'hotel_id' => $this->hotel_id,
             'status' => $this->status,
             'room_category_id' => $roomCategoryId,
-            'season_id' => $season_id,
+            'season_id' => $this->season_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
         ]);
@@ -376,6 +347,10 @@ class PeakDatePrices extends Component
 
         // Trigger date range calculation
         $this->updatedSelectedRoomCategories($this->selected_room_categories);
+        $this->season_id = $item->peakDate->season_id;
+        if ($this->season_id) {
+            $this->updatedSeasonId($this->season_id);
+        }
 
         $this->isEditing = true;
     }
@@ -384,10 +359,9 @@ class PeakDatePrices extends Component
     {
         $this->validate();
 
-        // Auto-detect season with fallback
-        $season_id = $this->detectSeason();
-        if (!$season_id) {
-            $this->addError('start_date', 'No season available. Please create a season first.');
+        // Check for date overlap (excluding current record)
+        if ($this->checkDateOverlap($this->peak_date_id)) {
+            $this->addError('start_date', 'Peak Date already exists for the selected room category and season within the selected date range.');
             return;
         }
 
@@ -402,7 +376,7 @@ class PeakDatePrices extends Component
             'hotel_id' => $this->hotel_id,
             'status' => $this->status,
             'room_category_id' => $roomCategoryId,
-            'season_id' => $season_id,
+            'season_id' => $this->season_id,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
         ]);
@@ -465,11 +439,13 @@ class PeakDatePrices extends Component
             'title',
             'hotel_id',
             'selected_room_categories',
+            'season_id',
             'isEditing',
             'occupancies',
             'roomRatesData',
-            'lowestStartDate',
-            'highestEndDate',
+            'availableSeasons',
+            'seasonStartDate',
+            'seasonEndDate',
         ]);
         $this->resetValidation();
     }
@@ -507,10 +483,12 @@ class PeakDatePrices extends Component
     {
         $this->roomCategories = RoomCategory::where('hotel_id', $id)->where('status', 1)->pluck('title', 'room_categoris_id')->toArray();
         $this->selected_room_categories = [];
+        $this->season_id = null;
+        $this->availableSeasons = [];
+        $this->seasonStartDate = null;
+        $this->seasonEndDate = null;
         $this->occupancies = [];
         $this->roomRatesData = [];
-        $this->lowestStartDate = null;
-        $this->highestEndDate = null;
     }
 
     /**
@@ -518,9 +496,7 @@ class PeakDatePrices extends Component
      */
     public function updatedStartDate($value)
     {
-        if ($this->selected_room_categories) {
-            $this->updatedSelectedRoomCategories($this->selected_room_categories);
-        }
+        return;
     }
 
     /**
@@ -528,56 +504,75 @@ class PeakDatePrices extends Component
      */
     public function updatedEndDate($value)
     {
-        if ($this->selected_room_categories) {
-            $this->updatedSelectedRoomCategories($this->selected_room_categories);
-        }
+        return;
     }
 
     public function updatedSelectedRoomCategories($roomCategoryId)
     {
         $this->occupancies   = [];
         $this->roomRatesData = [];
+        $this->season_id = null;
+        $this->availableSeasons = [];
+        $this->seasonStartDate = null;
+        $this->seasonEndDate = null;
 
         if (is_array($roomCategoryId)) {
             $roomCategoryId = count($roomCategoryId) > 0 ? $roomCategoryId[0] : null;
         }
 
         if (!$roomCategoryId) {
-            $this->lowestStartDate = null;
-            $this->highestEndDate = null;
+            return;
+        }
+        $this->availableSeasons = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
+            ->whereHas('season', function ($query) {
+                $query->where('status', 1);
+            })
+            ->with('season')
+            ->get()
+            ->groupBy('season_id')
+            ->map(function ($rows) {
+                return $rows->first()->season;
+            })
+            ->filter()
+            ->sortBy('start_date')
+            ->map(function ($season) {
+                return [
+                    'season_id' => $season->seasons_id,
+                    'title' => $season->title ?? $season->name,
+                    'start_date' => $season->start_date,
+                    'end_date' => $season->end_date,
+                ];
+            })
+            ->values()
+            ->toArray();
+    }
+
+    public function updatedSeasonId($seasonId)
+    {
+        $this->occupancies = [];
+        $this->roomRatesData = [];
+        $this->seasonStartDate = null;
+        $this->seasonEndDate = null;
+
+        $roomCategoryId = is_array($this->selected_room_categories)
+            ? (count($this->selected_room_categories) > 0 ? $this->selected_room_categories[0] : null)
+            : $this->selected_room_categories;
+
+        if (!$roomCategoryId || !$seasonId) {
             return;
         }
 
-        $roomCategory = RoomCategory::with([
-            'occupancies.occupancy',
-        ])->find($roomCategoryId);
+        $selectedSeason = collect($this->availableSeasons)
+            ->firstWhere('season_id', (int) $seasonId);
 
-        if (!$roomCategory) {
-            return;
-        }
+        if ($selectedSeason) {
+            $this->seasonStartDate = $selectedSeason['start_date'] ?? null;
+            $this->seasonEndDate = $selectedSeason['end_date'] ?? null;
 
-        $this->lowestStartDate = $roomCategory->occupancies
-            ->pluck('season.start_date')
-            ->filter()
-            ->min();
-
-        $this->highestEndDate = $roomCategory->occupancies
-            ->pluck('season.end_date')
-            ->filter()
-            ->max();
-
-        // Dispatch event to update datepickers
-        $this->dispatch('update-datepicker-range', [
-            'lowestStartDate' => $this->lowestStartDate,
-            'highestEndDate' => $this->highestEndDate,
-        ]);
-
-        // Resolve season using date range (with fallback)
-        $seasonId = $this->resolveSeasonForDateRange();
-
-        if (!$seasonId) {
-            // No season available at all
-            return;
+            $this->dispatch('update-datepicker-range', [
+                'lowestStartDate' => $this->seasonStartDate,
+                'highestEndDate' => $this->seasonEndDate,
+            ]);
         }
 
         $seasonRates = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
@@ -586,34 +581,16 @@ class PeakDatePrices extends Component
             ->get();
 
         if ($seasonRates->isEmpty()) {
-            // No rates for resolved season, try to find any available season with rates
-            $seasonRates = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
-                ->with('occupancy', 'season')
-                ->get();
-
-            if ($seasonRates->isEmpty()) {
-                // No rates available for this room category at all
-                return;
-            }
-
-            // Get the first available season with rates
-            $seasonRates = $seasonRates->groupBy('season_id')->first();
-
-            if (!$seasonRates) {
-                return;
-            }
+            return;
         }
 
-        // Auto-populate occupancies and rates from resolved season
         foreach ($seasonRates as $rateRow) {
             if (!$rateRow->occupancy) {
                 continue;
             }
 
             $occupancyId = $rateRow->occupancy->occupancy_id;
-
             $this->occupancies[$occupancyId] = $rateRow->occupancy->title;
-
             $this->roomRatesData[] = [
                 'occupancy_id' => $occupancyId,
                 'rate'         => $rateRow->rate ?? 0,

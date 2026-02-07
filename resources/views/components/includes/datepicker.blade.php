@@ -19,15 +19,15 @@
             }
 
             // RULE 1: existing past date wins over everything
-            if (existingDate && existingDate < today) {
+            if (existingDate && existingDate < today && el.dataset.minStrict !== "true") {
                 minDate = null;
             } else {
                 // RULE 2: apply constraints only for new data
                 const startFrom = el.dataset.startFrom;
                 if (startFrom) {
                     const seasonStart = new Date(startFrom);
-                    // minDate should be the LATER of today or seasonStart
-                    minDate = seasonStart > today ? seasonStart : today;
+                    // minDate can be strict to seasonStart or later of today/seasonStart
+                    minDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
                 }
             }
 
@@ -304,13 +304,13 @@
                 }
 
                 // RULE 1: existing past date wins over everything
-                if (existingDate && existingDate < today) {
+                if (existingDate && existingDate < today && el.dataset.minStrict !== "true") {
                     newMinDate = null;
                 } else {
                     // RULE 2: apply constraints for new data
                     if (lowestStartDate) {
                         const seasonStart = new Date(lowestStartDate);
-                        newMinDate = seasonStart > today ? seasonStart : today;
+                        newMinDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
                     } else {
                         newMinDate = today;
                     }
