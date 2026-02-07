@@ -18,6 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('income-expense-subcategory manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -101,9 +102,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('income-expense-subcategory manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="btn-group p-2 rounded border mb-0" role="group">
                     <button wire:click="setTab(1)"
@@ -171,7 +173,9 @@
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    @can('income-expense-subcategory manage')
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -194,8 +198,9 @@
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
                                                 wire:change="toggleStatus({{ $item->id }})"
-                                                @checked($item->status)>
+                                                @checked($item->status) @can('income-expense-subcategory manage') @else disabled @endcan>
                                         </td>
+                                            @can('income-expense-subcategory manage')
                                         <td class="align-middle py-1 text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">
@@ -206,6 +211,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                            @endcan
                                     </tr>
                                 @empty
                                     <tr>

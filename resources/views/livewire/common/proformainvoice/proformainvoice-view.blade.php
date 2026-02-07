@@ -17,6 +17,7 @@
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="openModel"></i>
                 </a>
 
+                @can('proforma-invoice manage')
                 @if ($prinvoice->status !== 2)
                     <a wire:click='confirmupdatePr()' class="btn btn-primary"><i class="fa fa-print"></i>
                         Record Payment
@@ -31,7 +32,7 @@
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="markasPaid"></i>
                 </a>
                 @endif
-
+                @endcan
             </div>
             <hr>
         </div>

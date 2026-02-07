@@ -7,7 +7,7 @@
 
             <div class="user-box dropdown ms-auto" style="position: relative;">
                 
-                                <livewire:common.user-header.user-header-notification>
+                                {{-- <livewire:common.user-header.user-header-notification> --}}
 
 
                 <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"

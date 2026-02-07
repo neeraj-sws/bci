@@ -7,7 +7,7 @@
             <div class="card">
 
                 <div class="card-body">
-                    <form wire:submit.prevent="save">
+                    <form wire:submit.prevent="@can('permissions manage') save @endcan">
                         <div class="mb-3">
                             <label for="title" class="form-label">Role Name <span class="text-danger">*</span></label>
 
@@ -20,6 +20,7 @@
                         </div>
 
 
+                        @can('permissions manage')
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
                                 {{ 'Save changes' }}
@@ -28,6 +29,7 @@
                             <button type="button" wire:click="resetForm"
                                 class="btn btn-secondary greygradientbtn">Close</button>
                         </div>
+                        @endcan
                     </form>
                 </div>
             </div>

@@ -329,7 +329,9 @@
                         @endif
                         <th width="10%" class="tableheadingcolor px-3 py-2">Stage</th>
                         <th width="10%" class="tableheadingcolor px-3 py-2">Source</th>
+                                @can('leads manage')
                         <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -410,6 +412,7 @@
                                 <a href="{{ route($route . '.lead-view', $item->id) }}">
                                     <span class="fw-500 text-dark">{{ $item->source->name ?? 'NA' }}</span></a>
                             </td>
+                                @can('leads manage')
                             <td class="text-center px-3 py-1 align-items-center gap-3">
                                 @can('leads manage')
                                     @if (!in_array($item->stage_id, [7, 5, 4]))
@@ -477,6 +480,7 @@
                                     @endif
                                 @endcan
                             </td>
+                            @endcan
                         </tr>
                     @empty
                         <tr>

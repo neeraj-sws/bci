@@ -3,7 +3,7 @@
 
         <div class="toolbar hidden-print">
             <div class="text-end">
-
+@can('invoices manage')
                 <a href="{{ route('invoice.pdf', ['id' => $invoice->uuid]) }}" class="btn btn-danger">
                     <i class="fa fa-file-pdf-o"></i> Export as PDF
                 </a>
@@ -16,6 +16,7 @@
                     Send
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="openModel"></i>
                 </a>
+@endcan
             </div>
             <hr>
         </div>

@@ -37,7 +37,9 @@
                             <th class="tableheadingcolor px-3 py-2">Company Contact</th>
                             <th class="tableheadingcolor px-3 py-2">Company Email Id</th>
                             <th class="tableheadingcolor px-3 py-2">Profile Completed</th>
+                            @can('companies manage')
                                 <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +66,7 @@
                                     {{ $percent }}%
                                 </td>
 
+                                @can('companies manage')
                                     <td class="text-center px-3 py-1">
                                         <a class="me-2" href="{{ route($route . '.edit-company', $item->id) }}"
                                             title="Edit">
@@ -77,6 +80,7 @@
                                             id="{{ $index + 1 }}" wire:change="toggleStatus({{ $item->id }})"
                                             @checked($item->is_primary)>
                                     </td>
+                                @endcan
                             </tr>
                         @empty
                             <tr>

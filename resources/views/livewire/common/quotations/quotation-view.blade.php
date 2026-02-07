@@ -2,11 +2,13 @@
     <div>
         <div class="toolbar hidden-print">
             <div class="text-end">
+                @can('quotations manage')
                 @if (in_array($estimate?->status, [0]))
                     <a href="{{ route($route . '.edit-quotation', $estimate->id) }}" class="btn btn-primary"><i
                             class="fa fa-print"></i>
                         Edit</a>
                 @endif
+                @endcan
                 <a href="{{ route('estimate.pdf', ['id' => $estimate->uuid]) }}" class="btn btn-danger">
                     <i class="fa fa-file-pdf-o"></i> Export as PDF
                 </a>
@@ -18,6 +20,7 @@
                         Send</a>
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="openModel"></i>
                 @endif
+                @can('quotations manage')
                 @php
                     if ($estimate->lastprinvoice) {
                         $prInvoicePaid =
@@ -70,6 +73,7 @@
                         to Invoice
                     </a>
                 @endif
+                @endcan
             </div>
             <hr>
         </div>

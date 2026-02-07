@@ -16,6 +16,7 @@
             </nav>
         </div>
 
+        @can('quotations manage')
         @if (count($leads) > 0)
             <a wire:click='add' class="btn bluegradientbtn">
                 <i class="bx bx-plus me-1"></i> Add New {{ $pageTitle }} ({{ count($leads) }})
@@ -23,7 +24,8 @@
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                 </span>
             </a>
-        @endif
+        @endif        
+        @endcan
     </div>
 
     <div class="card">
@@ -273,7 +275,7 @@
 
                                     <td class="p-3">
 
-
+                                     @can('quotations manage')
                                         <div wire:key="{{ $item->id }}" class="dropdown ms-auto">
                                             <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
                                                 data-bs-toggle="dropdown" aria-expanded="false"><i
@@ -294,6 +296,7 @@
                                                         Details</a></li>
                                             </ul>
                                         </div>
+                                        @endcan
 
                                     </td>
 

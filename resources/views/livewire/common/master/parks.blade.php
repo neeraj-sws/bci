@@ -18,6 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('parks manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -57,9 +58,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('parks manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -82,6 +84,7 @@
                                             <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    @can('parks manage')
                                     <th wire:click="shortby('status')" style="cursor: pointer;">
                                         Status
                                         @if ($sortBy === 'status')
@@ -89,6 +92,7 @@
                                         @endif
                                     </th>
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,6 +104,7 @@
                                                 {{ $item->name }}
                                             </span>
                                         </td>
+                                            @can('parks manage')
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
@@ -116,6 +121,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                            @endcan
                                     </tr>
                                 @empty
                                     <tr>

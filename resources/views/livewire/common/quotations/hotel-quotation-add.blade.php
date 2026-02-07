@@ -576,7 +576,7 @@
                                             @endif
                                         @elseif ($key === 'hotel')
                                             <span
-                                                class="fw-semibold text-primary text-decoration-underline"
+                                                class="fw-semibold text-primary text-decoration-underline d-flex overflow-x-auto"
                                                 style="cursor:pointer"
                                                 wire:click="openEditHotelModal({{ $index }})"
                                                 title="Edit Hotel"
@@ -648,18 +648,36 @@
                         @endforeach
 
                         <div class="d-flex justify-content-between">
-                            <a class="btn btn-dark my-3" wire:click='edit'>Back</a>
+                            <a class="btn btn-dark my-3" wire:click='edit'>Back & Cancel 
+                            <span wire:loading
+                                    wire:target="edit">
+                                    <span class="spinner-border spinner-border-sm me-1" role="status"
+                                        aria-hidden="true"></span>
+                                </span>
+                            </a>
+                            <div>
                             <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
                                     wire:target="restoreTourAmountsFromJson">
                                     <span class="spinner-border spinner-border-sm me-1" role="status"
                                         aria-hidden="true"></span>
                                 </span></a>
+                                <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson({{ 1 }})'>Save & Exit <span wire:loading
+                            wire:target="restoreTourAmountsFromJson({{ 1 }})">
+                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                        </span></a>
+                        </div>
                         </div>
                     </tbody>
                 </table>
                 <div class="text-end">
                     <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
                             wire:target="restoreTourAmountsFromJson">
+                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                        </span></a>
+                        <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson({{ 1 }})'>Save & Exit <span wire:loading
+                            wire:target="restoreTourAmountsFromJson({{ 1 }})">
                             <span class="spinner-border spinner-border-sm me-1" role="status"
                                 aria-hidden="true"></span>
                         </span></a>
@@ -828,7 +846,7 @@
                                     @endif>
 
                                 <div>
-                                    <strong>Day {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</strong><br>
+                                    <strong>Night {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</strong><br>
                                     <small class="text-muted">
                                         {{ $date->format('d M Y') }}
                                     </small>
@@ -851,7 +869,7 @@
                         <div class="border rounded p-3 mb-3">
 
                             <small class="text-muted">
-                                Day {{ str_pad($dayIndex + 1, 2, '0', STR_PAD_LEFT) }}
+                                Night {{ str_pad($dayIndex + 1, 2, '0', STR_PAD_LEFT) }}
                             </small>
                             @if(!empty($rows->first()['is_peak_date']) && $rows->first()['is_peak_date'] == 1)
                                 <div class="text-danger fw-semibold mt-1">
@@ -939,7 +957,7 @@
                     <button type="button"
                             class="btn btn-secondary"
                             wire:click="closeHotelModal">
-                        Close
+                        Cancel
                         <span wire:loading
                             wire:target="closeHotelModal">
                             <span class="spinner-border spinner-border-sm me-1" role="status"
@@ -953,6 +971,16 @@
                         Save
                         <span wire:loading
                             wire:target="saveHotelSelection">
+                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                        </span>
+                    </button>
+                     <button type="button"
+                            class="btn btn-primary"
+                            wire:click="saveHotelSelection({{ true }})">
+                        Save & Exit
+                        <span wire:loading
+                            wire:target="saveHotelSelection({{ true }})">
                             <span class="spinner-border spinner-border-sm me-1" role="status"
                                 aria-hidden="true"></span>
                         </span>
@@ -1046,7 +1074,7 @@
                     <label class="form-label fw-semibold">Editing Day</label>
                     <div class="border rounded p-2 bg-light">
                         <strong>
-                            Day {{ str_pad($editDayIndex + 1, 2, '0', STR_PAD_LEFT) }}
+                            Night {{ str_pad($editDayIndex + 1, 2, '0', STR_PAD_LEFT) }}
                         </strong>
                         <small class="text-muted ms-2">
                             {{ $this->tourDates[$editDayIndex]->format('d M Y') ?? '' }}

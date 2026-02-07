@@ -18,6 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('roles manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -48,9 +49,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('roles manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -68,7 +70,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Role Name</th>
+                                    @can('roles manage')
                                     <th>Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,6 +84,7 @@
                                                 {{ $role->name }}
                                             </span>
                                         </td>
+                                        @can('roles manage')
                                         <td>
                                             <a href="javascript:void(0)" wire:click="edit({{ $role->id }})"
                                                 title="Edit">
@@ -92,6 +97,7 @@
                                             </a>
                                             @endif
                                         </td>
+                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

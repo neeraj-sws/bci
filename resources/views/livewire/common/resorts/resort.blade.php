@@ -11,9 +11,11 @@
                 </ol>
             </nav>
         </div>
+        @can('resort-master manage')
         <button class="btn bluegradientbtn" wire:click="create">
             <i class="bx bx-plus me-1"></i> Add New Resort
         </button>
+        @endcan
     </div>
 
     <!-- Resort List -->
@@ -41,7 +43,9 @@
                             <th class="tableheadingcolor px-3 py-2">Location Gate</th>
                             <th class="tableheadingcolor px-3 py-2">Number of Category</th>
                             <th class="tableheadingcolor px-3 py-2">Image</th>
+                            @can('resort-master manage')
                             <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -73,6 +77,7 @@
                                     <a target="_blank" href="{{$resort->drive_link}}"><i
                                             class="lni lni-google-drive"></i></a>
                                 </td>
+                                    @can('resort-master manage')
                                 <td class="px-3 py-1 text-center">
                                     <a href="javascript:void(0)" wire:click="edit({{ $resort->id }})" title="Edit">
                                         <i class="bx bx-edit text-dark fs-5"></i>
@@ -81,6 +86,7 @@
                                         <i class="bx bx-trash text-danger fs-5"></i>
                                     </a>
                                 </td>
+                                @endcan
                             </tr>
                         @empty
                             <tr>

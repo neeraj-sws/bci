@@ -48,6 +48,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('customer-trips manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -126,9 +127,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('customer-trips manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <a href="{{ route('common.trip-archive') }}" 
@@ -154,8 +156,10 @@
                                 <tr>
                                     <th class="width60">#</th>
                                     <th>Customer Trip Name</th>
+                                    @can('customer-trips manage')
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -167,12 +171,15 @@
                                                 {{ $item->name }}
                                             </span>
                                         </td>
+                                        @can('trip-master manage')
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
+                                        @endcan
+                                            @can('customer-trips manage')
                                         <td class="align-middle py-1 text-center">
                                             <a class="me-2" href="{{ route('common.trip-view', $item->id) }}"
                                                 title="Trip Tracker">
@@ -187,6 +194,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                            @endcan
                                     </tr>
                                 @empty
                                     <tr>

@@ -19,6 +19,7 @@
    {{-- <h4>{{ $isEditing ? 'Edit User' : 'Create User' }}</h4> --}}
 
     <div class="row g-4">
+        @can('users manage')
         <div class="col-md-5">
             <div class="card">
                 <div class="card-body">
@@ -135,8 +136,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
-        <div class="col-md-7">
+        <div class="@can('users manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -155,8 +157,10 @@
                                     <th>User Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
+                                    @can('users manage')
                                     <th>Status</th>
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -178,6 +182,7 @@
                                                 {{ $item->getRoleNames()->first() ?? 'No Role' }}
                                             </span>
                                         </td>
+                                        @can('users manage')
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
@@ -197,6 +202,7 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

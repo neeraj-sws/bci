@@ -18,6 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('lead-tags manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -56,9 +57,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('lead-tags manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -82,7 +84,9 @@
                                         @endif
                                     </th>
                                     <th>Status</th>
+        @can('lead-tags manage')
                                     <th class="width80">Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -97,8 +101,9 @@
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch" id="{{$index + 1}}"
                                                 wire:change="toggleStatus({{ $item->id }})"
-                                                @checked($item->status)>
+                                                @checked($item->status) @can('lead-tags manage') @else disabled @endcan>
                                         </td>
+        @can('lead-tags manage')
                                         <td class="align-middle py-1 text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
@@ -107,7 +112,8 @@
                                                 title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
-                                        </td>
+                                        </td>.
+                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

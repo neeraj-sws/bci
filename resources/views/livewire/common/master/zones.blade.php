@@ -15,6 +15,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
+        @can('zones manage')
         <div class="col-md-5">
             <div class="card">
 
@@ -121,9 +122,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="@can('zones manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -153,7 +155,9 @@
                                         @endif
                                     </th>
                                     <th>Nearest Airport/Railway/City </th>
+                                    @can('zones manage')
                                     <th class="width60">Action</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -176,6 +180,7 @@
                                                 {{ $item->nearest_railway }},{{ $item->nearest_city }}
                                             </span>
                                         </td>
+                                            @can('zones manage')
                                         <td class="align-middle py-1 text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">
@@ -186,6 +191,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
+                                            @endcan
                                     </tr>
                                 @empty
                                     <tr>

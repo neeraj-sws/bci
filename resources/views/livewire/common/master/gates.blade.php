@@ -11,9 +11,11 @@
                 </ol>
             </nav>
         </div>
+        @can('gates manage')
         <button class="btn bluegradientbtn" wire:click="create">
             <i class="bx bx-plus me-1"></i> Add New Gate
         </button>
+        @endcan
     </div>
     <div class="card border-0 shadow-sm radius12 overflow-hidden @if ($isadd) d-none @endif">
         <div class="card-header d-flex justify-content-between align-items-cente py-3">
@@ -82,7 +84,9 @@
                                 @endif
                             </th>
                             <th class="tableheadingcolor px-3 py-2">Night Safari Cost</th>
+                            @can('gates manage')
                             <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -108,6 +112,7 @@
                                 <td class="px-3 py-1">₹{{ number_format($item->total_week_day, 2) }}</td>
                                 <td class="px-3 py-1">₹{{ number_format($item->total_week_end, 2) }}</td>
                                 <td class="px-3 py-1">{{ $item?->night_safari_permit ?? 'NA' }}</td>
+                                    @can('gates manage')
                                 <td class="px-3 py-1 text-center">
                                     <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
                                         <i class="bx bx-edit text-dark fs-5"></i>
@@ -117,6 +122,7 @@
                                         <i class="bx bx-trash text-danger fs-5"></i>
                                     </a>
                                 </td>
+                                    @endcan
                             </tr>
                         @empty
                             <tr>
