@@ -78,32 +78,37 @@
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
                                 <th style="padding:12px 15px; font-weight: 600; color: #374151;">#</th>
-                                <th style="padding: 12px 15px; font-weight: 600; color: #374151;" wire:click="shortby('invoice_date')" style="cursor: pointer;">
+                                <th style="padding: 12px 15px; font-weight: 600; color: #374151;"
+                                    wire:click="shortby('invoice_date')" style="cursor: pointer;">
                                     Date
-                                    @if($sortBy === 'invoice_date')
+                                    @if ($sortBy === 'invoice_date')
                                         <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                     @endif
                                 </th>
-                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('invoice_no')" style="cursor: pointer;">
+                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;"
+                                    wire:click="shortby('invoice_no')" style="cursor: pointer;">
                                     {{ $pageTitle }} #
-                                    @if($sortBy === 'invoice_no')
+                                    @if ($sortBy === 'invoice_no')
                                         <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                     @endif
                                 </th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Quotation #</th>
-                                <th width="20%" class="text-start" style="padding: 12px 16px; font-weight: 600; color: #374151;">
+                                <th width="20%" class="text-start"
+                                    style="padding: 12px 16px; font-weight: 600; color: #374151;">
                                     Start/End Date
                                 </th>
                                 <th style="padding: 12px 16px; font-weight: 600; color: #374151;">Tourist</th>
-                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('status')" style="cursor: pointer;">
+                                <th style="padding: 12px 16px; font-weight: 600; color: #374151;"
+                                    wire:click="shortby('status')" style="cursor: pointer;">
                                     Status
-                                    @if($sortBy === 'status')
+                                    @if ($sortBy === 'status')
                                         <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                     @endif
                                 </th>
-                                <th style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;" wire:click="shortby('amount')" style="cursor: pointer;">
+                                <th style="width: 120px; padding: 12px 16px; font-weight: 600; color: #374151;"
+                                    wire:click="shortby('amount')" style="cursor: pointer;">
                                     Amount
-                                    @if($sortBy === 'amount')
+                                    @if ($sortBy === 'amount')
                                         <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                     @endif
                                 </th>
@@ -127,25 +132,25 @@
                                             {{ \Carbon\Carbon::parse($item->invoice_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
                                         </a>
                                     </td>
-                                     <td class="p-3">
+                                    <td class="p-3">
                                         <a href="{{ $invoiceRoute }}" class="fw-500 text-dark">
                                             {{ $item->invoice_no ?? 'NA' }}
                                         </a>
                                     </td>
                                     <td class="p-3">
-                                       <a href="{{ route('common.view-quotation', $item->quotation->uuid) }}"
+                                        <a href="{{ route('common.view-quotation', $item->quotation->uuid) }}"
                                             class="fw-500 text-primary">
                                             {{ $item->quotation->quotation_no ?? 'NA' }}
                                         </a>
                                     </td>
                                     <td class="p-3">
-                                        <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
+                                        <a href="{{ $invoiceRoute }}" class="fw-500 text-dark">
                                             {{ \Carbon\Carbon::parse($item->start_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
                                             -
                                             {{ \Carbon\Carbon::parse($item->end_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
                                         </a>
                                     </td>
-                                   
+
                                     <td class="p-3">
                                         <a href="{{ $invoiceRoute }}" class="fw-500 text-dark">
                                             {{ $item->tourist->primary_contact ?? 'NA' }}
@@ -227,33 +232,33 @@
 
 </div>
 @push('scripts')
-<script>
-document.addEventListener('livewire:init', function() {
-    $("#kt_daterangepicker_1").daterangepicker({
-        locale: {
-            cancelLabel: 'Clear',
-        },
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                'month').endOf('month')],
-        },
-    });
-    $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
-        let startDate = picker.startDate.format('YYYY-MM-DD');
-        let endDate = picker.endDate.format('YYYY-MM-DD');
-        @this.set('startdate', startDate);
-        @this.set('enddate', endDate);
-    });
+    <script>
+        document.addEventListener('livewire:init', function() {
+            $("#kt_daterangepicker_1").daterangepicker({
+                locale: {
+                    cancelLabel: 'Clear',
+                },
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')],
+                },
+            });
+            $('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
+                let startDate = picker.startDate.format('YYYY-MM-DD');
+                let endDate = picker.endDate.format('YYYY-MM-DD');
+                @this.set('startdate', startDate);
+                @this.set('enddate', endDate);
+            });
 
-    $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
-        @this.set('startdate', null);
-        @this.set('enddate', null);
-    });
-});
-</script>
+            $('#kt_daterangepicker_1').on('cancel.daterangepicker', function(ev, picker) {
+                @this.set('startdate', null);
+                @this.set('enddate', null);
+            });
+        });
+    </script>
 @endpush
