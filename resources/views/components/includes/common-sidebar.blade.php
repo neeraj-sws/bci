@@ -32,12 +32,15 @@
                                      </a>
                                  </li>
                              @endcan
-
-
-
-
                              @can('tourists list')
-                                 <li class="mb-1">
+                                 <li
+                                     class="mb-1 {{ request()->routeIs('common.tourist') ||
+                                     request()->routeIs('common.tourist-create') ||
+                                     request()->routeIs('common.tourist-edit') ||
+                                     request()->routeIs('common.view-tourist')
+                                         ? 'mm-active'
+                                         : '' }}">
+
                                      <a href="{{ route('common.tourist') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="fadeIn animated bx bx-user"></i>
@@ -48,7 +51,14 @@
                              @endcan
 
                              @canany(['leads list', 'lead-type list', 'lead-stages list', 'leads-source view'])
-                                 <li class="mb-1">
+                                 <li
+                                     class="mb-1 {{ request()->routeIs('common.lead') ||
+                                     request()->routeIs('common.lead-create') ||
+                                     request()->routeIs('common.lead-edit') ||
+                                     request()->routeIs('common.lead-view') ||
+                                     request()->routeIs('common.lead-revised')
+                                         ? 'mm-active'
+                                         : '' }}">
                                      <a href="{{ route('common.lead') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="lni lni-bar-chart"></i>
@@ -103,7 +113,8 @@
 
 
                              @can('quotations list')
-                                 <li class="mb-1">
+                                 <li
+                                     class="mb-1 {{ request()->routeIs('common.quotation*') || request()->routeIs('common.*-quotation') ? 'mm-active' : '' }}">
                                      <a href="{{ route('common.quotation') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="lni lni-book"></i>
@@ -128,7 +139,7 @@
                                  </li>
                              @endcan
                              @can('customer-trips list')
-                                 <li class="mb-1">
+                                 <li class="mb-1 {{ request()->is('customer-trips*') ? 'mm-active' : '' }}">
                                      <a href="{{ route('common.trip') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="lni lni-map"></i>
@@ -151,7 +162,12 @@
                              @endcan
 
                              @can('tour-master list')
-                                 <li class="mb-1">
+                                 <li class="mb-1 {{ request()->routeIs('common.tour') ||
+                                     request()->routeIs('common.tour-create') ||
+                                     request()->routeIs('common.tour-edit') ||
+                                     request()->routeIs('common.tour-copy')
+                                         ? 'mm-active'
+                                         : '' }}">
                                      <a href="{{ route('common.tour') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="lni lni-map"></i>
@@ -291,7 +307,7 @@
                              @endcanany
 
 
-                             @canany(['users list','roles list','permissions list'])
+                             @canany(['users list', 'roles list', 'permissions list'])
                                  <li class="mb-1">
                                      <a class="has-arrow text-white" href="javascript:;">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -302,34 +318,40 @@
                                          </div>
                                      </a>
                                      <ul class="mm-collapse ps-3 list-unstyled border-0">
-                                        @can('users list')
-                                         <li class="mt-1">
-                                             <a href="{{ route('admin.users') }}" class="text-white ps-4">
-                                                 <i class="lni lni-envato me-2"></i>Users
-                                             </a>
-                                         </li>
-                                        @endcan
-                                            @can('roles list')
-                                         <li class="mt-1">
-                                             <a href="{{ route('admin.roles') }}" class="text-white ps-4">
-                                                 <i class="lni lni-grid me-2"></i>Roles
-                                             </a>
-                                         </li>
-                                            @endcan
-                                            @can('permissions list')
-                                         <li class="mt-1">
-                                             <a href="{{ route('admin.permisions') }}" class="text-white ps-4">
-                                                 <i class="lni lni-grid me-2"></i>Permissions
-                                             </a>
-                                         </li>
-                                            @endcan
+                                         @can('users list')
+                                             <li class="mt-1">
+                                                 <a href="{{ route('admin.users') }}" class="text-white ps-4">
+                                                     <i class="lni lni-envato me-2"></i>Users
+                                                 </a>
+                                             </li>
+                                         @endcan
+                                         @can('roles list')
+                                             <li class="mt-1">
+                                                 <a href="{{ route('admin.roles') }}" class="text-white ps-4">
+                                                     <i class="lni lni-grid me-2"></i>Roles
+                                                 </a>
+                                             </li>
+                                         @endcan
+                                         @can('permissions list')
+                                             <li class="mt-1">
+                                                 <a href="{{ route('admin.permisions') }}" class="text-white ps-4">
+                                                     <i class="lni lni-grid me-2"></i>Permissions
+                                                 </a>
+                                             </li>
+                                         @endcan
                                      </ul>
                                  </li>
                              @endcanany
 
 
                              @can('companies list')
-                                 <li class="mb-1">
+                                 <li
+                                     class="mb-1 {{ request()->routeIs('common.companies') ||
+                                     request()->routeIs('common.add-company') ||
+                                     request()->routeIs('common.edit-company') ||
+                                     request()->routeIs('common.tax')
+                                         ? 'mm-active'
+                                         : '' }}">
                                      <a href="{{ route('common.companies') }}" class="text-white">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                              <i class="lni lni-apartment"></i>
@@ -344,7 +366,8 @@
 
 
 
-                             @canany(['lead-setting list','lead-tags list','income-expense-category list','income-expense-subcategory list'])
+                             @canany(['lead-setting list', 'lead-tags list', 'income-expense-category list',
+                                 'income-expense-subcategory list'])
                                  <li class="mb-1">
                                      <a class="has-arrow text-white" href="javascript:;">
                                          <div class="parent-icon d-flex align-items-center justify-content-center me-2">
@@ -394,14 +417,14 @@
                              @endcanany
 
                              @can('hotel-master manage')
-                             <li class="mb-1">
-                                 <a href="{{ route('common.hotel-list') }}" class="text-white">
-                                     <div class="parent-icon d-flex align-items-center justify-content-center me-2">
-                                         <i class="lni lni-apartment"></i>
-                                     </div>
-                                     <div class="menu-title"><span>Hotel Master</span></div>
-                                 </a>
-                             </li>
+                                 <li class="mb-1">
+                                     <a href="{{ route('common.hotel-list') }}" class="text-white">
+                                         <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                             <i class="lni lni-apartment"></i>
+                                         </div>
+                                         <div class="menu-title"><span>Hotel Master</span></div>
+                                     </a>
+                                 </li>
                              @endcan
 
                              @can('calculator view')

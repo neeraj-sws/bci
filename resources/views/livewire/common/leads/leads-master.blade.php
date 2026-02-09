@@ -11,7 +11,7 @@
         </div>
 
     </div>
-    
+
 <div class="col-12">
                      <ul class="nav nav-tabs nav-primary " role="tablist">
 									<li class="nav-item me-3">
@@ -34,6 +34,6 @@
 									<i class="ti ti-device-laptop me-2"></i>Leads Source
 								</a>
 								</ul>
-								
 
-</div>						
+
+</div>
