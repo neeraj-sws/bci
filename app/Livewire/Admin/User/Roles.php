@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 use Livewire\Attributes\{Layout, On};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class Roles extends Component
 {
     use WithPagination;

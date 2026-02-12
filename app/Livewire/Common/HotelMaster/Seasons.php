@@ -67,13 +67,6 @@ class Seasons extends Component
     public function store()
     {
         $this->validate();
-        if ($this->seasonOverlaps()) {
-            $this->addError(
-                'start_date',
-                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
-            );
-            return;
-        }
         Season::create($this->payload());
 
         $this->resetForm();
@@ -96,13 +89,6 @@ class Seasons extends Component
     public function update()
     {
         $this->validate();
-        if ($this->seasonOverlaps()) {
-            $this->addError(
-                'start_date',
-                'This season overlaps with an existing season. Overlapping months or dates are not allowed.'
-            );
-            return;
-        }
         Season::findOrFail($this->itemId)->update($this->payload());
 
         $this->resetForm();

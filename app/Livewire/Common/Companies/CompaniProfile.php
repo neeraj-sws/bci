@@ -46,9 +46,9 @@ class CompaniProfile extends Component
             $this->company_file_id = null;
 
             $this->city            = $this->organization->city;
-            
+
             $this->sac_code            = $this->organization->sac_code;
-            
+
             $this->state           = $this->organization->state;
             $this->zip_code        = $this->organization->zip_code;
             $this->country         = $this->organization->country;
@@ -146,7 +146,7 @@ class CompaniProfile extends Component
                 // 'fiscal_year' => $this->fiscal_year,
                 // 'currency' => $this->currency,
                 'language' => $this->language,
-                
+
                 'sac_code'=>$this->sac_code
             ];
 
@@ -174,8 +174,8 @@ class CompaniProfile extends Component
                     'message' => $this->pageTitle . ' Created successfully!'
                 ]);
             }
-            
-            // NEW DEV 
+
+            // NEW DEV
             $imageId = $this->organization->company_file_id ?? null;
             if ($this->company_file_id) {
                 if ($this->organization && $this->organization->company_file_id) {
@@ -206,8 +206,8 @@ class CompaniProfile extends Component
             $this->organization::findOrFail($this->organization->id)->update([
                 'company_file_id' => $imageId,
             ]);
-            // 
-            
+            //
+
             $this->dispatch('profileSave', $this->organization->id);
             $this->dispatch('tabUpdated', 2);
         } catch (\Exception $e) {

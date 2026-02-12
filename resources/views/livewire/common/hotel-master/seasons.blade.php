@@ -37,7 +37,8 @@
                             <div class="col-lg-12 col-sm-6 mb-3">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" data-range="proper" wire:model="start_date">
+                                    data-group="booking1" data-range="proper" data-allow-past="true"
+                                    wire:model="start_date">
                                 @error('start_date')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror

@@ -17,7 +17,7 @@ use Livewire\{Component, WithPagination};
 use App\Models\IncomeExpenseCategory;
 use App\Models\IncomeExpenseSubCategory;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class Vendors extends Component
 {
     use WithPagination;

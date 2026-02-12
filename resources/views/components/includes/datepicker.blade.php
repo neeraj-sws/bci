@@ -5,11 +5,12 @@
             const safariDateAfter = parseInt(el.dataset.start || 0);
             const NoDateAfter = parseInt(el.dataset.nostart || 0);
             const restrictFuture = el.dataset.restrictFuture === "true";
+            const allowPast = el.dataset.allowPast === "true";
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            let minDate = today;
+            let minDate = allowPast ? null : today;
             let maxDate = null;
 
             let existingDate = null;
@@ -27,7 +28,9 @@
                 if (startFrom) {
                     const seasonStart = new Date(startFrom);
                     // minDate can be strict to seasonStart or later of today/seasonStart
-                    minDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
+                    minDate = el.dataset.minStrict === "true"
+                        ? seasonStart
+                        : (allowPast ? seasonStart : (seasonStart > today ? seasonStart : today));
                 }
             }
 
@@ -276,7 +279,7 @@
      * Update existing Flatpickr instances with new min/max dates
      */
     function updateDatepickerRanges(lowestStartDate, highestEndDate) {
-        const today = new Date();
+            const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         document.querySelectorAll('.datepicker').forEach((el) => {
@@ -291,6 +294,7 @@
             // If Flatpickr exists, update it
             if (el._flatpickr) {
                 const picker = el._flatpickr;
+                const allowPast = el.dataset.allowPast === "true";
 
                 // Calculate new min/max dates
                 let newMinDate = null;
@@ -310,9 +314,11 @@
                     // RULE 2: apply constraints for new data
                     if (lowestStartDate) {
                         const seasonStart = new Date(lowestStartDate);
-                        newMinDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
+                        newMinDate = el.dataset.minStrict === "true"
+                            ? seasonStart
+                            : (allowPast ? seasonStart : (seasonStart > today ? seasonStart : today));
                     } else {
-                        newMinDate = today;
+                        newMinDate = allowPast ? null : today;
                     }
                 }
 
