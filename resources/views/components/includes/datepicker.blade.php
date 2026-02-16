@@ -27,6 +27,7 @@
                 const startFrom = el.dataset.startFrom;
                 if (startFrom) {
                     const seasonStart = new Date(startFrom);
+                    seasonStart.setHours(0, 0, 0, 0);
                     // minDate can be strict to seasonStart or later of today/seasonStart
                     minDate = el.dataset.minStrict === "true"
                         ? seasonStart
@@ -168,6 +169,7 @@
             if (role === "start" && dateStr) {
                 const minEndDate = new Date(dateStr);
                 minEndDate.setDate(minEndDate.getDate() + 1);
+                minEndDate.setHours(0, 0, 0, 0);
 
                 const seasonEnd = endEl.dataset.endTo ?
                     new Date(endEl.dataset.endTo + "T23:59:59") :
@@ -199,10 +201,15 @@
             if (role === "end" && dateStr) {
                 const maxStartDate = new Date(dateStr);
                 maxStartDate.setDate(maxStartDate.getDate() - 1);
+                maxStartDate.setHours(0, 0, 0, 0);
 
                 const seasonStart = startEl.dataset.startFrom ?
                     new Date(startEl.dataset.startFrom) :
                     null;
+
+                if (seasonStart) {
+                    seasonStart.setHours(0, 0, 0, 0);
+                }
 
                 const finalMaxStart = clampDate(maxStartDate, seasonStart, null);
 
@@ -314,6 +321,7 @@
                     // RULE 2: apply constraints for new data
                     if (lowestStartDate) {
                         const seasonStart = new Date(lowestStartDate);
+                        seasonStart.setHours(0, 0, 0, 0);
                         newMinDate = el.dataset.minStrict === "true"
                             ? seasonStart
                             : (allowPast ? seasonStart : (seasonStart > today ? seasonStart : today));

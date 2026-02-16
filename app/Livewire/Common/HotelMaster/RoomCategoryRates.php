@@ -70,7 +70,7 @@ class RoomCategoryRates extends Component
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) {
-                    $exists = RoomCategory::where('hotel_id', $this->hotel_id)
+                    $exists = RoomCategory::where('hotel_id', $this->hotel_id)->where('rate_type_id', $this->newCategoryRateType)
                         ->where('title', $value)
                         ->exists();
                     if ($exists) {

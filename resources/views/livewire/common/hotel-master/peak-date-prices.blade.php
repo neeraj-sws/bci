@@ -77,7 +77,7 @@
                                 wire:model.live="season_id" @if (!$selected_room_categories) disabled @endif>
                                 <option value="">Select Season</option>
                                 @foreach ($availableSeasons as $season)
-                                    <option value="{{ $season['season_id'] }}">{{ $season['title'] }}</option>
+                                    <option value="{{ $season['season_id'] }}" {{ $season['season_id'] == $season_id ? 'selected' : '' }}>{{ $season['title'] }}</option>
                                 @endforeach
                             </select>
                             @if ($selected_room_categories && count($availableSeasons) === 0)
@@ -106,7 +106,7 @@
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">Start Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="start"
-                                    data-group="booking1" data-range="proper"
+                                    data-group="booking1" data-range="proper" data-allow-past="true"
                                     data-start-from="{{ $seasonStartDate }}" data-end-to="{{ $seasonEndDate }}"
                                     data-min-strict="true"
                                     wire:model.live="start_date"
@@ -119,7 +119,7 @@
                             <div class="col-lg-6 col-sm-6">
                                 <label class="form-label mb-1">End Date <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control datepicker" data-role="end"
-                                    data-group="booking1" data-range="proper"
+                                    data-group="booking1" data-range="proper" data-allow-past="true"
                                     data-start-from="{{ $seasonStartDate }}" data-end-to="{{ $seasonEndDate }}"
                                     data-min-strict="true"
                                     wire:model.live="end_date"

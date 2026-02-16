@@ -11,6 +11,7 @@ use App\Models\Hotel;
 use App\Models\RoomCategory;
 use App\Models\PeakDateRoomCategoryOccupances;
 use App\Models\RoomCategoryOccupances;
+use Carbon\Carbon;
 
 #[Layout('components.layouts.hotel-app')]
 class PeakDatePrices extends Component
@@ -158,9 +159,9 @@ class PeakDatePrices extends Component
                 });
             });
 
-        // Exclude current record when updating
+        // Exclude current record when updating (ensure int type)
         if ($excludePeakDateId) {
-            $query->where('peak_dates_id', '!=', $excludePeakDateId);
+            $query->where('peak_dates_id', '!=', (int) $excludePeakDateId);
         }
 
         return $query->exists();
@@ -307,8 +308,13 @@ class PeakDatePrices extends Component
         $this->peak_date_id = $item->peak_date_id;
 
         // Load season_id, start_date, end_date from peak_dates table
-        $this->start_date = $item->peakDate->start_date;
-        $this->end_date = $item->peakDate->end_date;
+        // Format dates properly for datepicker (Y-m-d format)
+        $this->start_date = $item->peakDate->start_date
+            ? Carbon::parse($item->peakDate->start_date)->format('Y-m-d')
+            : null;
+        $this->end_date = $item->peakDate->end_date
+            ? Carbon::parse($item->peakDate->end_date)->format('Y-m-d')
+            : null;
         $this->status = $item->peakDate->status ?? 1;
 
         $this->title = $item->peakDate->title;
@@ -327,7 +333,47 @@ class PeakDatePrices extends Component
                 ->toArray();
         }
 
-        // Load existing rates (no longer filtering by season_id, start_date, end_date)
+        // Load available seasons for the room category (without clearing existing data)
+        $roomCategoryId = $item->peakDate->room_category_id;
+        $this->availableSeasons = RoomCategoryOccupances::where('room_category_id', $roomCategoryId)
+            ->whereHas('season', function ($query) {
+                $query->where('status', 1);
+            })
+            ->with('season')
+            ->get()
+            ->groupBy('season_id')
+            ->map(function ($rows) {
+                return $rows->first()->season;
+            })
+            ->filter()
+            ->sortBy('start_date')
+            ->map(function ($season) {
+                return [
+                    'season_id' => $season->seasons_id,
+                    'title' => $season->title ?? $season->name,
+                    'start_date' => $season->start_date,
+                    'end_date' => $season->end_date,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        // Set season and load bounds
+        $this->season_id = $item->peakDate->season_id;
+        $selectedSeason = collect($this->availableSeasons)
+            ->firstWhere('season_id', (int) $this->season_id);
+
+        if ($selectedSeason) {
+            $this->seasonStartDate = $selectedSeason['start_date'] ?? null;
+            $this->seasonEndDate = $selectedSeason['end_date'] ?? null;
+
+            $this->dispatch('update-datepicker-range', [
+                'lowestStartDate' => $this->seasonStartDate,
+                'highestEndDate' => $this->seasonEndDate,
+            ]);
+        }
+
+        // Load existing peak date rates
         $existingRates = PeakDateRoomCategoryOccupances::where('peak_date_id', $this->peak_date_id)
             ->get()
             ->keyBy('occupancy_id');
@@ -343,13 +389,6 @@ class PeakDatePrices extends Component
                     'weekend_rate' => $existingRates[$occupancyId]->weekend_rate,
                 ];
             }
-        }
-
-        // Trigger date range calculation
-        $this->updatedSelectedRoomCategories($this->selected_room_categories);
-        $this->season_id = $item->peakDate->season_id;
-        if ($this->season_id) {
-            $this->updatedSeasonId($this->season_id);
         }
 
         $this->isEditing = true;
