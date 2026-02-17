@@ -1,4 +1,4 @@
-<div class="container calculatorpage mt-sm-0 mt-3 mb-lg-0 mb-4">
+<div class="mx-5 calculatorpage mt-sm-0 mt-3 mb-lg-0 mb-4">
       <div class="row">
         <div class="col-lg-7">
             <button wire:click="resetCalculator" class="btn bluegradientbtn mb-2">RESET COST SUMMARY</button>

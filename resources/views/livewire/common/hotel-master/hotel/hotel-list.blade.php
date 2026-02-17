@@ -1,4 +1,4 @@
-<div class="container">
+<div class="mx-5 mt-sm-0 mt-3">
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600">{{ $pageTitle }} </h6>

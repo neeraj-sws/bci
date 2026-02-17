@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="peak-date-prices">
+<div class="mx-5 mt-sm-0 mt-3" id="peak-date-prices">
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-flex align-items-center mb-3">

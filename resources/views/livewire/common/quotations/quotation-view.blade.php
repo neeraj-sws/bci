@@ -1,4 +1,4 @@
-<div class="container">
+<div class="mx-5 mt-sm-0 mt-3">
     <div>
         <div class="toolbar hidden-print">
             <div class="text-end">

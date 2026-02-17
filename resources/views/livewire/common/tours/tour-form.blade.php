@@ -1,4 +1,4 @@
-<div>
+<div class="mx-5 mt-sm-0 mt-3">
     <style>
         .excel-table {
             border-collapse: collapse;
@@ -159,8 +159,8 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
-                            
+
+
                             <div class="mb-3">
                                 <label for="attachment" class="form-label fw-bold">+ Attachment <span
                                         class="text-danger">*</span></label>
@@ -194,7 +194,7 @@
                                 @if (!$attachment && !$existingImage)
                                     <p class="mt-2 text-muted">No file uploaded yet.</p>
                                 @endif
-                                
+
                                       @error('attachment')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -245,7 +245,7 @@
                                                                     disabled />
                                                             @else
                                                                 <input type="text" class="form-control short-input"
-                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}" 
+                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
                                                                     wire:change="recalculateDay({{ $index }})"
                                                                     />
                                                             @endif

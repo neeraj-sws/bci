@@ -1,14 +1,14 @@
-<div class="container  mt-sm-0 mt-3">
-    
-    
+<div class="mx-5 mt-sm-0 mt-3">
+
+
     <h3 class="mb-4 position-relative d-inline-block fw-bold mainheadingtext">
     @if($isAdmin) Organization @else User @endif Profile
     <span class="gradient-border-bottom"></span>
   </h3>
-  
+
   <div class="row">
     @if($isAdmin)
-    
+
     <div class="row">
            <div class="col-8">
   <form wire:submit.prevent="save" class="radius12 bg-white settingforms">
@@ -43,7 +43,7 @@
               <div class="fs-12 midgreycolor">PNG, JPG up to 5MB</div>
             </div>
           @endif
-          
+
           <!-- Hover Overlay -->
           <div class="upload-overlay d-flex align-items-center justify-content-center text-white">
             <div class="p-3 text-center">
@@ -55,7 +55,7 @@
               <div>Upload new logo</div>
             </div>
           </div>
-          
+
           <input type="file" id="logoInput" class="d-none" wire:model="logo" accept="image/*" />
         </div>
 
@@ -69,10 +69,10 @@
         <label class="form-label fw-bold">
           Organization Name <span class="text-danger">*</span>
         </label>
-        <input type="text" class="form-control @error('organization_name') is-invalid @enderror" 
-          wire:model="organization_name" 
-          placeholder="Enter organization name" 
-          
+        <input type="text" class="form-control @error('organization_name') is-invalid @enderror"
+          wire:model="organization_name"
+          placeholder="Enter organization name"
+
         />
         @error('organization_name')
           <div class="invalid-feedback">{{ $message }}</div>
@@ -84,8 +84,8 @@
         <label class="form-label fw-bold">
           City/Suburb <span class="text-danger">*</span>
         </label>
-        <input type="text" class="form-control @error('city') is-invalid @enderror" 
-          wire:model="city" 
+        <input type="text" class="form-control @error('city') is-invalid @enderror"
+          wire:model="city"
           placeholder="City/Suburb"
         />
         @error('city')
@@ -98,8 +98,8 @@
         <label class="form-label fw-bold">
           State <span class="text-danger">*</span>
         </label>
-        <input type="text" class="form-control @error('state') is-invalid @enderror" 
-          wire:model="state" 
+        <input type="text" class="form-control @error('state') is-invalid @enderror"
+          wire:model="state"
           placeholder="State"
         />
         @error('state')
@@ -112,9 +112,9 @@
         <label class="form-label fw-bold">
           Zip Code
         </label>
-        <input type="text" class="form-control" 
-          wire:model="zip_code" 
-          placeholder="Zip Code" 
+        <input type="text" class="form-control"
+          wire:model="zip_code"
+          placeholder="Zip Code"
          />
       </div>
 
@@ -123,9 +123,9 @@
         <label class="form-label fw-bold">
           Country <span class="text-danger">*</span>
         </label>
-        <input type="text" class="form-control @error('country') is-invalid @enderror" 
-          wire:model="country" 
-          placeholder="Country" 
+        <input type="text" class="form-control @error('country') is-invalid @enderror"
+          wire:model="country"
+          placeholder="Country"
           />
         @error('country')
           <div class="invalid-feedback">{{ $message }}</div>
@@ -145,9 +145,9 @@
         <label class="form-label fw-bold">
           Company/Tax ID
         </label>
-        <input type="text" class="form-control" 
-          wire:model="company_tax_id" 
-          placeholder="Company/Tax ID" 
+        <input type="text" class="form-control"
+          wire:model="company_tax_id"
+          placeholder="Company/Tax ID"
          />
       </div>
 
@@ -156,9 +156,9 @@
         <label class="form-label fw-bold">
           Phone
         </label>
-        <input type="text" class="form-control" 
-          wire:model="phone" 
-          placeholder="Phone Number" 
+        <input type="text" class="form-control"
+          wire:model="phone"
+          placeholder="Phone Number"
           />
       </div>
 
@@ -167,9 +167,9 @@
         <label class="form-label fw-bold">
           Fax Number
         </label>
-        <input type="text" class="form-control" 
-          wire:model="fax_number" 
-          placeholder="Fax Number" 
+        <input type="text" class="form-control"
+          wire:model="fax_number"
+          placeholder="Fax Number"
           />
       </div>
 
@@ -178,9 +178,9 @@
         <label class="form-label fw-bold">
           Website
         </label>
-        <input type="url" class="form-control" 
-          wire:model="website" 
-          placeholder="Website URL" 
+        <input type="url" class="form-control"
+          wire:model="website"
+          placeholder="Website URL"
          />
       </div>
 
@@ -189,9 +189,9 @@
         <label class="form-label fw-bold">
           Fiscal Year
         </label>
-        <select class="form-select select2" 
+        <select class="form-select select2"
         id="fiscal_year"
-          wire:model="fiscal_year" 
+          wire:model="fiscal_year"
         >
           <option value="">Select Fiscal Year</option>
           @foreach ($ficalYears as $id => $name)
@@ -206,8 +206,8 @@
           Base Currency
         </label>
         <select class="form-select select2"
-        id='currency' 
-          wire:model="currency" 
+        id='currency'
+          wire:model="currency"
         >
           <option value="">Select Currency</option>
           @foreach ($currencys as $id => $currencyname)
@@ -221,9 +221,9 @@
         <label class="form-label fw-bold">
           Language
         </label>
-        <input type="text" class="form-control" 
-          wire:model="language" 
-          placeholder="Language" 
+        <input type="text" class="form-control"
+          wire:model="language"
+          placeholder="Language"
           />
       </div>
 
@@ -232,8 +232,8 @@
         <label class="form-label fw-bold">
           Street Address <span class="text-danger">*</span>
         </label>
-        <textarea rows="3" class="form-control textareaminheight @error('street_address') is-invalid @enderror" 
-          wire:model="street_address" 
+        <textarea rows="3" class="form-control textareaminheight @error('street_address') is-invalid @enderror"
+          wire:model="street_address"
           placeholder="Street Address"></textarea>
         @error('street_address')
           <div class="invalid-feedback">{{ $message }}</div>
@@ -254,7 +254,7 @@
   <livewire:common.organization.users />
     </div>
   </div>
-  
+
     @else
   <livewire:common.organization.users />
     @endif

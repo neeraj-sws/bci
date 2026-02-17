@@ -1,4 +1,4 @@
-<div class="container  mt-sm-0 mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
     <style>
         /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
@@ -197,7 +197,7 @@
             </div>
         </div>
     </div>
-    
+
     @if($showExistingModal)
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-lg modal-dialog-centered">

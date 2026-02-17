@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="amanity">
+<div class="mx-5 mt-sm-0 mt-3" id="amanity">
 
     <div class="page-breadcrumb flex-wrap d-flex align-items-center mb-3">
         <div>
@@ -261,7 +261,7 @@
                         @enderror
                     </div>
 
-                    
+
                         <div class="col-3 text-end">
                             <button class="btn bluegradientbtn" wire:click="clearFilters">clear
                                 <i class="spinner-border spinner-border-sm" wire:loading.delay

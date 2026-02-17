@@ -1,4 +1,4 @@
-<div class="">
+<div class="mx-5 mt-sm-0 mt-3">
     <div class="card radius12 bg-white">
         <div class="col-md-12 p-3">
 
@@ -14,7 +14,7 @@
                         <input type="email" class="form-control" wire:model="email" />
                         @error('email') <div class="text-danger">{{ $message }}</div> @enderror
                     </div>
-                    
+
                     <div class="col-12 mt-2 d-flex justify-content-end">
                         <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled">
                             Save Changes
@@ -28,8 +28,8 @@
 
         </div>
     </div>
-    
-    
+
+
   <div class="card radius12 bg-white">
                                 <div class="card-body">
                                     <form wire:submit.prevent="resetPassword">
@@ -53,9 +53,9 @@
                                             Reset Password
                                             <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="resetPassword"></i>
                                         </button>
-                                
+
                                     </form>
                                 </div>
                             </div>
-                            
+
 </div>

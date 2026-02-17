@@ -1,4 +1,4 @@
-<div class="container">
+<div class="mx-5 mt-sm-0 mt-3">
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600">{{ $pageTitle }} </h6>
@@ -76,7 +76,7 @@
                                                 @checked($item->status)>
                                         </td>
                                         <td class="align-middle py-1 text-center">
-                                            <a  class="me-2" 
+                                            <a  class="me-2"
                                                 href="{{ route('common.tour-edit', $item->id) }}" title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
@@ -135,7 +135,7 @@
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
-            
+
                                         <td class="align-middle py-1 text-center"
                                             style="overflow:visible; position:relative;">
                                             <div class="btn-group dropup d-inline-block me-2 mb-2" style="overflow:visible;">

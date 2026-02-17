@@ -1,4 +1,4 @@
-   <div>
+   <div class="mx-5 mt-sm-0 mt-3">
        <div class="row">
            <div class="col-12">
                <h6 class="breadcrumb-title pe-2 fs-24 border-0 text-black fw-600">

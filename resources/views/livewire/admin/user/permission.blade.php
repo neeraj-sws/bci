@@ -1,4 +1,4 @@
-<div class="container mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
     <h4>{{ $pageTitle }}</h4>
 
     <div class="row g-1 mt-4">

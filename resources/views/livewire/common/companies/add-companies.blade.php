@@ -1,4 +1,4 @@
-<div class="container  mt-sm-0 mt-3">
+<div class="mx5  mt-sm-0 mt-3">
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24 border-0 text-black fw-600">

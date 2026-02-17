@@ -1,5 +1,5 @@
-<div class="container mt-3">
-    
+<div class="mx-5 mt-sm-0 mt-3">
+
         <div class="page-breadcrumb flex-wrap d-flex align-items-center mb-3">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600">{{ $pageTitle }} </h6>
@@ -15,7 +15,7 @@
             </nav>
         </div>
     </div>
-    
+
    {{-- <h4>{{ $isEditing ? 'Edit User' : 'Create User' }}</h4> --}}
 
     <div class="row g-4">

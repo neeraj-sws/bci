@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="amanity">
+<div class="mx-5 mt-sm-0 mt-3" id="amanity">
 
     <div
         class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4 @if ($isadd) d-none @endif">

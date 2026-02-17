@@ -1,4 +1,4 @@
-<div class="container mt-3">
+<div class="mx-5 mt-3">
 
     <div class="d-flex justify-content-between mb-3">
         <h5>{{ $pageTitle }}</h5>
