@@ -8,7 +8,7 @@ class GeneralSettings extends Model
 {
     protected $primaryKey = 'general_setting_id';
 
-    protected $fillable = ['fiscal_year', 'currency', 'usd_rate', 'markup_rate', 'date_format', 'paper_size',    'number_format', 'pdf_attachment', 'notify', 'notify2',    'notify3','company_id'];
+    protected $fillable = ['fiscal_year', 'currency', 'usd_rate', 'markup_rate', 'date_format', 'paper_size',    'number_format', 'pdf_attachment', 'notify', 'notify2',    'notify3','company_id','email_enabled'];
     // ID ALIAS
     public function getIdAttribute()
     {

@@ -1,4 +1,4 @@
-<div class="mx-5 mt-sm-0 mt-3" id="peak-date-prices">
+<div class="mx-5 mt-sm-0 mt-3 " id="peak-date-prices">
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-flex align-items-center mb-3">
@@ -18,7 +18,7 @@
     <div class="row g-4">
 
         <!-- FORM -->
-        <div class="col-md-5">
+        <div class="col-md-5 ">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -53,11 +53,10 @@
                             </label>
                             <select id="selected_room_categories"
                                 class="form-select select2 @error('selected_room_categories') is-invalid @enderror"
-                                wire:model.live="selected_room_categories"
+                                wire:model.live="selected_room_categories" multiple
                                 @if (!$hotel_id) disabled @endif>
-                                <option value="">Select Room Categories</option>
                                 @foreach ($roomCategories as $id => $name)
-                                    <option value="{{ $id }}">
+                                    <option value="{{ $id }}" @selected(in_array((int) $id, array_map('intval', $selected_room_categories ?? [])))>
                                         {{ $name }}</option>
                                 @endforeach
                             </select>
@@ -82,7 +81,7 @@
                             </select>
                             @if ($selected_room_categories && count($availableSeasons) === 0)
                                 <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> No active
-                                    seasons configured for this room category.</small>
+                                    seasons configured for selected room categories.</small>
                             @elseif (!$selected_room_categories)
                                 <small class="text-muted d-block mt-2"><i class="bx bx-info-circle"></i> Please select a
                                     Room Category first</small>
@@ -132,49 +131,66 @@
                         </div>
 
                         <!-- Dynamic Rate Inputs -->
-                        @if (count($roomRatesData) > 0)
+                        @if (count($rates) > 0)
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Rates for Occupancies</label>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Occupancy</th>
-                                                <th>Weekday Rate <span class="text-danger">*</span></th>
-                                                <th>Weekend Rate <span class="text-danger">*</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($roomRatesData as $index => $data)
-                                                <tr>
-                                                    <td class="align-middle">
-                                                        <strong>{{ $occupancies[$data['occupancy_id']] ?? 'N/A' }}</strong>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01"
-                                                            onfocus="Number(this.value) <= 0 && this.select()"
-                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.rate') is-invalid @enderror"
-                                                            wire:model.defer="roomRatesData.{{ $index }}.rate"
-                                                            placeholder="Enter weekday rate">
-                                                        @error('roomRatesData.' . $index . '.rate')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01"
-                                                            onfocus="Number(this.value) <= 0 && this.select()"
-                                                            class="form-control form-control-sm text-end @error('roomRatesData.' . $index . '.weekend_rate') is-invalid @enderror"
-                                                            wire:model.defer="roomRatesData.{{ $index }}.weekend_rate"
-                                                            placeholder="Enter weekend rate">
-                                                        @error('roomRatesData.' . $index . '.weekend_rate')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                @if (count($selected_room_categories) === 1)
+                                    <label class="form-label fw-bold">Rates for Occupancies</label>
+                                @else
+                                    <label class="form-label fw-bold">Rates by Room Category</label>
+                                @endif
+
+                                @error('rates')
+                                    <div class="invalid-feedback d-block mb-2">{{ $message }}</div>
+                                @enderror
+
+                                @foreach ($selected_room_categories as $categoryId)
+                                    @php
+                                        $categoryRates = $rates[$categoryId] ?? [];
+                                        $categoryOccupancies = $occupanciesByCategory[$categoryId] ?? [];
+                                    @endphp
+
+                                    @if (count($categoryRates) > 0)
+                                        <div class="{{ !$loop->first ? 'mt-3' : '' }}">
+                                            @if (count($selected_room_categories) > 1)
+                                                <h6 class="mb-2">Room Category: {{ $roomCategories[$categoryId] ?? 'N/A' }}</h6>
+                                            @endif
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Occupancy</th>
+                                                            <th>Weekday Rate <span class="text-danger">*</span></th>
+                                                            <th>Weekend Rate <span class="text-danger">*</span></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($categoryRates as $occupancyId => $rateRow)
+                                                            <tr>
+                                                                <td class="align-middle">
+                                                                    <strong>{{ $categoryOccupancies[$occupancyId] ?? 'N/A' }}</strong>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" step="0.01"
+                                                                        onfocus="Number(this.value) <= 0 && this.select()"
+                                                                        class="form-control form-control-sm text-end"
+                                                                        wire:model.defer="rates.{{ $categoryId }}.{{ $occupancyId }}.rate"
+                                                                        placeholder="Enter weekday rate">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" step="0.01"
+                                                                        onfocus="Number(this.value) <= 0 && this.select()"
+                                                                        class="form-control form-control-sm text-end"
+                                                                        wire:model.defer="rates.{{ $categoryId }}.{{ $occupancyId }}.weekend_rate"
+                                                                        placeholder="Enter weekend rate">
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         @endif
 
@@ -191,7 +207,7 @@
                         <!-- Actions -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn bluegradientbtn" wire:loading.attr="disabled"
-                                @if (!$peak_date_id && empty($roomRatesData)) disabled @endif>
+                                @if (empty($rates)) disabled @endif>
                                 {{ $isEditing ? 'Update ' . $pageTitle : 'Save ' . $pageTitle }}
                                 <i class="spinner-border spinner-border-sm ms-1" wire:loading
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
