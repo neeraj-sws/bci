@@ -237,7 +237,7 @@ input[type=number] {
                                 <!-- travel_date -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Preferred Travel Dates</label>
-                                    <input type="text" class="form-control datepicker" wire:model="travel_date" data-role="start" data-group="booking1">
+                                    <input type="text" class="form-control datepicker" wire:model="travel_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" data-role="start" data-group="booking1">
 
                                               @error('travel_date')
                                 <div class="text-danger">{{ $message }}</div>
@@ -279,7 +279,7 @@ input[type=number] {
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label ">Follow up Date</label>
-                                    <input type="text" class="form-control datepicker"
+                                    <input type="text" class="form-control datepicker" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                         wire:model.live="follow_up_date" data-role="end" data-group="booking1" data-max-from="travel_date">
 
                                                             @error('follow_up_date')

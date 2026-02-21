@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'data_allow_past' => env('DATA_ALLOW_PAST', false),
+
+
 ];

@@ -31,15 +31,15 @@ class ProformaInvoiceView extends Component
     public $organization_name;
     public $route;
 
-    // NEW DEV 
+    // NEW DEV
     public $showTourModal = false; // control modal visibility
     public $attachment;
     public $existingImage, $tour, $is_attachment;
 
-    // NEW DEV 
+    // NEW DEV
     public $payment_date, $paid_amount,$record_amount, $payment_method="1", $reference, $notes,$recordPaymentHistory = [];
-    // 
-    public $track_id = 1; public $is_copy = false; 
+    //
+    public $track_id = 1; public $is_copy = false;
     public function mount($id)
     {
         $this->route = 'common';
@@ -83,7 +83,7 @@ class ProformaInvoiceView extends Component
     #[On('updatePr')]
     public function updatePr()
     {
-        // NEW DEV 
+        // NEW DEV
         if ($this->prinvoice->lead_id) {
             $lead = Leads::where('lead_id', $this->prinvoice->lead_id)->first();
             if ($lead->stage_id != 7) {
@@ -91,9 +91,9 @@ class ProformaInvoiceView extends Component
                 $lead->save();
             }
         }
-        // 
-        
-        // NEW DEV 
+        //
+
+        // NEW DEV
         if ($this->prinvoice->quotation->quotation_id) {
             $remainigAmount = $this->prinvoice->quotation->total_remaning_amount - $this->prinvoice->amount;
             Quotations::where('quotation_id', $this->prinvoice->quotation->quotation_id)->update(
@@ -103,9 +103,9 @@ class ProformaInvoiceView extends Component
                 ]
             );
         }
-        // 
-        
-        
+        //
+
+
         $this->prinvoice->status = 2;
         $this->prinvoice->save();
         if ($this->prinvoice->lead_id) {
@@ -115,7 +115,7 @@ class ProformaInvoiceView extends Component
         SettingHelper::InvEstActivityLog(32,  null, null, null, $this->prinvoice->proforma_invoice_id);
     }
 
-    // NEW DEV 
+    // NEW DEV
     public function openModel()
     {
         if ($this->prinvoice->tour_id) {
@@ -196,7 +196,7 @@ class ProformaInvoiceView extends Component
         }
 
 
-        // GENRETE PDF & SEND 
+        // GENRETE PDF & SEND
         $path = "uploads/proformainvoice/{$this->prinvoice->id}/pdf";
         if (!Storage::disk('public_root')->exists($path)) {
             Storage::disk('public_root')->makeDirectory($path);
@@ -213,7 +213,7 @@ class ProformaInvoiceView extends Component
              'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
-        // 
+        //
 
         $result = SettingHelper::sendEmail(
             '3',
@@ -231,7 +231,7 @@ class ProformaInvoiceView extends Component
                         "status" => 1,
                     ]);
             }
-            
+
             $this->prinvoice->update([
                 "is_attachment" => 1,
                 "attachment" => $attachmentPath
@@ -273,7 +273,7 @@ class ProformaInvoiceView extends Component
             ) . ' ' . $this->prinvoice?->currency_label,
             '[prinvoice-url]'         => $estimatUrl,
         ];
-        // GENRETE PDF & SEND 
+        // GENRETE PDF & SEND
         $path = "uploads/proformainvoice/{$this->prinvoice->id}/pdf";
         if (!Storage::disk('public_root')->exists($path)) {
             Storage::disk('public_root')->makeDirectory($path);
@@ -290,7 +290,7 @@ class ProformaInvoiceView extends Component
              'showStatus' => false
         ])->setPaper('a4');
         Storage::disk('public_root')->put($filePath, $pdf->output());
-        // 
+        //
         $result = SettingHelper::sendEmail(
             '3',
             $this->prinvoice->company_id,
@@ -305,7 +305,7 @@ class ProformaInvoiceView extends Component
                     "status" => 1
                 ]);
             }
-       
+
             $this->dispatch('swal:toast', [
                 'type' => 'success',
                 'message' => 'Proforma Invoice sent successfully.'
@@ -393,8 +393,8 @@ class ProformaInvoiceView extends Component
             ]);
         }
     }
-    
-    // NEW DEV 
+
+    // NEW DEV
     public function recordPayment()
     {
         $this->validate([
@@ -414,11 +414,11 @@ class ProformaInvoiceView extends Component
         }
         if ($this->prinvoice->quotation->quotation_id) {
             $remainigAmount = $this->prinvoice->quotation->total_remaning_amount - $this->paid_amount;
-            
+
           if ($remainigAmount < 0) {
                 $remainigAmount = 0;
           }
-    
+
             Quotations::where('quotation_id', $this->prinvoice->quotation->quotation_id)->update(
                 [
                     "total_paid_amount" => $this->prinvoice->quotation->total_paid_amount + $this->paid_amount,
@@ -426,10 +426,10 @@ class ProformaInvoiceView extends Component
                 ]
             );
         }
-        // 
-        
-        // NEW EXTRA DEV 
-        
+        //
+
+        // NEW EXTRA DEV
+
          if ($this->paid_amount > 0) {
             IncomeExpenses::create([
                 'entry_type' => 2,
@@ -446,8 +446,8 @@ class ProformaInvoiceView extends Component
                 'category_id' => 5
             ]);
         }
-        
-        // ENDS HERE 
+
+        // ENDS HERE
 
 
         if ($this->prinvoice->lead_id) {
@@ -492,13 +492,13 @@ class ProformaInvoiceView extends Component
         $this->dispatch('close-offcanvas');
         $this->reset(['payment_date', 'paid_amount', 'payment_method', 'reference', 'notes']);
     }
-    // 
-    
+    //
+
         public function markasPaid()
     {
         $this->prinvoice->status = 1;
         $this->prinvoice->save();
                     SettingHelper::InvEstActivityLog(34,  null, null, null, $this->prinvoice->proforma_invoice_id);
     }
-    
+
 }

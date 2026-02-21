@@ -136,7 +136,7 @@
                         $tour = $prinvoice['tour'] ?? null;
                     @endphp
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-                          
+
                     @if (!empty($client['address']))
                         <div class="company-info">{{ $client['address'] }}</div>
                     @endif
@@ -683,7 +683,7 @@
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label"> <span class="text-danger">*</span> Payment Date</label>
-                            <input type="text" class="form-control datepicker" wire:model="payment_date"
+                            <input type="text" class="form-control datepicker" wire:model="payment_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                data-nostart="null" data-restrict-future="true" data-group="booking1">
                             @error('payment_date')
                                 <div class="text-danger">{{ $message }}</div>
@@ -764,7 +764,7 @@
                                 @error('record_amount')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-                        
+
                         </div>
 
                         <div class="col-md-12 mb-3">

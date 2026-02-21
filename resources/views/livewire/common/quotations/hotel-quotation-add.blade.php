@@ -163,7 +163,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 {{-- NEW DEV --}}
                                 <div class="mb-3">
                                     <div class="form-group">
@@ -200,7 +200,7 @@
                                     <div class="mb-3">
                                         <label for="title" class="form-label">Quotation Date <span
                                                 class="text-danger">*</span></label>
-                                        <input id="estimate_date" type="text" placeholder="Estimate Date"
+                                        <input id="estimate_date" type="text" placeholder="Estimate Date"   data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                             class="form-control datepicker @error('estimate_date') is-invalid @enderror"
                                             wire:model="estimate_date">
                                         @error('estimate_date')
@@ -212,7 +212,7 @@
                                     <div class="mb-3">
                                         <label for="title" class="form-label">Quotation Expiry Date <span
                                                 class="text-danger">*</span></label>
-                                        <input id="expiry_date" type="text" placeholder="Expiry Date"
+                                        <input id="expiry_date" type="text" placeholder="Expiry Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                             class="form-control datepicker @error('expiry_date') is-invalid @enderror"
                                             wire:model="expiry_date">
                                         @error('expiry_date')
@@ -276,7 +276,7 @@
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Tour Start Date <span
                                                     class="text-danger">*</span></label>
-                                            <input id="start_date" type="text" placeholder="Start Date"
+                                            <input id="start_date" type="text" placeholder="Start Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                                 class="form-control datepicker @error('start_date') is-invalid @enderror"
                                                 wire:model.live="start_date" data-role="start" data-group="booking1">
                                             @error('start_date')
@@ -293,7 +293,7 @@
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Tour End Date <span
                                                     class="text-danger">*</span></label>
-                                            <input id="end_date" type="text" placeholder="End Date"
+                                            <input id="end_date" type="text" placeholder="End Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                                 class="form-control datepicker @error('end_date') is-invalid @enderror"
                                                 wire:model="end_date" @if($tour_id) disabled @endif>
                                             @error('end_date')
@@ -534,7 +534,7 @@
                                        @if (in_array($key, ['particular', 'activitiesCovered']))
                                             @if ($key === 'particular')
                                                 <div style="position:relative;">
-                                                    
+
                                                     @if (count($days) > 1)
                                                         <span
                                                             type="button"
@@ -648,7 +648,7 @@
                         @endforeach
 
                         <div class="d-flex justify-content-between">
-                            <a class="btn btn-dark my-3" wire:click='edit'>Back & Cancel 
+                            <a class="btn btn-dark my-3" wire:click='edit'>Back & Cancel
                             <span wire:loading
                                     wire:target="edit">
                                     <span class="spinner-border spinner-border-sm me-1" role="status"
@@ -691,7 +691,7 @@
     <div class="modal @if ($showItemModal) show @endif" tabindex="-1"
         style="opacity:1; background-color:#0606068c; display:@if ($showItemModal) block @endif">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content p-4"> 
+            <div class="modal-content p-4">
                 <form wire:submit.prevent="itemStore">
                     <div class="mb-3 row">
 
@@ -775,7 +775,7 @@
                         </div>
                         @error('selectedPark') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
-                    
+
                                             {{-- OR --}}
     <div class="col-1 text-center">
         <div class="fw-bold text-muted mt-4">OR</div>
@@ -1017,7 +1017,7 @@
                         </div>
                         @error('selectedPark') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
-                    
+
                                                                 {{-- OR --}}
     <div class="col-1 text-center">
         <div class="fw-bold text-muted mt-4">OR</div>
@@ -1215,17 +1215,17 @@
                     end.setDate(minDate, true);
                 }, 100);
             });
-        
+
         {{-- NEW DEV --}}
         Livewire.on('focus-item-input', () => {
             setTimeout(() => {
                 const el = document.getElementById('itemInput');
-    
+
                 if (!el) {
                     console.log('Element not found');
                     return;
                 }
-    
+
                 el.focus();
                 el.select();
             }, 0);
