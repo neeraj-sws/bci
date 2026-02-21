@@ -8,7 +8,7 @@ use App\Models\LeadTypes;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class Stages extends Component
 {
     use WithPagination;

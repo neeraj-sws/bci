@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="amanity">
+<div class="mx-5 mt-sm-0 mt-3" id="amanity">
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-flex align-items-center mb-3">

@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 use Livewire\Attributes\{Layout, On};
 use Illuminate\Support\Facades\Hash;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class User extends Component
 {
     public $userId;

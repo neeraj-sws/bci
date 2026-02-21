@@ -37,7 +37,7 @@ class RoomCategory extends Component
     {
         return [
             'title' => 'required|string|max:255',
-            'hotel_id' => 'required|exists:hotels,hotels_id',
+            'hotel_id' => 'required',
             'status' => 'required|in:0,1',
         ];
     }

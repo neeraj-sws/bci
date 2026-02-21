@@ -78,11 +78,11 @@ class Form extends Component
     public $states = [], $citys = [];
 
     public $tags,$selectedTags = [];
-    
+
     const SALES_ROLE_ID = 2;
-    
+
     public $pendingFile = null;
-    
+
     public function mount($id = null, $route = null, $coloum = null, $guard = null)
     {
         $this->route = 'common';
@@ -107,7 +107,7 @@ class Form extends Component
             ->toArray();
 
         // $this->users = User::role('sales')->where('status', 1)->pluck('name', 'user_id')->toArray();
-        
+
         $this->users = User::whereHas('roles', fn($q) =>
             $q->where('id', self::SALES_ROLE_ID)
         )->where('status', 1)->pluck('name', 'user_id')->toArray();
@@ -152,8 +152,8 @@ class Form extends Component
         $this->budget = $item->budget;
         $this->follow_up_date = $item->follow_up_date;
         $this->follow_up_time = $item->follow_up_time;
-        
-        // NEW DEV 
+
+        // NEW DEV
         $this->selectedTags = $item->tags ? explode(',', $item->tags) : [];
         $this->existingImages = UploadImages::where('lead_id', $item->id)->get();
 
@@ -182,8 +182,10 @@ class Form extends Component
             'client_name' => $this->addClient ? 'required' : 'nullable',
             'client_id' => $this->addClient ? 'nullable' : 'required',
 
-            'travel_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
-            'follow_up_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
+            'travel_date' => 'nullable|date_format:Y-m-d',
+            // 'travel_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
+            // 'follow_up_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
+            'follow_up_date' => 'nullable|date_format:Y-m-d',
             'follow_up_time' => 'nullable|date_format:H:i', // Must be valid time like 14:30 or 09:05
         ];
     }
@@ -215,7 +217,7 @@ class Form extends Component
 
         $userId = $this->coloum ? Auth::guard($this->guard)->user()->id : null;
         $user_id = Auth::guard('web')->user()->hasRole('sales') ? Auth::guard('web')->user()->id : $this->user_id;
-        // NEW DEV 
+        // NEW DEV
         $tags =  implode(',', $this->selectedTags);
         $client = Model::create([
             'type_id' => $this->pipeline_id,
@@ -232,7 +234,7 @@ class Form extends Component
             'travel_date' => $this->travel_date,
             'travel_days' => $this->travel_days,
             'user_id' => $user_id,
-            // NEW DEV 
+            // NEW DEV
             'tags'=>$tags
         ]);
 
@@ -240,8 +242,8 @@ class Form extends Component
         $encodedUuid = base64_encode($leadUuid);
         $client->uuid = $encodedUuid;
         $client->save();
-        
-        // NEW DEV 
+
+        // NEW DEV
         if(count($this->selectedTags) > 0){
                 foreach ($this->selectedTags as $item) {
                     LeadTags::firstOrCreate([
@@ -272,7 +274,7 @@ class Form extends Component
             $client->update([
                 "tourist_id" => $this->client_id
             ]);
-            
+
               // Find and update existing tourist
                 $tourist = Tourists::find($this->client_id);
                 if ($tourist) {
@@ -285,7 +287,7 @@ class Form extends Component
                         "country_id" => $this->country_id,"base_currency_code" => $this->currency,
                     ]);
                 }
-                
+
         }
 
         // if (Auth::guard('web')->user()->hasRole('marketing')) {
@@ -297,7 +299,7 @@ class Form extends Component
 
 
 
-        // NEW DEV IMAGE UPLOAD CHNAGE 
+        // NEW DEV IMAGE UPLOAD CHNAGE
         // if (count($this->files) > 0) {
         //     $path = 'assets/images';
         //     foreach ($this->files as $file) {
@@ -334,7 +336,7 @@ class Form extends Component
                 ]);
             }
         }
-        // 
+        //
 
         SettingHelper::leadActivityLog(1, $client->id, $userId, $this->coloum);
         if ($this->user_id) {
@@ -373,7 +375,7 @@ class Form extends Component
     {
         $userId = $this->coloum ? Auth::guard($this->guard)->user()->id : null;
         $lead = Model::findOrFail($this->itemId);
-                // NEW DEV 
+                // NEW DEV
         $tags =  implode(',', $this->selectedTags);
         $lead->update([
             'type_id' => $this->pipeline_id,
@@ -390,8 +392,8 @@ class Form extends Component
             'budget' => $this->budget,
             'follow_up_date' => $this->follow_up_date,
             'follow_up_time' => $this->follow_up_time,
-            
-             // NEW DEV 
+
+             // NEW DEV
             'tags'=>$tags
         ]);
 
@@ -416,7 +418,7 @@ class Form extends Component
             $lead->update([
                 "tourist_id" => $this->client_id
             ]);
-            
+
               // Find and update existing tourist
                 $tourist = Tourists::find($this->client_id);
                 if ($tourist) {
@@ -429,10 +431,10 @@ class Form extends Component
                         "country_id" => $this->country_id,"base_currency_code" => $this->currency,
                     ]);
                 }
-                
+
         }
-        
-        // NEW DEV 
+
+        // NEW DEV
         if(count($this->selectedTags) > 0){
                 foreach ($this->selectedTags as $item) {
                     LeadTags::firstOrCreate([
@@ -482,7 +484,7 @@ class Form extends Component
                 ]);
             }
         }
-        // 
+        //
 
         SettingHelper::leadActivityLog(2, $lead->id, $userId, $this->coloum);
 
@@ -520,12 +522,12 @@ class Form extends Component
     {
         $image = UploadImages::find($id);
         if ($image) {
-            // NEW DEV 
+            // NEW DEV
             // @unlink(public_path('assets/images/' . $image->file));
             if ($this->itemId) {
                 @unlink(public_path('uploads/leads/' . $this->itemId . '/' . $image->file));
             }
-            // 
+            //
             $image->delete();
             $this->existingImages = UploadImages::where('lead_id', $this->itemId)->get();
         }
@@ -554,7 +556,7 @@ class Form extends Component
             $this->follow_up_time = '13:00';
         }
     }
-        
+
     public function updatedFiles($data)
     {
         if ($this->itemId) {
@@ -605,7 +607,7 @@ class Form extends Component
             ]);
         }
     }
-    
+
     public function removeFile($index)
 {
     if(isset($this->files[$index])){

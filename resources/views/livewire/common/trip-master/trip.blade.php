@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="amanity">
+<div class="mx-5 mt-sm-0 mt-3" id="amanity">
     <style>
     .select2-container--default .select2-selection--multiple {
         min-height: 38px;
@@ -133,7 +133,7 @@
         <div class="@can('customer-trips manage') col-md-7 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <a href="{{ route('common.trip-archive') }}" 
+                    <a href="{{ route('common.trip-archive') }}"
                     class="btn btn-primary d-flex align-items-center gap-2">
                         <i class="lni lni-archive"></i>
                         <span class="d-none d-md-inline">Archive</span>

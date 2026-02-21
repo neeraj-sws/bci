@@ -1,4 +1,4 @@
-<div class="container  mt-sm-0 mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
     <style>
         /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
@@ -142,14 +142,14 @@
                                 <!-- Birthday -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Birthday</label>
-                                    <input data-nostart="null"  data-restrict-future="true" id='birthday' type="text"
+                                    <input data-nostart="null"  data-restrict-future="true"  data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" id='birthday' type="text"
                                         class="form-control datepicker" wire:model="birthday">
                                 </div>
 
                                 <!-- Anniversary -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Anniversary</label>
-                                    <input data-nostart="null" id='company_anniversary' type="text"
+                                    <input data-nostart="null" id='company_anniversary' type="text"   data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                         data-restrict-future="true" class="form-control datepicker"
                                         wire:model="company_anniversary">
                                 </div>
@@ -197,7 +197,7 @@
             </div>
         </div>
     </div>
-    
+
     @if($showExistingModal)
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-lg modal-dialog-centered">

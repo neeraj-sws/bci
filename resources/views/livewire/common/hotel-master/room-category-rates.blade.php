@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3" id="room-category-rates">
+<div class="mx-5 mt-sm-0 mt-3" id="room-category-rates">
     <div class="page-breadcrumb d-flex align-items-center mb-3">
         <div>
             <h6 class="breadcrumb-title fs-24 fw-600 text-black">{{ $pageTitle }}</h6>

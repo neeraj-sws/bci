@@ -1,5 +1,5 @@
 <div class="container my-4">
-            
+
     <form wire:submit.prevent="save" class="radius12 bg-white settingforms">
         <div class="row g-4">
 
@@ -32,26 +32,26 @@
                 </div>
             </div>
 
-           <div class="mt-2">
-             <div class="row ">
-                <div class="col-6 mb-1">
-                    <label for="title" class="form-label">USD Rate <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('usd_rate') is-invalid @enderror"
-                        wire:model="usd_rate" placeholder="USD Rate">
-                    @error('usd_rate')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-6 mb-1">
-                    <label for="title" class="form-label">Markup % <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('markup_rate') is-invalid @enderror"
-                        wire:model="markup_rate" placeholder="Markup %">
-                    @error('markup_rate')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+            <div class="mt-2">
+                <div class="row ">
+                    <div class="col-6 mb-1">
+                        <label for="title" class="form-label">USD Rate <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('usd_rate') is-invalid @enderror"
+                            wire:model="usd_rate" placeholder="USD Rate">
+                        @error('usd_rate')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-6 mb-1">
+                        <label for="title" class="form-label">Markup % <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('markup_rate') is-invalid @enderror"
+                            wire:model="markup_rate" placeholder="Markup %">
+                        @error('markup_rate')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
-           </div>
 
             <div class="mb-1">
                 <div class="form-group">
@@ -116,7 +116,8 @@
                     <label class="font-bold block mb-2">PDF Attachment <span class="text-danger">*</span></label></br>
                     <label class="inline-flex items-center">
                         <input type="checkbox" wire:model="pdf_attachment"
-                            class="form-checkbox text-red-600 @error('pdf_attachment') is-invalid @enderror" disabled />
+                            class="form-checkbox text-red-600 @error('pdf_attachment') is-invalid @enderror"
+                            disabled />
                         <span class="ml-2">Attach PDF by default while sending invoices and quotations</span>
                     </label>
                     @error('pdf_attachment')
@@ -126,6 +127,16 @@
 
                 <div>
                     <label class="font-bold block mb-2">Notifications <span class="text-danger">*</span></label></br>
+
+                    <label class="inline-flex items-center mt-2">
+                        <input type="checkbox" wire:model="email_enabled"
+                            class="form-checkbox text-red-600 @error('email_enabled') is-invalid @enderror" />
+                        <span class="ml-2">System Email Notifications</span>
+
+                        @error('email_enabled')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </label></br>
 
                     <label class="inline-flex items-center mt-2">
                         <input type="checkbox" wire:model="notify"

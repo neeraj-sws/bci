@@ -7,7 +7,7 @@ use Spatie\Permission\Models\Permission as ModelsPermission;
 use Spatie\Permission\Models\Role;
 use Livewire\Attributes\Layout;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class Permission extends Component
 {
     public $selectedRole = '';
@@ -80,7 +80,7 @@ class Permission extends Component
     {
         return view('livewire.admin.user.permission');
     }
-    
+
       public function resetForm()
     {
         $this->userId = null;

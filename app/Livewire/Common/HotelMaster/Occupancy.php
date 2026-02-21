@@ -17,7 +17,7 @@ class Occupancy extends Component
     public $status = 1;
     public $title, $search = '';
     public $isEditing = false;
-    public $pageTitle = 'ocupancy';
+    public $pageTitle = 'Occupancy';
 
     public $model = Model::class;
     public $view = 'livewire.common.hotel-master.occupancy';

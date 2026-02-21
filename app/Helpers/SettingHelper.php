@@ -244,47 +244,54 @@ class SettingHelper
     public static function sendEmail($type, $id, $variables, $to, $from = null, $attachment = null, $pdf = null)
     {
         try {
-            $template = EmailSettings::where('company_id', $id)->where('type', $type)->first();
-            if (!$template) {
+            if (GeneralSettings::where('company_id', $id)->where('email_enabled', 1)->first()) {
+                $template = EmailSettings::where('company_id', $id)->where('type', $type)->first();
+                if (!$template) {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Email template not found for the given type and company.'
+                    ];
+                }
+                $renderedMessage = $template->message;
+                foreach ($variables as $key => $value) {
+                    $renderedMessage = str_replace($key, $value, $renderedMessage);
+                }
+                $renderedSubject = $template->subject;
+                foreach ($variables as $key => $value) {
+                    $renderedSubject = str_replace($key, $value, $renderedSubject);
+                }
+                $renderedMessage = nl2br($renderedMessage);
+                Mail::html($renderedMessage, function ($message) use ($to, $renderedSubject, $from, $attachment, $pdf) {
+                    $message->to('bci.lead.module@yopmail.com')
+                        // $message->to($to)
+                        ->subject($renderedSubject);
+
+                    if ($from) {
+                        $message->from(config('mail.from.address'), $from);
+                    }
+                    if ($attachment) {
+                        $filePath = public_path("{$attachment}");
+                        if (file_exists($filePath)) {
+                            $message->attach($filePath);
+                        }
+                    }
+                    if ($pdf) {
+                        $filePath = public_path("{$pdf}");
+                        if (file_exists($filePath)) {
+                            $message->attach($filePath);
+                        }
+                    }
+                });
                 return [
-                    'status' => 'error',
-                    'message' => 'Email template not found for the given type and company.'
+                    'status' => 'success',
+                    'message' => 'Email sent successfully.'
+                ];
+            } else {
+                return [
+                    'status' => 'success',
+                    'message' => 'Given company not allow Email.'
                 ];
             }
-            $renderedMessage = $template->message;
-            foreach ($variables as $key => $value) {
-                $renderedMessage = str_replace($key, $value, $renderedMessage);
-            }
-            $renderedSubject = $template->subject;
-            foreach ($variables as $key => $value) {
-                $renderedSubject = str_replace($key, $value, $renderedSubject);
-            }
-            $renderedMessage = nl2br($renderedMessage);
-            Mail::html($renderedMessage, function ($message) use ($to, $renderedSubject, $from, $attachment, $pdf) {
-                $message->to('bci.lead.module@yopmail.com')
-                // $message->to($to)
-                    ->subject($renderedSubject);
-
-                if ($from) {
-                    $message->from(config('mail.from.address'), $from);
-                }
-                if ($attachment) {
-                    $filePath = public_path("{$attachment}");
-                    if (file_exists($filePath)) {
-                        $message->attach($filePath);
-                    }
-                }
-                if ($pdf) {
-                    $filePath = public_path("{$pdf}");
-                    if (file_exists($filePath)) {
-                        $message->attach($filePath);
-                    }
-                }
-            });
-            return [
-                'status' => 'success',
-                'message' => 'Email sent successfully.'
-            ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
@@ -323,8 +330,8 @@ class SettingHelper
 
         return  "₹";
     }
-    
-        //  EXPORT HELPER 
+
+    //  EXPORT HELPER
     public static function ExportHelper($fileName, $headings, $data)
     {
         return Excel::download(new class($headings, $data) implements
@@ -347,7 +354,7 @@ class SettingHelper
             }
         }, $fileName . '.xlsx');
     }
-    
+
     public static function ImportHelper($file, $modelClass, $mapping = [])
     {
         try {
@@ -387,7 +394,7 @@ class SettingHelper
                     $errors[] = "Row " . ($index + 2) . ': ' . $e->getMessage();
                 }
             }
-      
+
             return [
                 'success'  => true,
                 'inserted' => $inserted,
@@ -397,21 +404,21 @@ class SettingHelper
             return ['error' => $e->getMessage()];
         }
     }
-    // 
+    //
 
     public static  function format_phone(?string $phone): ?string
-        {
-            try {
-                if (!$phone) {
-                    return null;
-                }
-                $digits = preg_replace('/\D/', '', $phone);
-                if (strlen($digits) !== 10) {
-                    return $phone;
-                }
-                return preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1 $2 $3', $digits);
-            } catch (\Throwable $e) {
+    {
+        try {
+            if (!$phone) {
+                return null;
+            }
+            $digits = preg_replace('/\D/', '', $phone);
+            if (strlen($digits) !== 10) {
                 return $phone;
             }
+            return preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1 $2 $3', $digits);
+        } catch (\Throwable $e) {
+            return $phone;
         }
+    }
 }

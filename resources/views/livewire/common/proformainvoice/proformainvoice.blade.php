@@ -217,7 +217,7 @@
 
                                         </a>
                                     </td>
-                                    
+
                                     <td class="p-3">
                                         @if ($item->total_paid_amount)
                                             <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
@@ -236,14 +236,14 @@
                                         @else
                                             <span>0.00</span>
                                         @endif
-                                        
+
                                        @can('proforma-invoice manage')
                                         @if ($item->total_remaning_amount && in_array($item->status, [0,1,3]) )
                                             <i title="Add Payment" wire:click='showRecordPaymentModal({{ $item->id }})'
                                                 role="button" class="fadeIn animated bx bx-plus-medical ms-2 text-success"></i>
                                         @endif
                                         @endcan
-                                        
+
                                     </td>
 
                                 </tr>
@@ -377,7 +377,7 @@
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label"> <span class="text-danger">*</span> Payment Date</label>
-                            <input type="text" class="form-control datepicker" wire:model="payment_date"
+                            <input type="text" class="form-control datepicker" wire:model="payment_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                 data-nostart="null" data-restrict-future="true" data-group="booking1">
                             @error('payment_date')
                                 <div class="text-danger">{{ $message }}</div>
@@ -397,7 +397,7 @@
                                             value = raw;
                                             $event.target.value = Number(raw || 0).toLocaleString();
                                         "> --}}
-                                        
+
                                     <input type="text"
                                         class="form-control"
                                          x-data="currencyInput(
@@ -431,7 +431,7 @@
                                 @error('record_amount')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-                        
+
                         </div>
 
                         <div class="col-md-12 mb-3">
@@ -471,10 +471,10 @@
                         </div>
 
 
-             
+
 
                     </div>
-                    
+
                                <div class="canvas-footer d-flex justify-content-end gap-2 mt-2">
 
                             <a id="closeCanvas" class="btn btn-secondary greygradientbtn">Cancel</a>

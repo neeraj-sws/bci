@@ -14,7 +14,7 @@ use App\Models\Vendors;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class Expense extends Component
 {
     use WithPagination;

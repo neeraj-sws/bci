@@ -1,4 +1,4 @@
-<div class="container">
+<div class="mx-5 mt-sm-0 mt-3">
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600">{{ $pageTitle }} </h6>
@@ -96,34 +96,34 @@
                     </div>
                 </div>
                 <div class="card-body" style="overflow:visible!important;">
-                    <div class="table-responsive ecs-table" style="overflow:visible!important;">
+                    <div class="table-responsive ecs-table">
                         <table class="table" style="overflow:visible!important;">
                             <thead class="lightgradient">
                                 <tr>
                                     <th class="width60">#</th>
                                     <th wire:click="shortby('name')" style="cursor: pointer;">
-                                        Hotel Name
+                                         Name
                                         @if ($sortBy === 'name')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
                                     <th wire:click="shortby('hotel_type')" style="cursor:pointer">
-                                        Hotel Type
+                                         Type
                                         @if ($sortBy === 'hotel_type')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
                                     <th wire:click="shortby('hotel_category')" style="cursor:pointer">
-                                        Hotel Category
+                                         Category
                                         @if ($sortBy === 'hotel_category')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
                                     <th wire:click="shortby('rate_type')" style="cursor:pointer">
-                                        Hotel Rate Type
+                                         Rate Type
                                         @if ($sortBy === 'rate_type')
                                             <i
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
@@ -157,7 +157,7 @@
                                                 class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
-                                    <th>Hotel Meal Type</th>
+                                    <th> Meal Type</th>
                                     <th wire:click="shortby('status')" style="cursor:pointer">
                                         Status
                                         @if ($sortBy === 'status')

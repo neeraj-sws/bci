@@ -6,7 +6,7 @@ use App\Models\Companies;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.layouts.common-app')]
+#[Layout('components.layouts.setting-master-app')]
 class AddCompanies extends Component
 {
 

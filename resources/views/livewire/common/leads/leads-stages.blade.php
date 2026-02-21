@@ -1,9 +1,9 @@
-<div class="container" id="amanity">
+<div class="mx-5 mt-sm-0 mt-3" id="amanity">
 
 
 <div class="row g-4">
       @include('livewire.common.leads.leads-master')
-    <div> 
+    <div>
     <div class="row g-4">
         @can('lead-setting manage')
         <!-- Form Card -->
@@ -109,7 +109,7 @@
                                                 </span>
                                             </div>
                                         </td>
-                                  
+
                                         @can('lead-setting manage')
                                         <td class="text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"

@@ -1,16 +1,16 @@
-<div class="container py-4">
+<div class="mx-5 mt-sm-0 mt-3">
 <div class="card shadow-none border">
-   
+
 							<div class="card-body pb-2">
 								<div class="d-flex  justify-content-between flex-wrap">
 									<div class="d-flex align-items-center mb-2">
 										<div class="avatar avatar-xxl avatar-rounded border border-warning bg-soft-warning me-3 flex-shrink-0">
 											<h6 class="mb-0 text-warning">{{ substr(trim($leadData->tourist->primary_contact ?? $leadData->tourist->name), 0, 1) }}</h6>
-										
+
 										</div>
-											
+
 										<div>
-											<h5 class="mb-1 fw-bold"><span style="color:{{ $leadData->type->color }}"><i class="bx bxs-circle me-1"></i></span>{{ $leadData->tourist->primary_contact ?? $leadData->tourist->name }} 
+											<h5 class="mb-1 fw-bold"><span style="color:{{ $leadData->type->color }}"><i class="bx bxs-circle me-1"></i></span>{{ $leadData->tourist->primary_contact ?? $leadData->tourist->name }}
 											@can('leads manage')
             @if ($leadData->stage_id == 1)
                 @if (!$leadData->invoice)
@@ -39,7 +39,7 @@
                                         </p>
 
 												@endif
-								
+
 										</div>
 									</div>
 									<div class="newboxside">
@@ -62,14 +62,14 @@
                                         href="javascript:void(0);">Genreate Quotation</a>
                                 @endif
                             </div>
-                            
 
-                       
+
+
                     </div>
                 @endif
             @endif
-            
-                                   
+
+
                        <div class="">
                 {{-- @if (!$leadData->user_id)
     <div class="col-md-6 mb-3">
@@ -116,7 +116,7 @@
 
             </div>
      @endcan
-									
+
 									</div>
 								</div>
 							</div>
@@ -141,7 +141,7 @@
 						              <div class="border-bottom mb-3 pb-2">
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Date Created</p>
-										<p class="mb-0 text-dark fw-normal"> 
+										<p class="mb-0 text-dark fw-normal">
 									{{ $leadData?->created_at
     ? \Carbon\Carbon::parse($leadData->created_at)->format('d M Y h:i A')
     : 'N/A' }}
@@ -159,8 +159,8 @@
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->source?->name ?? 'N/A' }}</p>
 									</div>
 									@endif
-									
-									
+
+
 									    @if ($leadData?->quotation?->quotation_no)
                                             <div class="d-flex align-items-center justify-content-between mb-2">
         										<p class="mb-0 text-secondary">Quotation#</p>
@@ -169,7 +169,7 @@
                                                 </a></p>
         									</div>
                                         @endif
-                                        
+
                                         @if ($leadData?->invoice?->invoice_no)
                                             <div class="d-flex align-items-center justify-content-between mb-2">
         										<p class="mb-0 text-secondary">Invoice#</p>
@@ -178,14 +178,14 @@
                                                 </a></p>
         									</div>
                                         @endif
-									
+
 						            </div>
 						            <h6 class="mb-3 fw-bold">Travel Information</h6>
 						            <div class="border-bottom mb-3 pb-2">
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Travel Date</p>
-										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->travel_date 
-                                        ? \Carbon\Carbon::parse($leadData?->travel_date)->format('d M Y') 
+										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->travel_date
+                                        ? \Carbon\Carbon::parse($leadData?->travel_date)->format('d M Y')
                                         : 'N/A' }}</p>
 									</div>
 						              <div class="d-flex align-items-center justify-content-between mb-2">
@@ -233,7 +233,7 @@
             </ul>
             </div>
             </div>
-            
+
 
     <div class="tab-content rounded">
         <div class="tab-pane fade show active" id="leadfollowup" role="tabpanel">
@@ -260,7 +260,7 @@
         </div>
     </div>
 						            </div>
-						       
+
 						</div>
     <div class="profile-header d-flex p-4 mb-4 card d-none">
 
@@ -503,4 +503,4 @@
         </div>
     </div>
 </div >
-  
+

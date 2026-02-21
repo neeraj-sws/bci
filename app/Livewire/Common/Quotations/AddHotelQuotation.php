@@ -42,7 +42,7 @@ class AddHotelQuotation extends Component
 
 
 
-    // NEW 
+    // NEW
     public $estimateId;
     public $leadId;
 
@@ -54,14 +54,14 @@ class AddHotelQuotation extends Component
     public $withmarkup_total, $markupammount, $usdammount;
     public $item_id, $item_amount, $saveItem = false, $item_name;
 
-    //  NEW DEV 
+    //  NEW DEV
     public $revision_no, $version_of;
     public $tourDays;
 
-    // NEW DEV 
+    // NEW DEV
     public $companies, $company_id;
 
-    // NEW DEV HOTEL 
+    // NEW DEV HOTEL
     public $countries = [];
     public $states = [];
     public $cities = [];
@@ -77,18 +77,18 @@ class AddHotelQuotation extends Component
     public $savedHotelData = [];
     public $selectedDays = [];
     public array $selectedRoomOptions = []; // multi-select
-    // NEW EDIT 
+    // NEW EDIT
     public $showEditHotelModal = false;
     public $editDayIndex = null;
-    // 
+    //
     public $parks = [];
     public $selectedPark = null;
-    // 
-    
-    // NEW DEV IF ERROR COMES REMOVE IT 
+    //
+
+    // NEW DEV IF ERROR COMES REMOVE IT
         public $tableDataJsonDraft = [];
         public $tableDataJsonLatestChanges = [];
-    // 
+    //
     public function loadRevised()
     {
         $estimate = Quotations::with('items')->findOrFail($this->version_of);
@@ -99,7 +99,7 @@ class AddHotelQuotation extends Component
         $this->po_number = $estimate->po_number;
         $this->estimate_date = $estimate->quotation_date;
 
-        // NEW DEV 
+        // NEW DEV
         $this->company_id = $estimate->company_id;
         $this->subTotal = $estimate->sub_amount;
         $this->discount = $estimate->discount_amount;
@@ -130,7 +130,7 @@ class AddHotelQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
-                        // NEW DEV 
+                        // NEW DEV
                         'inr_amount' => $tourJson->inr_amount,
                         'original_inr_amount' => $tourJson->inr_amount,
                         'usd_amount' => $tourJson->usd_amount,
@@ -141,13 +141,13 @@ class AddHotelQuotation extends Component
                     ];
                 }
             }
-            // NEW DEV 
+            // NEW DEV
             else {
                 $this->selectedItems[] = [
                     'name' => $tourJson->item_name,
                     'description' => $tourJson->description ?? 'No description',
                     'amount' => $tourJson->amount,
-                    // NEW DEV 
+                    // NEW DEV
                     'inr_amount' => $tourJson->inr_amount,
                     'original_inr_amount' => $tourJson->inr_amount,
                     'usd_amount' => $tourJson->usd_amount,
@@ -157,7 +157,7 @@ class AddHotelQuotation extends Component
                 ];
             }
         }
-        // NEW DEV 
+        // NEW DEV
         if (empty($this->tableDataJson) && !empty($this->selectedItems)) {
             $firstItem = collect($this->selectedItems)->firstWhere('is_tour', 0);
             if (!empty($firstItem['currency_label'])) {
@@ -183,7 +183,7 @@ class AddHotelQuotation extends Component
         $this->end_date = $estimate->end_date;
         $this->start_date = $estimate->start_date;
 
-        // NEW DEV 
+        // NEW DEV
         $this->company_id = $estimate->company_id;
         $this->subTotal = $estimate->sub_amount;
         $this->discount = $estimate->discount_amount;
@@ -207,7 +207,7 @@ class AddHotelQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
-                         // NEW DEV 
+                         // NEW DEV
                         'inr_amount' => $tourJson->inr_amount,
                         'original_inr_amount' => $tourJson->inr_amount,
                         'usd_amount' => $tourJson->usd_amount,
@@ -222,7 +222,7 @@ class AddHotelQuotation extends Component
                     'name' => $tourJson->item_name,
                     'description' => $tourJson->description ?? 'No description',
                     'amount' => $tourJson->amount,
-                    // NEW DEV 
+                    // NEW DEV
                     'inr_amount' => $tourJson->inr_amount,
                     'original_inr_amount' => $tourJson->inr_amount,
                     'usd_amount' => $tourJson->usd_amount,
@@ -233,7 +233,7 @@ class AddHotelQuotation extends Component
             }
         }
 
-        // NEW DEV 
+        // NEW DEV
         if (empty($this->tableDataJson) && !empty($this->selectedItems)) {
             $firstItem = collect($this->selectedItems)->firstWhere('is_tour', 0);
             if (!empty($firstItem['currency_label'])) {
@@ -270,7 +270,7 @@ class AddHotelQuotation extends Component
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
 
-        // NEW DEV 
+        // NEW DEV
         $this->companies = Companies::select('company_id', 'company_name', 'company_email')
             ->get()
             ->mapWithKeys(function ($tourist) {
@@ -287,7 +287,7 @@ class AddHotelQuotation extends Component
             $this->estimateId = $estimate;
             $this->loadEstimate();
         } elseif ($revised_id) {
-            // NEW DEV 
+            // NEW DEV
             $this->version_of = base64_decode($revised_id);
             $this->loadRevised();
         } else {
@@ -298,7 +298,7 @@ class AddHotelQuotation extends Component
             $this->notes = $this->estimateSettings?->customer_note ?? '';
             $this->company_id = Companies::where('is_primary', 1)?->first()?->company_id ?? null;
             $this->updatedCompanyId($this->company_id);
-            // NEW DEV 
+            // NEW DEV
             $this->start_date = Carbon::now()->format('Y-m-d');
         }
     }
@@ -324,11 +324,11 @@ class AddHotelQuotation extends Component
             $this->tour_id = null;
             $this->markupammount = SettingHelper::getMarkup();
             $this->usdammount = SettingHelper::getUsdPrice();
-            // NEW DEV 
+            // NEW DEV
             $this->tableDataJson = []; // reset the tour JSON data
             $this->withmarkup_total = 0; // reset totals related to tou
 
-            // NEW DEV 
+            // NEW DEV
             $this->tourDays = null;
             $this->dispatch('tour-days-updated');
         };
@@ -340,14 +340,14 @@ class AddHotelQuotation extends Component
     {
         $this->showModal = !$this->showModal;
         if($this->showModal){
-            // REMOVE IF IT ERROR 
+            // REMOVE IF IT ERROR
             $this->tableDataJsonDraft = $this->tableDataJson;
             //
             $this->countries = Country::all();
             $this->parks = Parks::orderBy('name')->get();
             $this->updatedSelectedCountry();
         } else{
-            // REMOVE IF ERROR 
+            // REMOVE IF ERROR
             $this->tableDataJson = $this->tableDataJsonDraft;
             //
         }
@@ -402,11 +402,11 @@ class AddHotelQuotation extends Component
         // dd($this->tableDataJson);
         $this->validate($this->rules());
 
-        // NEW DEV 
+        // NEW DEV
         $currencyLabel = $this->currencys->get($this->currency, "INR");
         $tableDataArray = $this->tableDataJson;
 
-        // NEW EXTRA DEV 
+        // NEW EXTRA DEV
         $inrSummary = 0;
         $usdSummary = 0;
         foreach ((array) $this->selectedItems as $item) {
@@ -543,7 +543,7 @@ class AddHotelQuotation extends Component
 
         $this->redirect(route($this->route . '.view-quotation', $estimate->uuid));
     }
-    // NEW 
+    // NEW
     public function updateEstimate()
     {
         // dd($this->selectedItems);
@@ -566,7 +566,7 @@ class AddHotelQuotation extends Component
 
             'tourist_id' => $this->client_id,
 
-            // NEW DEV 
+            // NEW DEV
             'company_id' => $this->company_id,
 
             'sub_amount' => $this->subTotal,
@@ -582,7 +582,7 @@ class AddHotelQuotation extends Component
         $tableDataArray['usdammount'] = $this->usdammount;
         $tableDataArray['currency'] = $this->currency;
         $tableData = json_encode($tableDataArray);
-        // NEW DEV 
+        // NEW DEV
         $currencyLabel = $this->currencys->get($this->currency, "INR(₹)");
         foreach ($this->selectedItems as $item) {
             QuotationItems::create([
@@ -633,7 +633,7 @@ class AddHotelQuotation extends Component
             $tourJson = $tour->tourJsons->first();
             $this->tableDataJson = json_decode($tourJson->json, true);
             $this->estimate_title = $tour->name;
-            // NEW DEV 
+            // NEW DEV
             if (isset($this->tableDataJson['tourPackage']['summary']['Total + GST'])) {
 
                 $this->markupammount = $this->tableDataJson['markupammount'] ?? 1.25;
@@ -967,15 +967,15 @@ class AddHotelQuotation extends Component
     }
     public function restoreTourAmountsFromJson($isClose = false)
     {
-        
+
         $rate = $this->usdammount ?? 80;
         foreach ($this->selectedItems as &$item) {
             if (!empty($item['is_tour'])) {
                 if ($this->currency === '$') {
                     $item['amount'] = $this->tableDataJson['tourPackage']['summary']['USD']['Total for the Day'] ?? 0;
                     $item['usd_amount'] = $item['amount'];
-                    $item['inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
-                    $item['original_inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
+                    $item['inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
+                    $item['original_inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
                     $item['tour_amount_locked'] = false;
                 } else {
                     $item['amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
@@ -994,7 +994,7 @@ class AddHotelQuotation extends Component
             'message' =>  'Tour JSON Saved Latest Amounts Successfully'
         ]);
         $this->dispatch('open-new-item-modal');
-        // NEW DEV 
+        // NEW DEV
         $days = &$this->tableDataJson['tourPackage']['days'];
         $nextDayNumber = count($days);
         if ($this->start_date && $nextDayNumber) {
@@ -1004,15 +1004,15 @@ class AddHotelQuotation extends Component
             $this->end_date = $this->tourDays;
             $this->dispatch('tour-days-updated');
         }
-        
+
         if($isClose){
             $this->showModal = !$this->showModal;
         }
-        // REMOVE IF ERROR COMES 
+        // REMOVE IF ERROR COMES
         $this->tableDataJsonDraft = $this->tableDataJson;
         //
     }
-    // NEW DEV HOTEL MODEL 
+    // NEW DEV HOTEL MODEL
     public function openHotelModal()
     {
         try {
@@ -1064,8 +1064,8 @@ class AddHotelQuotation extends Component
     }
     public function updatedSelectedCity()
     {
-        $this->selectedPark = null; 
-        $this->hotels = Hotel::where('city_id', $this->selectedCity)
+        $this->selectedPark = null;
+        $this->hotels = Hotel::where('city_id', $this->selectedCity)->where('park_id',null)
             ->orderBy('name', 'asc')
             ->get();
         $this->selectedHotel = null;
@@ -1195,9 +1195,9 @@ class AddHotelQuotation extends Component
                         ? $roomTotal / $roomCount
                         : 0;
                 $this->tableDataJson['tourPackage']['days'][$dayIndex]['numberOfRooms'] = $roomCount;
-                
+
                 $this->tableDataJson['tourPackage']['days'][$dayIndex]['rooms']   = $roomsPayload;
-                
+
                 $this->recalculateDay($dayIndex);
             }
 
@@ -1331,7 +1331,7 @@ class AddHotelQuotation extends Component
                 if (!$date) {
                     return;
                 }
-                
+
                 // ===============================
                 // 🔥 SEASON CHECK (NEW LOGIC)
                 // ===============================
@@ -1364,14 +1364,14 @@ class AddHotelQuotation extends Component
 
                 //     $this->roomRows[$rowIndex]['is_peak_date'] = 0;
                 // }
-                
+
                 $season = Season::where('status', 1)
                     ->whereDate('start_date', '<=', $date)
                     ->whereDate('end_date', '>=', $date)
                     ->first();
-                    
+
                 $peakDate = null;
-                
+
                 if ($season) {
                     $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
                         ->where('season_id', $season->id)
@@ -1379,9 +1379,9 @@ class AddHotelQuotation extends Component
                         ->whereDate('start_date', '<=', $date)
                         ->whereDate('end_date', '>=', $date)
                         ->first();
-                        
+
                 }
-                
+
                 if ($peakDate) {
                     $this->roomRows[$rowIndex]['occupancies_list'] =
                         $peakDate->occupancies->map(fn ($o) => [
@@ -1401,10 +1401,10 @@ class AddHotelQuotation extends Component
                                 'rate' => $o->rate ?? 0,
                             ])
                             ->toArray() ?? [];
-                
+
                     $this->roomRows[$rowIndex]['is_peak_date'] = 0;
                 }
-                // 
+                //
 
                 // reset when room category changes
                 $this->roomRows[$rowIndex]['occupancy_id'] = null;
@@ -1465,7 +1465,7 @@ class AddHotelQuotation extends Component
             return false;
         }
     }
-    // NEW EDIT CODE 
+    // NEW EDIT CODE
     public function openEditHotelModal($dayIndex)
     {
         try {
@@ -1493,7 +1493,7 @@ class AddHotelQuotation extends Component
                 $this->hotels = Hotel::where('park_id', $this->selectedPark)
                     ->orderBy('name')
                     ->get();
-            } 
+            }
             else {
                 $this->selectedCountry = $day['hotel']['country_id'];
                 $this->updatedSelectedCountry();
@@ -1625,14 +1625,14 @@ class AddHotelQuotation extends Component
     {
         $this->showEditHotelModal = false;
     }
-    // 
+    //
     public function updatedSelectedPark($value)
     {
         $this->hotels = [];
         $this->selectedHotel = null;
         $this->roomRows = [];
-        
-        // REMOVE BELOW CODE IF ERROR COMES UP 
+
+        // REMOVE BELOW CODE IF ERROR COMES UP
         if(!$this->showEditHotelModal){
         $this->selectedDays = [];
         if (!empty($this->tableDataJson['tourPackage']['days'])) {
@@ -1643,8 +1643,8 @@ class AddHotelQuotation extends Component
             }
         }
         }
-        // 
-        
+        //
+
         $this->reset([
             'selectedCountry',
             'selectedState',
@@ -1662,5 +1662,5 @@ class AddHotelQuotation extends Component
         $this->roomRows = [];
         $this->resetErrorBag();
     }
-    // 
+    //
 }

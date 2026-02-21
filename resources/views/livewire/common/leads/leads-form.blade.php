@@ -1,4 +1,4 @@
-<div class="container  mt-sm-0 mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
         <style>
         /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -33,7 +33,7 @@ input[type=number] {
             <div class="card-body">
                 <form wire:submit.prevent="save">
                     <div class="row">
-                        
+
 
 
 
@@ -129,7 +129,7 @@ input[type=number] {
                                 @enderror
                             </div>
                         @endif
-                        
+
                         @if ($addClient)
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Reference</label>
@@ -140,7 +140,7 @@ input[type=number] {
                         </div>
                         @endif
 
-       
+
                        <div class="col-6">
                         <div class="mb-3">
                             <div class="form-group">
@@ -165,7 +165,7 @@ input[type=number] {
     <div wire:ignore>
         <select id="select-tags" multiple data-placeholder="Select tags">
             @foreach($tags as $id => $name)
-                <option value="{{ $name }}" 
+                <option value="{{ $name }}"
                     @if(in_array($name, $selectedTags ?? [])) selected @endif>
                     {{ $name }}
                 </option>
@@ -198,7 +198,7 @@ input[type=number] {
                                         @endforeach
                                     </select>
                                 </div>
-                                
+
                                    <div class="col-md-6 mb-3">
                             <label class="form-label">State</label>
                             <select id='state' class="form-select select2" wire:model="state">
@@ -208,7 +208,7 @@ input[type=number] {
                                 @endforeach
                             </select>
                         </div>
-                        
+
                             <div class="col-md-6 mb-3">
                             <label class="form-label">City/Suburb</label>
                             <select id='city' class="form-select select2" wire:model="city">
@@ -218,7 +218,7 @@ input[type=number] {
                                 @endforeach
                             </select>
                         </div>
-                         
+
 
                             </div>
                         </div>
@@ -237,12 +237,12 @@ input[type=number] {
                                 <!-- travel_date -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Preferred Travel Dates</label>
-                                    <input type="text" class="form-control datepicker" wire:model="travel_date" data-role="start" data-group="booking1">
-                                    
+                                    <input type="text" class="form-control datepicker" wire:model="travel_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" data-role="start" data-group="booking1">
+
                                               @error('travel_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            
+
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -258,12 +258,12 @@ input[type=number] {
                                     <input type="number"  class="form-control" wire:model="budget">
                                     </div>
                                 </div> --}}
-                                
+
                              <div class="col-md-6 mb-3">
                                 <label class="form-label">Budget Range</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">{{ $currency }}</span>
-                            
+
                                     <input type="text"
                                         class="form-control"
                                         x-data="{ value: @entangle('budget').live }"
@@ -279,13 +279,13 @@ input[type=number] {
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label ">Follow up Date</label>
-                                    <input type="text" class="form-control datepicker"
+                                    <input type="text" class="form-control datepicker" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                         wire:model.live="follow_up_date" data-role="end" data-group="booking1" data-max-from="travel_date">
-                                        
+
                                                             @error('follow_up_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            
+
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -372,7 +372,7 @@ input[type=number] {
             </div>
         </div>
     </div>
- 
+
 </div>
 @push('scripts')
            <script>

@@ -1,4 +1,4 @@
-   <div>
+   <div class="mx-5 mt-sm-0 mt-3">
        <div class="row">
            <div class="col-12">
                <h6 class="breadcrumb-title pe-2 fs-24 border-0 text-black fw-600">
@@ -17,7 +17,7 @@
                                    <!-- Hotel Name - Full Width -->
                                    <div class="col-md-6">
                                        <label class="form-label fw-600">Hotel Name <span class="text-danger">*</span></label>
-                                       <input type="text" class="form-control" placeholder="Enter hotel name"
+                                       <input type="text" class="form-control text-capitalize" placeholder="Enter hotel name"
                                            wire:model.defer="name">
                                        @error('name')
                                            <small class="text-danger d-block mt-1">{{ $message }}</small>

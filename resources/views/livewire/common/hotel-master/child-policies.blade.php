@@ -1,4 +1,4 @@
-<div class="container mt-sm-0 mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-flex align-items-center mb-3">
@@ -34,28 +34,31 @@
                             <label class="form-label">
                                 Room Category <span class="text-danger">*</span>
                             </label>
-                             <select id="room_category_id" class="form-select select2 @error('room_category_id') is-invalid @enderror" wire:model.live="room_category_id">
+                            <select id="room_category_id"
+                                class="form-select select2 @error('room_category_id') is-invalid @enderror"
+                                wire:model.live="room_category_id">
                                 <option value="">Select Room Category</option>
                                 @foreach ($roomCategoys as $id => $name)
-                                    <option value="{{ $id }}" @selected($room_category_id == $id)>{{ $name }}</option>
+                                    <option value="{{ $id }}" @selected($room_category_id == $id)>{{ $name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('room_category_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        @if($is_peak_date)
+                        @if ($is_peak_date)
                             <div class="mb-3">
                                 <label class="form-label">
                                     Peak Date <span class="text-danger">*</span>
                                 </label>
                                 <select id="peak_date_id"
                                     class="form-select select2 @error('peak_date_id') is-invalid @enderror"
-                                    wire:model="peak_date_id"
-                                >
+                                    wire:model="peak_date_id">
                                     <option value="">Select Peak Date</option>
                                     @foreach ($peakDates as $id => $title)
-                                        <option value="{{ $id }}" @selected($peak_date_id == $id)>{{ $title }}</option>
+                                        <option value="{{ $id }}" @selected($peak_date_id == $id)>
+                                            {{ $title }}</option>
                                     @endforeach
                                 </select>
 
@@ -64,13 +67,9 @@
                                 @enderror
                             </div>
                         @endif
-                      <div class="mb-3 form-check">
-                            <input
-                                type="checkbox"
-                                class="form-check-input @error('is_peak_date') is-invalid @enderror"
-                                id="is_peak_date"
-                                wire:model.live="is_peak_date"
-                            >
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input @error('is_peak_date') is-invalid @enderror"
+                                id="is_peak_date" wire:model.live="is_peak_date">
                             <label class="form-check-label" for="is_peak_date">
                                 Peak Date
                             </label>
@@ -78,7 +77,7 @@
                             @error('is_peak_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                      </div>
+                        </div>
 
                         <!-- Free Child Age -->
                         <div class="mb-3">
@@ -97,8 +96,7 @@
                             <label class="form-label">
                                 Child With Bed Rate <span class="text-danger">*</span>
                             </label>
-                            <input type="number"
-                                onfocus="Number(this.value) <= 0 && this.select()"
+                            <input type="number" onfocus="Number(this.value) <= 0 && this.select()"
                                 class="form-control text-end @error('child_with_bed_rate') is-invalid @enderror"
                                 wire:model.defer="child_with_bed_rate" placeholder="Amount">
                             @error('child_with_bed_rate')
@@ -111,8 +109,7 @@
                             <label class="form-label">
                                 Child Without Bed Rate
                             </label>
-                            <input type="number"
-                                onfocus="Number(this.value) <= 0 && this.select()"
+                            <input type="number" onfocus="Number(this.value) <= 0 && this.select()"
                                 class="form-control text-end @error('child_without_bed_rate') is-invalid @enderror"
                                 wire:model.defer="child_without_bed_rate" placeholder="Amount">
                             @error('child_without_bed_rate')
@@ -185,7 +182,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            @if($item->peakDate)
+                                            @if ($item->peakDate)
                                                 <span class="badge bg-warning text-dark">
                                                     {{ $item->peakDate->title }}
                                                 </span>
@@ -194,18 +191,20 @@
                                             @endif
                                         </td>
                                         <td>{{ $item->free_child_age }} </td>
-                                        <td>₹{{ number_format($item->child_with_bed_rate, 2) }}</td>
-                                        <td>₹{{ number_format($item->child_without_bed_rate, 2) }}</td>
+                                        <td>₹{{ number_format((float) $item?->child_with_bed_rate, 2) }}</td>
+                                        <td>₹{{ number_format((float) $item?->child_without_bed_rate, 2) }}</td>
                                         <td>
                                             <input type="checkbox" class="form-check-input"
                                                 wire:change="toggleStatus({{ $item->id }})"
                                                 @checked($item->status)>
                                         </td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})" title="Edit">
+                                            <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
+                                                title="Edit">
                                                 <i class="bx bx-edit text-dark fs-5"></i>
                                             </a>
-                                            <a href="javascript:void(0)" wire:click="confirmDelete({{ $item->id }})" title="Delete">
+                                            <a href="javascript:void(0)"
+                                                wire:click="confirmDelete({{ $item->id }})" title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
@@ -219,7 +218,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                         <x-pagination :paginator="$items" />
+                        <x-pagination :paginator="$items" />
                     </div>
                 </div>
 

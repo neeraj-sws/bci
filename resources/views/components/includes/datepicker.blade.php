@@ -5,11 +5,12 @@
             const safariDateAfter = parseInt(el.dataset.start || 0);
             const NoDateAfter = parseInt(el.dataset.nostart || 0);
             const restrictFuture = el.dataset.restrictFuture === "true";
+            const allowPast = el.dataset.allowPast === "true";
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            let minDate = today;
+            let minDate = allowPast ? null : today;
             let maxDate = null;
 
             let existingDate = null;
@@ -26,8 +27,11 @@
                 const startFrom = el.dataset.startFrom;
                 if (startFrom) {
                     const seasonStart = new Date(startFrom);
+                    seasonStart.setHours(0, 0, 0, 0);
                     // minDate can be strict to seasonStart or later of today/seasonStart
-                    minDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
+                    minDate = el.dataset.minStrict === "true"
+                        ? seasonStart
+                        : (allowPast ? seasonStart : (seasonStart > today ? seasonStart : today));
                 }
             }
 
@@ -165,6 +169,7 @@
             if (role === "start" && dateStr) {
                 const minEndDate = new Date(dateStr);
                 minEndDate.setDate(minEndDate.getDate() + 1);
+                minEndDate.setHours(0, 0, 0, 0);
 
                 const seasonEnd = endEl.dataset.endTo ?
                     new Date(endEl.dataset.endTo + "T23:59:59") :
@@ -196,10 +201,15 @@
             if (role === "end" && dateStr) {
                 const maxStartDate = new Date(dateStr);
                 maxStartDate.setDate(maxStartDate.getDate() - 1);
+                maxStartDate.setHours(0, 0, 0, 0);
 
                 const seasonStart = startEl.dataset.startFrom ?
                     new Date(startEl.dataset.startFrom) :
                     null;
+
+                if (seasonStart) {
+                    seasonStart.setHours(0, 0, 0, 0);
+                }
 
                 const finalMaxStart = clampDate(maxStartDate, seasonStart, null);
 
@@ -276,7 +286,7 @@
      * Update existing Flatpickr instances with new min/max dates
      */
     function updateDatepickerRanges(lowestStartDate, highestEndDate) {
-        const today = new Date();
+            const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         document.querySelectorAll('.datepicker').forEach((el) => {
@@ -291,6 +301,7 @@
             // If Flatpickr exists, update it
             if (el._flatpickr) {
                 const picker = el._flatpickr;
+                const allowPast = el.dataset.allowPast === "true";
 
                 // Calculate new min/max dates
                 let newMinDate = null;
@@ -310,9 +321,12 @@
                     // RULE 2: apply constraints for new data
                     if (lowestStartDate) {
                         const seasonStart = new Date(lowestStartDate);
-                        newMinDate = el.dataset.minStrict === "true" ? seasonStart : (seasonStart > today ? seasonStart : today);
+                        seasonStart.setHours(0, 0, 0, 0);
+                        newMinDate = el.dataset.minStrict === "true"
+                            ? seasonStart
+                            : (allowPast ? seasonStart : (seasonStart > today ? seasonStart : today));
                     } else {
-                        newMinDate = today;
+                        newMinDate = allowPast ? null : today;
                     }
                 }
 

@@ -182,7 +182,7 @@ class HotelForm extends Component
     private function payload(): array
     {
         return [
-            'name' => ucwords($this->name),
+            'name' => ucwords(strtolower($this->name)),
             'hotel_type_id' => $this->hotel_type_id,
             'hotel_category_id' => $this->hotel_category_id,
             'parent_chain_id' => $this->parent_chain_id,
