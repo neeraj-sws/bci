@@ -14,7 +14,7 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="save">
@@ -156,7 +156,7 @@
             </div>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <div class="row g-2">

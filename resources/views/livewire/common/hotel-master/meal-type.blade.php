@@ -18,7 +18,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
 
                 <div class="card-body">
@@ -66,7 +66,7 @@
         </div>
 
         <!-- Table Card -->
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">

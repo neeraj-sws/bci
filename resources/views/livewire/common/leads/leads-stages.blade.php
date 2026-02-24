@@ -7,7 +7,7 @@
     <div class="row g-4">
         @can('lead-setting manage')
         <!-- Form Card -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
 
                 <div class="card-body">
@@ -72,7 +72,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('lead-setting manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('lead-setting manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">

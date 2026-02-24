@@ -15,7 +15,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('expenses manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -223,7 +223,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('expenses manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('expenses manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
 
 

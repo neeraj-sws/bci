@@ -19,9 +19,8 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('lead-tags manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
-
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
                         <div class="mb-3">
@@ -60,7 +59,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('lead-tags manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('lead-tags manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">
@@ -112,7 +111,7 @@
                                                 title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
-                                        </td>.
+                                        </td>
                                         @endcan
                                     </tr>
                                 @empty

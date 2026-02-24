@@ -8,7 +8,7 @@
     <div class="row g-4">
 
         <!-- ================= FORM ================= -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -145,7 +145,7 @@
         </div>
 
         <!-- ================= LIST ================= -->
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div class="card">
 
                 <!-- Search -->
