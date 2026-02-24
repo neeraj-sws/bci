@@ -9,6 +9,7 @@ use App\Models\Season;
 use App\Models\Hotel;
 use App\Models\PeackDate;
 use App\Models\RoomCategoryOccupances;
+use Carbon\Carbon;
 
 #[Layout('components.layouts.hotel-app')]
 class Seasons extends Component
@@ -55,11 +56,13 @@ class Seasons extends Component
 
     private function seasonOverlaps(): bool
     {
+        $primaryKey = (new Season())->getKeyName();
+
         return Season::where(function ($q) {
             $q->whereDate('start_date', '<=', $this->end_date)
                 ->whereDate('end_date', '>=', $this->start_date);
         })
-            ->when($this->itemId, fn($q) => $q->where('id', '!=', $this->itemId))
+            ->when($this->itemId, fn($q) => $q->where($primaryKey, '!=', $this->itemId))
             ->exists();
     }
 
@@ -67,6 +70,15 @@ class Seasons extends Component
     public function store()
     {
         $this->validate();
+
+        if ($message = $this->getSeasonOverlapMessage()) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => $message,
+            ]);
+            return;
+        }
+
         Season::create($this->payload());
 
         $this->resetForm();
@@ -89,6 +101,15 @@ class Seasons extends Component
     public function update()
     {
         $this->validate();
+
+        if ($message = $this->getSeasonOverlapMessage()) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => $message,
+            ]);
+            return;
+        }
+
         Season::findOrFail($this->itemId)->update($this->payload());
 
         $this->resetForm();
@@ -175,5 +196,27 @@ class Seasons extends Component
             'type' => 'success',
             'message' => $this->pageTitle . ' ' . $msg
         ]);
+    }
+
+    private function getSeasonOverlapMessage(): ?string
+    {
+        $primaryKey = (new Season())->getKeyName();
+
+        $overlapSeason = Season::where(function ($q) {
+            $q->whereDate('start_date', '<=', $this->end_date)
+                ->whereDate('end_date', '>=', $this->start_date);
+        })
+            ->when($this->itemId, fn($q) => $q->where($primaryKey, '!=', $this->itemId))
+            ->orderBy('start_date')
+            ->first();
+
+        if (!$overlapSeason) {
+            return null;
+        }
+
+        $start = Carbon::parse($overlapSeason->start_date)->format('d M Y');
+        $end = Carbon::parse($overlapSeason->end_date)->format('d M Y');
+
+        return 'Season date range already used in season "' . $overlapSeason->name . '" (' . $start . ' to ' . $end . ').';
     }
 }
