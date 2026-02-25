@@ -20,7 +20,7 @@
             </div>
         </div> --}}
     </div>
-
+    
     <div class="profile-header p-4 text-black mb-4">
         <div class="row align-items-center">
             <div class="col-md-8">
@@ -242,7 +242,7 @@
                                 </td>
                             </tr>
                         @endforelse
-
+                        
                     </tbody>
                 </table>
             </div>

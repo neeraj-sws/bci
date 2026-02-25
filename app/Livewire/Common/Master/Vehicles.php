@@ -16,9 +16,8 @@ class Vehicles extends Component
     public $name, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Vehicle';
-    public $sortBy = 'name';
+	public $sortBy = 'name';
     public $sortDirection = 'asc';
-
     public $model = Model::class;
     public $view = 'livewire.common.master.vehicles';
 
@@ -30,14 +29,14 @@ class Vehicles extends Component
 
         return [
             'name' => $this->isEditing
-                ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId . ',vehicle_id'
+                ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId .',vehicle_id'
                 : 'required|string|max:255|unique:' . $table . ',name',
         ];
     }
 
     public function render()
     {
-        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
+         $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
 
         return view($this->view, compact('items'));
     }
@@ -112,11 +111,7 @@ class Vehicles extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = Model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -139,8 +134,8 @@ class Vehicles extends Component
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
     }
-
-    public function shortby($field)
+	
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

@@ -20,7 +20,7 @@ class GeneralSettings extends Component
     public $markup_rate, $usd_rate;
 
     public $company_id;
-    public $email_enabled;
+	public $email_enabled;
 
 
     public function mount($company_id = null)
@@ -34,7 +34,7 @@ class GeneralSettings extends Component
             $this->notify = (bool) $this->GeneralSetting->notify;
             $this->notify2 = (bool) $this->GeneralSetting->notify2;
             $this->notify3 = (bool) $this->GeneralSetting->notify3;
-            $this->email_enabled = (bool) $this->GeneralSetting->email_enabled;
+			 $this->email_enabled = (bool) $this->GeneralSetting->email_enabled;
         }
     }
 
@@ -78,7 +78,7 @@ class GeneralSettings extends Component
             'usd_rate' => $this->usd_rate,
             'markup_rate' => $this->markup_rate,
             'company_id' => $this->company_id,
-            'email_enabled' => $this->email_enabled
+			'email_enabled' => $this->email_enabled
         ];
 
         if ($this->GeneralSetting) {

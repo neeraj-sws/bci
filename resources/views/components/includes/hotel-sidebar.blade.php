@@ -130,7 +130,7 @@
                                             <i class="lni lni-calendar me-2"></i> Seasons
                                         </a>
                                     </li>
-                                    <li class="mb-1 {{ request()->routeIs('common.room-category') ? 'mm-active' : '' }}">
+									<li class="mb-1 {{ request()->routeIs('common.room-category') ? 'mm-active' : '' }}">
                                         <a href="{{ route('common.room-category') }}" class="text-white">
                                             <div class="parent-icon">
                                                 <i class="lni lni-calendar"></i>

@@ -94,7 +94,6 @@ class RoomCategoryRates extends Component
             ->orderBy('start_date')
             ->get();
         $this->occupancies = Occupancy::where('status', 1)
-            ->orderBy('title')
             ->pluck('title', 'occupancy_id')
             ->toArray();
         $this->rateTypes = RateTypes::where('status', 1)

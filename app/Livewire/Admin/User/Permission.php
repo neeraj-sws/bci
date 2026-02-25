@@ -80,7 +80,7 @@ class Permission extends Component
     {
         return view('livewire.admin.user.permission');
     }
-
+    
       public function resetForm()
     {
         $this->userId = null;

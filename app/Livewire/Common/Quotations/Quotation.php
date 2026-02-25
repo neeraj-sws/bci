@@ -17,12 +17,13 @@ class Quotation extends Component
     public $pageTitle;
     public $search = '';
     public $estimateSettings;
+
     public $statusFilter = null;
     public $startdate, $enddate;
     public $route;
     public $showModal = false, $leads;
     public $companies, $company_id;
-    public $sortBy = 'created_at';
+	public $sortBy = 'created_at';
     public $sortDirection = 'desc';
 
     public function mount()
@@ -37,6 +38,7 @@ class Quotation extends Component
                 return [$tourist->id => $tourist->company_name . ' - ' . $tourist->company_email];
             })
             ->toArray();
+         $this->statusFilter = session('quotation_status_filter', null);
 
     }
 
@@ -52,6 +54,7 @@ class Quotation extends Component
 
     public function setStatusFilter($status)
     {
+         session(['quotation_status_filter' => $status]);
         $this->statusFilter = $status;
     }
 
@@ -100,10 +103,10 @@ class Quotation extends Component
 
         public function convertEstimate($uuid)
     {
-        $this->redirect(route($this->route . '.add-hotel-quotation', ['lead_id' => $uuid]));
+        $this->redirect(route($this->route . '.add-quotation', ['lead_id' => $uuid]));
     }
 
-    public function shortby($field)
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

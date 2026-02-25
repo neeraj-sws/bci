@@ -28,9 +28,8 @@ class Vendors extends Component
     public $cities = [], $vehicles;
     public $isEditing = false;
     public $pageTitle = 'Vendors';
-    public $sortBy = 'name';
+	public $sortBy = 'name';
     public $sortDirection = 'asc';
-
     public $model = Model::class;
     public $view = 'livewire.common.master.vendors';
 
@@ -40,7 +39,7 @@ class Vendors extends Component
     public $types, $type_id;
 
     public $states = [], $countrys = [];
-    public $country = '101', $state;
+    public $country='101', $state;
 
 
     public $is_taxi = 0, $notes, $serviceAreas = [], $service_area_id;
@@ -63,10 +62,10 @@ class Vendors extends Component
     {
         $this->countrys = Country::pluck('name', 'country_id')->toArray();
         $this->vehicles = Vehicles::where('status', 1)->pluck('name', 'vehicle_id');
-        $this->types = IncomeExpenseCategory::where('type', 1)
+        $this->types = IncomeExpenseCategory::where('type',1)
             ->where('status', 1)->pluck('name', 'income_expense_category_id');
 
-        $this->updatedCountry($this->country);
+$this->updatedCountry($this->country);
 
 
         $this->serviceAreas = ServiceLocations::where('soft_delete', 0)
@@ -139,7 +138,7 @@ class Vendors extends Component
                     $qr->where('vendor_service_area_id', $this->location)
                 )
             )
-            // ->where('soft_delete', 0)
+            ->where('soft_delete', 0)
             ->with(['vehicles', 'type'])
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
@@ -214,10 +213,10 @@ class Vendors extends Component
 
         $this->updatedCountry($item->country_id);
         $this->updatedState($item->state_id);
-        $this->updatedTypeId($item->type_id, true);
+        $this->updatedTypeId($item->type_id,true);
         $this->updatedSubTypeId($this->sub_type_id);
-
-
+       
+       
         $this->vehiclesData = VendorsVehicles::where('vendor_id', $item->id)
             ->get(['vehicle_id', 'day_charge', 'night_charge'])
             ->toArray();
@@ -312,11 +311,9 @@ class Vendors extends Component
     #[On('delete')]
     public function delete()
     {
-        $model =  $this->model::where('vendor_id', $this->itemId)->first();
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::where('vendor_id', $this->itemId)->update([
+            'soft_delete' => 1
+        ]);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -345,8 +342,7 @@ class Vendors extends Component
             'notes',
             'service_area_id',
             'selectedServiceArea',
-            'serviceAreaNames',
-            'is_taxi'
+            'serviceAreaNames','is_taxi'
         ]);
         $this->resetValidation();
     }
@@ -436,17 +432,17 @@ class Vendors extends Component
     {
         $this->cities = City::where('state_id', $id)->pluck('name', 'city_id')->toArray();
     }
-    public function updatedTypeId($id, $isclear)
+    public function updatedTypeId($id,$isclear)
     {
-        if (!$isclear) {
-            $this->sub_type_id = null;
-        }
+       if(!$isclear){
+         $this->sub_type_id = null;
+       }
         $this->subcategorys = IncomeExpenseSubCategory::where('category_id', $id)
             ->where('type', 1)
             ->pluck('name', 'income_expense_sub_category_id');
     }
-
-    public function updatedSubTypeId($id)
+    
+        public function updatedSubTypeId($id)
     {
         $this->is_taxi = IncomeExpenseSubCategory::where('income_expense_sub_category_id', $id)
             ->value('is_taxi');
@@ -476,10 +472,9 @@ class Vendors extends Component
     public function clearFilters()
     {
         $this->reset(['type', 'vehicle', 'location', 'search']);
-        $this->resetPage();
     }
-
-    public function shortby($field)
+	
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

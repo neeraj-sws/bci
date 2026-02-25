@@ -121,11 +121,7 @@ class Status extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

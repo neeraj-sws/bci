@@ -13,7 +13,7 @@ class LeadSources extends Model
     const DELETED_AT = 'soft_delete';
     protected $primaryKey = 'lead_source_id';
 
-    protected $fillable = ['name', 'soft_name'];
+    protected $fillable = ['name'];
 
     // ID ALIAS
     public function getIdAttribute()

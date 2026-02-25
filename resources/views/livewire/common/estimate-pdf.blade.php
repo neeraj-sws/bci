@@ -422,7 +422,7 @@
             <div class="section-title">Customer Details</div>
             <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
 
-
+ 
             
            @if (!empty($client['address']))
                 <div class="company-info">{{ $client['address'] }}</div>
@@ -430,7 +430,7 @@
              @if (!empty($client['country']))
                 <div class="company-info">{{ $client['country']['name'] }}</div>
             @endif
-            @php
+			@php
             $phone_number =  App\Helpers\SettingHelper::format_phone($client['contact_phone'])
             @endphp
             @if (!empty($client['contact_phone']))

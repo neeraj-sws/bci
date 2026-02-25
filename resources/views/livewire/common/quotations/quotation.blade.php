@@ -15,7 +15,6 @@
                 </ol>
             </nav>
         </div>
-
         @can('quotations manage')
         @if (count($leads) > 0)
             <a wire:click='add' class="btn bluegradientbtn">
@@ -24,8 +23,8 @@
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                 </span>
             </a>
-        @endif        
-        @endcan
+        @endif
+		@endcan
     </div>
 
     <div class="card">
@@ -131,8 +130,7 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 100%;min-height: 200px;">
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
-                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#
-                                </th>
+                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#</th>
                                 <th width="10%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
                                 </th>
                                 <th width="17%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
@@ -143,7 +141,7 @@
 
                                 <th width="10%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
                                     Tourist</th>
-                                <th width="15%" class="text-start" style="padding: 12px 16px; font-weight: 600; color: #374151;">
+                                 <th width="15%" class="text-start" style="padding: 12px 16px; font-weight: 600; color: #374151;">
                                     Start/End Date
                                 </th>
                                 <th width="12%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
@@ -198,7 +196,7 @@
                                             {{ $item?->tourist?->primary_contact ?? 'NA' }}
                                         </a>
                                     </td>
-                                    <td class="p-3">
+									<td class="p-3">
                                         <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
                                             {{ \Carbon\Carbon::parse($item->start_date ?? now())->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y') }}
                                             -
@@ -276,6 +274,7 @@
                                     <td class="p-3">
 
                                      @can('quotations manage')
+
                                         <div wire:key="{{ $item->id }}" class="dropdown ms-auto">
                                             <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
                                                 data-bs-toggle="dropdown" aria-expanded="false"><i
@@ -403,6 +402,7 @@
                 </div>
             </div>
         </div>
+
 
 
     </div>

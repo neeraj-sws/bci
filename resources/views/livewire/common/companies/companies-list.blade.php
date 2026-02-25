@@ -80,7 +80,7 @@
                                             id="{{ $index + 1 }}" wire:change="toggleStatus({{ $item->id }})"
                                             @checked($item->is_primary)>
                                     </td>
-                                @endcan
+									                                @endcan
                             </tr>
                         @empty
                             <tr>

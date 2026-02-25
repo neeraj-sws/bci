@@ -5,62 +5,60 @@ namespace App\Livewire\Common\Master;
 use App\Models\Parks;
 use App\Models\Zones as Model;
 use Livewire\Attributes\{Layout, On};
-use Livewire\{Component, WithPagination};
+use Livewire\{Component,WithPagination};
 
 #[Layout('components.layouts.setting-master-app')]
-
 class Zones extends Component
 {
     use WithPagination;
 
     public $itemId;
-    public $name, $nearest_city, $full_day_safari_cost, $allowed_gates, $park,  $search = '';
-    public $nearest_airport, $nearest_railway, $total_cost;
+    public $name,$nearest_city,$full_day_safari_cost,$allowed_gates,$park,  $search = '';
+    public $nearest_airport,$nearest_railway,$total_cost;
     public $isEditing = false;
     public $pageTitle = 'Zones';
-    public $sortBy = 'name';
+	public $sortBy = 'name';
     public $sortDirection = 'asc';
-
     public $model = Model::class;
     public $parks;
     public $view = 'livewire.common.master.zones';
 
 
-    public function mount()
-    {
-        $this->parks = Parks::where('status', 1)
-            ->orderBy('park_id', 'desc')
-            ->pluck('name', 'park_id')
-            ->toArray();
-    }
+  public function mount()
+{
+    $this->parks = Parks::where('status', 1)
+        ->orderBy('park_id', 'desc')
+        ->pluck('name', 'park_id')
+        ->toArray();
+}
 
 
-    public function rules()
-    {
-        $table = (new $this->model)->getTable();
-        $rule = $this->full_day_safari_cost ? 'required' : 'nullable';
+public function rules()
+{
+    $table = (new $this->model)->getTable();
+    $rule = $this->full_day_safari_cost ? 'required' : 'nullable';
 
-        return [
-            'name' => $this->isEditing ? 'required' : 'required|unique:' . $table . ',name',
-            // 'park' => 'required',
-            'nearest_city' => 'required|string',
-            'full_day_safari_cost' => 'required',
-            'allowed_gates' => $rule,
-            'total_cost' => 'required_if:full_day_safari_cost,1',
-        ];
-    }
+    return [
+        'name' => $this->isEditing ? 'required' : 'required|unique:' . $table . ',name',
+        // 'park' => 'required',
+        'nearest_city' => 'required|string',
+        'full_day_safari_cost' => 'required',
+        'allowed_gates' => $rule,
+        'total_cost' => 'required_if:full_day_safari_cost,1',
+    ];
+}
 
     public function render()
     {
         $items = $this->model::with('park')->where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
-        return view($this->view, compact('items'));
+       return view($this->view, compact('items'));
     }
 
 
 
     public function store()
-    {
+    {   
         $this->validate($this->rules());
 
         $this->model::create([
@@ -108,14 +106,14 @@ class Zones extends Component
         $this->validate($this->rules());
 
         $this->model::findOrFail($this->itemId)->update([
-            'park_id'               => $this->park,
-            'name'                  => $this->name,
-            'nearest_airport'       => $this->nearest_airport,
-            'nearest_railway'       => $this->nearest_railway,
-            'nearest_city'          => $this->nearest_city,
-            'full_day_safari_cost'  => $this->full_day_safari_cost,
-            'total_cost'            => $this->total_cost,
-            'allowed_gates'         => $this->allowed_gates,
+        'park_id'               => $this->park,
+        'name'                  => $this->name,
+        'nearest_airport'       => $this->nearest_airport,
+        'nearest_railway'       => $this->nearest_railway,
+        'nearest_city'          => $this->nearest_city,
+        'full_day_safari_cost'  => $this->full_day_safari_cost,
+        'total_cost'            => $this->total_cost,
+        'allowed_gates'         => $this->allowed_gates,
         ]);
 
         $this->resetForm();
@@ -145,11 +143,7 @@ class Zones extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = Model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -160,22 +154,17 @@ class Zones extends Component
 
     public function resetForm()
     {
-        $this->reset([
-            'name',
-            'itemId',
-            'isEditing',
-            'park',
-            'nearest_airport',
-            'nearest_railway',
-            'nearest_city',
-            'full_day_safari_cost',
-            'total_cost',
-            'allowed_gates',
-        ]);
+        $this->reset(['name','itemId', 'isEditing','park',
+        'nearest_airport',
+        'nearest_railway',
+        'nearest_city',
+        'full_day_safari_cost',
+        'total_cost',
+        'allowed_gates',]);
         $this->resetValidation();
     }
-
-    public function shortby($field)
+	
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

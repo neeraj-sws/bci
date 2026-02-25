@@ -16,7 +16,6 @@
                     Send
                     <i class="spinner-border spinner-border-sm" wire:loading.delay wire:target="openModel"></i>
                 </a>
-
                 @can('proforma-invoice manage')
                 @if ($prinvoice->status !== 2)
                     <a wire:click='confirmupdatePr()' class="btn btn-primary"><i class="fa fa-print"></i>
@@ -136,19 +135,19 @@
                         $tour = $prinvoice['tour'] ?? null;
                     @endphp
                     <div class="company-info customer-name">{{ $client['primary_contact'] ?? 'N/A' }}</div>
-
+                      
                     @if (!empty($client['address']))
                         <div class="company-info">{{ $client['address'] }}</div>
                     @endif
                      @if (!empty($client['country']))
                         <div class="company-info">{{ $client['country']['name'] }}</div>
                     @endif
-                    @php
-                    $phone_number =  App\Helpers\SettingHelper::format_phone($client['contact_phone'])
-                    @endphp
-                    @if (!empty($client['contact_phone']))
-                        <div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $phone_number }}</div>
-                    @endif
+					 @php
+						$phone_number =  App\Helpers\SettingHelper::format_phone($client['contact_phone'])
+						@endphp
+						@if (!empty($client['contact_phone']))
+							<div class="company-info">@if(!empty($client['country']) ) +{{ $client['country']['phonecode'] }}-@endif{{ $phone_number }}</div>
+						@endif
 
 
                     {{-- @if ($tour)
@@ -742,13 +741,14 @@
                                         x-init="init()"
                                         x-on:input="onInput($event)"
                                     />
+
                             </div>
 
                             @error('paid_amount')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-{{-- NEW DEV --}}
+						{{-- NEW DEV --}}
                          <div class="col-md-12 mb-3">
                                 <label for="title" class="form-label">Record Amount <span
                                         class="text-danger">*</span></label>
@@ -764,7 +764,7 @@
                                 @error('record_amount')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-
+                        
                         </div>
 
                         <div class="col-md-12 mb-3">

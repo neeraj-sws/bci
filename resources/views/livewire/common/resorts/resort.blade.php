@@ -1,5 +1,5 @@
 <!-- resources/views/livewire/admin/resorts/resorts-manager.blade.php -->
-<div class="container mt-sm-0 mt-3">
+<div class="mx-5 mt-sm-0 mt-3">
     <div
         class="page-header d-flex flex-wrap align-items-center justify-content-between mb-4 @if ($isFormOpen) d-none @endif">
         <div>

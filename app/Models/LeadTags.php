@@ -13,7 +13,7 @@ class LeadTags extends Model
     const DELETED_AT = 'soft_delete';
    protected $primaryKey = 'lead_tag_id';
 
-   protected $fillable = ['name', 'soft_name', 'status'];
+   protected $fillable = ['name', 'status'];
 
    // ID ALIAS
    public function getIdAttribute()

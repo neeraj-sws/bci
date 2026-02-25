@@ -16,7 +16,7 @@ class IncomeExpenseCategorey extends Component
     public $name, $type, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Income/Expense Category';
-    public $sortBy = 'name';
+	public $sortBy = 'name';
     public $sortDirection = 'asc';
     public $model = Model::class;
     public $view = 'livewire.common.income-expenses.income-expenses-categorey';
@@ -133,11 +133,7 @@ class IncomeExpenseCategorey extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -165,8 +161,8 @@ class IncomeExpenseCategorey extends Component
     {
         $this->tab = $tab;
     }
-
-    public function sortby($field)
+	
+	public function sortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

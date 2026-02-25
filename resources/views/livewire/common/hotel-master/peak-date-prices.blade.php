@@ -131,7 +131,7 @@
                         </div>
 
                         <!-- Dynamic Rate Inputs -->
-                        @if (count($rates) > 0)
+                        @if ($rates && count($rates) > 0)
                             <div class="mb-3">
                                 @if (count($selected_room_categories) === 1)
                                     <label class="form-label fw-bold">Rates for Occupancies</label>

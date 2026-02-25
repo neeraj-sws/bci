@@ -31,7 +31,7 @@ class LeadsView extends Component
     public $coloum, $route, $edit, $guard, $chehck;
     
     const SALES_ROLE_ID = 2;
-    public $showUserAssignModal = false;
+	public $showUserAssignModal = false;
 
     public function mount($id, $route = null, $coloum = null, $edit = true, $guard = null)
     {
@@ -202,7 +202,7 @@ public function messages()
             'message' => 'Lead Assigned Successfully'
         ]);
     }
-   public function userAssignModel()
+	 public function userAssignModel()
     {
         $this->showUserAssignModal = true;
     }

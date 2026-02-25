@@ -14,7 +14,7 @@
 
     <div class="row g-4">
         <!-- Form Card -->
-        @can('income manage')
+		        @can('income manage')
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
@@ -22,7 +22,7 @@
                         <div class="mb-3">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input data-nostart="null" type="text" placeholder="Date"
+                                <input data-nostart="null" type="text" placeholder="Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                     class="form-control datepicker @error('date') is-invalid @enderror"
                                     wire:model="date">
                                 @error('date')
@@ -303,7 +303,7 @@
                                                 {{ $item?->notes }}
                                             </span>
                                         </td>
-                                        @can('income manage')
+										                                        @can('income manage')
                                         <td class="align-middle py-1 text-center">
                                             <a href="javascript:void(0)" wire:click="edit({{ $item->id }})"
                                                 title="Edit">
@@ -314,7 +314,7 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
-                                        @endcan
+										                                        @endcan
                                     </tr>
                                 @empty
                                     <tr>

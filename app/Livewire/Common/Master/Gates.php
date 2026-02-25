@@ -19,9 +19,8 @@ class Gates extends Component
     public $isEditing = false;
     public $isadd = false;
     public $pageTitle = 'Safari Gates';
-    public $sortBy = 'name';
+	public $sortBy = 'name';
     public $sortDirection = 'asc';
-
     public $model = Model::class;
 
     public $parks, $park, $zones, $zone, $gate_to_gate, $total_week_day, $total_week_end, $night_safari_permit, $drive_image;
@@ -34,8 +33,8 @@ class Gates extends Component
             ->orderBy('park_id', 'desc')
             ->pluck('name', 'park_id')
             ->toArray();
-        $this->zones = Zones::orderBy('zone_id', 'desc')
-            ->where('park_id', $this->park)
+                 $this->zones = Zones::orderBy('zone_id', 'desc')
+            ->where('park_id',$this->park)
             ->pluck('name', 'zone_id')
             ->toArray();
     }
@@ -48,21 +47,18 @@ class Gates extends Component
             'name' => $this->isEditing
                 ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId . ',park_gate_id'
                 : 'required|string|max:255|unique:' . $table . ',name',
-            'zone' => 'required',
-            'park' => 'required',
-            'gypsy_charge' => 'required|numeric',
-            'guide_fee' => 'required|numeric',
-            'weekday_permit' => 'required|numeric',
-            'weekend_permit' => 'required|numeric',
+            'zone'=>'required',
+            'park'=>'required',
+            'gypsy_charge'=>'required|numeric',
+            'guide_fee'=>'required|numeric',
+            'weekday_permit'=>'required|numeric',
+            'weekend_permit'=>'required|numeric',
         ];
     }
 
     public function render()
     {
-        $items = $this->model::query()
-            ->where('name', 'like', "%{$this->search}%")
-            ->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(10);
+        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
 
         return view($this->view, compact('items'));
     }
@@ -111,7 +107,7 @@ class Gates extends Component
 
     public function edit($id)
     {
-
+        
         $this->resetForm();
         $this->isadd = true;
         $item = $this->model::findOrFail($id);
@@ -129,15 +125,16 @@ class Gates extends Component
         $this->total_week_end = $item->total_week_end;
         $this->night_safari_permit = $item->night_safari_permit;
         $this->drive_image = $item->drive_image;
-
+        
         $this->zones = [];
-
+            
         $this->zones = [];
         $this->updatedPark($this->park, true);
 
         // 2️⃣ Set the selected zone
         $this->zone = $item->zone_id;
         $this->isEditing = true;
+
     }
 
     public function update()
@@ -184,12 +181,7 @@ class Gates extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = Model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
-
+        $this->model::destroy($this->itemId);
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'title' => '',
@@ -202,34 +194,34 @@ class Gates extends Component
         $this->reset(['itemId', 'isEditing', 'status', 'name',    'gypsy_charge', 'guide_fee', 'gate_to_gate', 'weekday_permit', 'weekend_permit', 'total_week_day', 'total_week_end',    'night_safari_permit', 'drive_image', 'park', 'zone']);
         $this->resetValidation();
     }
-
-    public function updatedPark($id, $clear = false)
-    {
-        if (!$clear) {
-            $this->zone = '';
+    
+    public function updatedPark($id,$clear=false){
+        if(!$clear){
+                    $this->zone = '';
         }
 
         $this->zones = Zones::orderBy('zone_id', 'desc')
-            ->where('park_id', $id)
+            ->where('park_id',$id)
             ->pluck('name', 'zone_id')
             ->toArray();
+        
     }
 
-    public function updatedWeekdayPermit()
-    {
-        $this->total_week_day =
-            (float) ($this->gypsy_charge ?? 0) +
-            (float) ($this->guide_fee ?? 0) +
-            (float) ($this->weekday_permit ?? 0);
-    }
+public function updatedWeekdayPermit()
+{
+    $this->total_week_day =
+        (float) ($this->gypsy_charge ?? 0) +
+        (float) ($this->guide_fee ?? 0) +
+        (float) ($this->weekday_permit ?? 0);
+}
 
-    public function updatedWeekendPermit()
-    {
-        $this->total_week_end =
-            (float) ($this->gypsy_charge ?? 0) +
-            (float) ($this->guide_fee ?? 0) +
-            (float) ($this->weekend_permit ?? 0);
-    }
+public function updatedWeekendPermit()
+{
+    $this->total_week_end =
+        (float) ($this->gypsy_charge ?? 0) +
+        (float) ($this->guide_fee ?? 0) +
+        (float) ($this->weekend_permit ?? 0);
+}
 
 
     public function updatedGuideFee()
@@ -242,8 +234,8 @@ class Gates extends Component
         $this->updatedWeekdayPermit();
         $this->updatedWeekendPermit();
     }
-
-    public function shortby($field)
+	
+	 public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

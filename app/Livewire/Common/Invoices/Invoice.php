@@ -15,15 +15,16 @@ class Invoice extends Component
     public $pageTitle;
     public $search = '';
     public $invoiceSettings;
+	public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
     public $statusFilter = null;
     public $startdate, $enddate;
-    public $sortBy = 'updated_at';
-    public $sortDirection = 'desc';
 
     public function mount()
     {
         $this->invoiceSettings = InvoiceSettings::first();
         $this->pageTitle = 'Invoices ';
+         $this->statusFilter = session('invoice_filter', null);
     }
 
     public function updatingStatusFilter()
@@ -38,6 +39,7 @@ class Invoice extends Component
 
     public function setStatusFilter($status)
     {
+        session(['invoice_filter' => $status]);
         $this->statusFilter = $status;
     }
 
@@ -73,7 +75,7 @@ class Invoice extends Component
         return view('livewire.common.invoices.invoice', compact('items', 'counts'));
     }
 
-    public function shortby($field)
+	 public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

@@ -18,12 +18,8 @@ class IncomeExpenseCategory extends Model
     protected $primaryKey = 'income_expense_category_id';
 
     protected $fillable = [
-        'name',
-        'soft_name',
-        'type',
-        'status',
-        'is_taxi',
-        'is_tour'
+        'name','type','status','is_taxi',        'is_tour'
+
     ];
     // ID ALIAS
     public function getIdAttribute()
