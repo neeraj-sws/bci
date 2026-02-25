@@ -64,7 +64,7 @@
                                     <div class="col-lg-6 col-sm-6">
                                         <label class="form-label mb-1">Start Date <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control datepicker" data-role="start"
+                                        <input type="text" class="form-control datepicker" data-role="start" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                             data-group="booking1" data-range="proper" wire:model="start_date">
                                         @error('start_date')
                                             <small class="text-danger">{{ $message }}</small>
@@ -72,7 +72,7 @@
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
                                         <label class="form-label mb-1">End Date <span class="text-danger">*</span> </label>
-                                        <input type="text" class="form-control datepicker" data-role="end"
+                                        <input type="text" class="form-control datepicker" data-role="end" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                             data-group="booking1" data-range="proper" wire:model="end_date">
                                         @error('end_date')
                                             <small class="text-danger">{{ $message }}</small>
