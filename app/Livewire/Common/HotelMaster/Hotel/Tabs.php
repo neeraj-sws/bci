@@ -12,10 +12,12 @@ class Tabs extends Component
     public function mount($hotelId)
     {
         $this->hotelId = $hotelId;
+        $this->activeTab = session('hotel_active_tab_' . $this->hotelId, 'overview');
     }
 
     public function setActiveTab($tab)
     {
+        session(['hotel_active_tab_' . $this->hotelId => $tab]);
         $this->activeTab = $tab;
     }
 

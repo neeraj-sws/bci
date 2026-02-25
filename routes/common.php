@@ -10,27 +10,6 @@ use App\Livewire\Common\Dashboard;
 use App\Livewire\Common\Calculator\Calculator;
 use App\Livewire\Common\Companies\AddCompanies;
 use App\Livewire\Common\Companies\CompaniesList;
-use App\Livewire\Common\HotelMaster\ChainList;
-use App\Livewire\Common\HotelMaster\ChildPolicies;
-use App\Livewire\Common\HotelMaster\Hotel\HotelForm;
-use App\Livewire\Common\HotelMaster\Hotel\HotelList;
-use App\Livewire\Common\HotelMaster\Hotel\HotelDetail;
-use App\Livewire\Common\HotelMaster\HotelCategories;
-use App\Livewire\Common\HotelMaster\HotelRateForm;
-use App\Livewire\Common\HotelMaster\HotelRateList;
-use App\Livewire\Common\HotelMaster\HotelRates;
-use App\Livewire\Common\HotelMaster\HotelType;
-use App\Livewire\Common\HotelMaster\MarketingCompanies;
-use App\Livewire\Common\HotelMaster\MarketingCompanyList;
-use App\Livewire\Common\HotelMaster\RateType;
-use App\Livewire\Common\HotelMaster\MealType;
-use App\Livewire\Common\HotelMaster\Occupancy;
-use App\Livewire\Common\HotelMaster\PeakDatePrices;
-use App\Livewire\Common\HotelMaster\PeakDates;
-use App\Livewire\Common\HotelMaster\RoomCategory;
-use App\Livewire\Common\HotelMaster\RoomCategoryRates;
-use App\Livewire\Common\HotelMaster\Seasons;
-use App\Livewire\Common\HotelMaster\Supplements;
 use App\Livewire\Common\Tourists\TouristForm;
 use App\Livewire\Common\Tourists\TouristList;
 use App\Livewire\Common\Tourists\TouristView;
@@ -75,11 +54,32 @@ use App\Livewire\Common\Tours\TourForm;
 use App\Livewire\Common\ProformaInvoice\AddProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoice;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoiceView;
-use App\Livewire\Common\Quotations\AddHotelQuotation;
 use App\Livewire\Common\Tours\TourList;
 use App\Livewire\Common\TripMaster\Archive;
 use App\Livewire\Common\TripMaster\Trip;
 use App\Livewire\Common\TripMaster\TripView\View;
+
+use App\Livewire\Common\HotelMaster\ChainList;
+use App\Livewire\Common\HotelMaster\ChildPolicies;
+use App\Livewire\Common\HotelMaster\Hotel\HotelForm;
+use App\Livewire\Common\HotelMaster\Hotel\HotelList;
+use App\Livewire\Common\HotelMaster\Hotel\HotelDetail;
+use App\Livewire\Common\HotelMaster\HotelCategories;
+use App\Livewire\Common\HotelMaster\HotelRateForm;
+use App\Livewire\Common\HotelMaster\HotelRateList;
+use App\Livewire\Common\HotelMaster\HotelRates;
+use App\Livewire\Common\HotelMaster\HotelType;
+use App\Livewire\Common\HotelMaster\MarketingCompanies;
+use App\Livewire\Common\HotelMaster\MarketingCompanyList;
+use App\Livewire\Common\HotelMaster\RateType;
+use App\Livewire\Common\HotelMaster\MealType;
+use App\Livewire\Common\HotelMaster\Occupancy;
+use App\Livewire\Common\HotelMaster\PeakDates;
+use App\Livewire\Common\HotelMaster\PeakDatePrices;
+use App\Livewire\Common\HotelMaster\RoomCategory;
+use App\Livewire\Common\HotelMaster\RoomCategoryRates;
+use App\Livewire\Common\HotelMaster\Seasons;
+use App\Livewire\Common\HotelMaster\Supplements;
 
 // Route::name('common.')->middleware(['auth.guard:web', 'web', 'role:admin,sales,marketing'])->group(function () {
 Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(function () {
@@ -98,15 +98,15 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/vendor-type', VendorType::class)->name('vendor-type');
         // Route::get('/vendor-service-area', ServiceLocation::class)->name('vendor-service-area');
     });
-
+    
     Route::prefix('park-master')->group(function () {
         Route::get('/parks', Park::class)->name('park');
         Route::get('/zones', Zones::class)->name('zone');
         Route::get('/gates', Gates::class)->name('gates');
     });
-
+    
     Route::prefix('vendor-master')->group(function () {
-        Route::get('/vehicle', Vehicles::class)->name('vehicles');
+          Route::get('/vehicle', Vehicles::class)->name('vehicles');
         Route::get('/vendors', Vendors::class)->name('vendors');
         Route::get('/vendor-type', VendorType::class)->name('vendor-type');
         Route::get('/vendor-service-location', ServiceLocation::class)->name('vendor-service-location');
@@ -120,8 +120,8 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/edit-tour/{id}', TourForm::class)->name('tour-edit');
         // Route::get('/copy-tour/{copy_id}', TourForm::class)->name('tour-copy');
     });
-
-    // Resorts & Tours
+    
+        // Resorts & Tours
     Route::prefix('tour-master')->group(function () {
         Route::get('/', TourList::class)->name('tour');
         Route::get('/add', TourForm::class)->name('tour-create');
@@ -148,7 +148,7 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         // Route::get('/expense', Expense::class)->name('expense');
         Route::get('/calculator', Calculator::class)->name('calculator');
     });
-
+    
     // Expenses & Calculator
     Route::prefix('income-expenses')->group(function () {
         Route::get('/expenses', Expense::class)->name('expense');
@@ -213,21 +213,21 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('/edit/{id}', AddCompanies::class)->name('edit-company');
         Route::get('/tax', Tax::class)->name('tax');
     });
-
+    
     Route::prefix('other-settings')->group(function () {
         Route::get('/lead-setting', Type::class)->name('leads-pipeline');
         Route::get('/lead-tag', LeadTag::class)->name('lead-tags');
         Route::get('/income-expense-category', IncomeExpenseCategorey::class)->name('income-expense-categorey');
         Route::get('/income-expense-sub-category', IncomeExpenseSubCategorey::class)->name('income-expense-sub-categorey');
     });
-
-    // HOTEL MASTER
+	
+	  // HOTEL MASTER
     Route::prefix('hotel-master')->group(function () {
         Route::get('/type', HotelType::class)->name('hotel-type');
         Route::get('/categories', HotelCategories::class)->name('hotel-categories');
         Route::get('/rate-type', RateType::class)->name('rate-type');
 
-        Route::get('occupancy', Occupancy::class)->name('ocupancy');
+        Route::get('ocupancy', Occupancy::class)->name('ocupancy');
         Route::get('meal-type', MealType::class)->name('meal-type');
         Route::get('marketing-companies', MarketingCompanies::class)->name('marketing-companies');
         Route::get('meal-plans', MealType::class)->name('meal-type');
@@ -250,21 +250,14 @@ Route::name('common.')->middleware(['auth.guard:web', 'web', 'role'])->group(fun
         Route::get('hotel-rates/create', HotelRateForm::class)->name('hotel-rates.create');
         Route::get('hotel-rates/{id}/edit', HotelRateForm::class)->name('hotel-rates.edit');
     });
-
+	
     // Trip Master
     Route::prefix('customer-trips')->group(function () {
         Route::get('/', Trip::class)->name('trip');
-        Route::get('/archive', Archive::class)->name('trip-archive');
+		Route::get('/archive', Archive::class)->name('trip-archive');
         Route::get('/view/{id}', View::class)->name('trip-view');
     });
-    // HOTEl QUOTATIONS
-    Route::prefix('hotel-quotations')->group(function () {
-        Route::get('/', Quotation::class)->name('hotel-quotation');
-        Route::get('/{lead_id?}/create', AddHotelQuotation::class)->name('add-hotel-quotation');
-        Route::get('/edit/{estimate}', AddHotelQuotation::class)->name('edit-hotel-quotation');
-        Route::get('/view/{id}', QuotationView::class)->name('view-hotel-quotation');
-        Route::get('/{revised_id}/revised', AddHotelQuotation::class)->name('revised-hotel-quotation');
-    });
+
     // Logout
     Route::get('/logout', [LoginComponent::class, 'logout'])->name('logout');
 });

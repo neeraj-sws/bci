@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('items manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -124,7 +124,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('items manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('items manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap">
                     <div class="btn-group p-2 rounded border mb-xxl-0 mb-2" role="group">

@@ -20,7 +20,7 @@
 
     <div class="row g-4">
         @can('users manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="store">
@@ -138,7 +138,7 @@
         </div>
         @endcan
 
-        <div class="@can('users manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('users manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-end">
                     <div class="position-relative">

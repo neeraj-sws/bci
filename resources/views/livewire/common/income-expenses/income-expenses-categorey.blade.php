@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('income-expense-category manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
 
                 <div class="card-body">
@@ -96,7 +96,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('income-expense-category manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('income-expense-category manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="btn-group p-2 rounded border mb-xxl-0 mb-2" role="group">

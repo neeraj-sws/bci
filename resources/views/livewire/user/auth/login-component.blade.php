@@ -230,10 +230,10 @@
                         <li><i class="bi bi-people"></i> User management</li>
                     </ul>
 
-                    {{-- <div class="mt-5">
-                        <p class="small">Don't have an account? <a href="#" class="text-white">Contact
-                                administrator</a></p> 
-                    </div> --}}
+                    <div class="mt-5">
+                        {{-- <p class="small">Don't have an account? <a href="#" class="text-white">Contact
+                                administrator</a></p> --}}
+                    </div>
                 </div>
             </div>
 

@@ -16,9 +16,8 @@ class LeadTag extends Component
     public $name, $search = '';
     public $isEditing = false;
     public $pageTitle = 'Lead Tag';
-    public $sortBy = 'updated_at';
+	public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
-
     public $model = Model::class;
     public $view = 'livewire.common.leads.lead-tag';
 
@@ -39,7 +38,7 @@ class LeadTag extends Component
     public function render()
     {
         $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(10);
+            ->latest()->paginate(10);
 
         return view($this->view, compact('items'));
     }
@@ -114,11 +113,7 @@ class LeadTag extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -141,8 +136,8 @@ class LeadTag extends Component
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
     }
-
-    public function sortby($field)
+	
+	 public function sortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -151,7 +146,7 @@ class LeadTag extends Component
             $this->sortDirection = 'asc';
         }
     }
-
+	
      public function updating()
     {
         $this->resetPage();

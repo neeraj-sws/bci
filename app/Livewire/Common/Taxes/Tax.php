@@ -110,11 +110,7 @@ class Tax extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::find($this->itemId);
-        $model->soft_tax_name = $model->tax_name;
-        $model->tax_name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',

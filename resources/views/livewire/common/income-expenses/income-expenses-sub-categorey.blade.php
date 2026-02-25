@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('income-expense-subcategory manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
 
                 <div class="card-body">
@@ -105,7 +105,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('income-expense-subcategory manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('income-expense-subcategory manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
                 <div class="btn-group p-2 rounded border mb-0" role="group">
                     <button wire:click="setTab(1)"

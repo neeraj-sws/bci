@@ -109,8 +109,7 @@
                     <table class="table table-hover align-middle mb-0" style="min-width: 100%;min-height: 200px;">
                         <thead style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
                             <tr>
-                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#
-                                </th>
+                                <th width="5%" style="padding:12px 5px; font-weight: 600; color: #374151;">#</th>
                                 <th width="10%" style="padding: 12px 15px; font-weight: 600; color: #374151;">Date
                                 </th>
                                 <th width="20%" style="padding: 12px 16px; font-weight: 600; color: #374151;">
@@ -217,7 +216,7 @@
 
                                         </a>
                                     </td>
-
+                                    
                                     <td class="p-3">
                                         @if ($item->total_paid_amount)
                                             <a href="{{ $estimateRoute }}" class="fw-500 text-dark">
@@ -236,14 +235,14 @@
                                         @else
                                             <span>0.00</span>
                                         @endif
-
-                                       @can('proforma-invoice manage')
+                                        
+                                                                               @can('proforma-invoice manage')
                                         @if ($item->total_remaning_amount && in_array($item->status, [0,1,3]) )
                                             <i title="Add Payment" wire:click='showRecordPaymentModal({{ $item->id }})'
                                                 role="button" class="fadeIn animated bx bx-plus-medical ms-2 text-success"></i>
                                         @endif
-                                        @endcan
-
+										                @endcan
+                                        
                                     </td>
 
                                 </tr>
@@ -377,8 +376,8 @@
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label"> <span class="text-danger">*</span> Payment Date</label>
-                            <input type="text" class="form-control datepicker" wire:model="payment_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
-                                data-nostart="null" data-restrict-future="true" data-group="booking1">
+                            <input type="text" class="form-control datepicker" wire:model="payment_date"
+                                data-nostart="null" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" data-group="booking1">
                             @error('payment_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -397,7 +396,7 @@
                                             value = raw;
                                             $event.target.value = Number(raw || 0).toLocaleString();
                                         "> --}}
-
+                                        
                                     <input type="text"
                                         class="form-control"
                                          x-data="currencyInput(
@@ -415,7 +414,7 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        {{-- NEW DEV --}}
+						  {{-- NEW DEV --}}
                          <div class="col-md-12 mb-3">
                                 <label for="title" class="form-label">Record Amount <span
                                         class="text-danger">*</span></label>
@@ -431,7 +430,7 @@
                                 @error('record_amount')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-
+                        
                         </div>
 
                         <div class="col-md-12 mb-3">
@@ -471,10 +470,10 @@
                         </div>
 
 
-
+             
 
                     </div>
-
+                    
                                <div class="canvas-footer d-flex justify-content-end gap-2 mt-2">
 
                             <a id="closeCanvas" class="btn btn-secondary greygradientbtn">Cancel</a>
@@ -492,7 +491,6 @@
             </div>
         </div>
         {{--  --}}
-
 
     </div>
 @push('scripts')

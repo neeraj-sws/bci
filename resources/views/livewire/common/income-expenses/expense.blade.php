@@ -15,7 +15,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('expenses manage')
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -23,7 +23,7 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Expense Date <span
                                         class="text-danger">*</span></label>
-                                <input data-nostart="null" type="text" placeholder="Expense Date"
+                                <input data-nostart="null" type="text" placeholder="Expense Date" placeholder="Expense Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                     class="form-control datepicker @error('date') is-invalid @enderror"
                                     wire:model="date">
                                 @error('date')
@@ -92,7 +92,6 @@
                                             @enderror
                                         </div>
                                     </div>
-
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label for="title" class="form-label">Quotation#</label>
@@ -223,7 +222,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('expenses manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('expenses manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
 
 
@@ -307,7 +306,7 @@
                                         @endif
 
                                         <td class="align-middle py-1">
-                                            {{-- <span class="">
+                                           {{-- <span class="">
                                                 {{ $item?->amount }} {{ $item?->quotation?->currency_label }}
                                             </span> --}}
                                             <span class="">

@@ -14,7 +14,7 @@ class TouristList extends Component
     use WithFileUploads;
 
     public $pageTitle = 'Tourists';
-    public $sortBy = 'created_at';
+	public $sortBy = 'created_at';
     public $sortDirection = 'asc';
     public $search = '';
     public $route;
@@ -70,11 +70,7 @@ class TouristList extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = Model::find($this->itemId);
-        $model->soft_primary_contact = $model->primary_contact;
-        $model->primary_contact = null;
-        $model->save();
-        $model->delete();
+        Model::destroy($this->itemId);
         $this->dispatch('swal:toast', [
             'type' => 'success',
             'title' => '',
@@ -192,7 +188,7 @@ class TouristList extends Component
         return SettingHelper::ExportHelper('tourists', $headings, $data);
     }
 
-    public function shortby($field)
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -206,4 +202,5 @@ class TouristList extends Component
     {
         $this->resetPage();
     }
+
 }

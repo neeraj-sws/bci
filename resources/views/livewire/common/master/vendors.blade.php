@@ -18,8 +18,8 @@
 
     <div class="row g-4">
         <!-- Form Card -->
-        @can('vendors manage')
-        <div class="col-md-5">
+		        @can('vendors manage')
+        <div class="col-md-4">
             <div class="card">
 
                 <div class="card-body">
@@ -216,7 +216,7 @@
                                         placeholder="Select City">
                                         <option value=""></option>
                                         @foreach ($cities as $id => $name)
-                                            <option value="{{ $id }}"
+                                            <option wire:key="{{ $id }}" value="{{ $id }}"
                                                 @if ($city_id === $id) selected @endif>{{ $name }}
                                             </option>
                                         @endforeach
@@ -299,7 +299,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('vendors manage') col-md-7 @else col-md-12 @endcan">
+        <div class="@can('vendors manage') col-md-8 @else col-md-12 @endcan">
             <div class="card">
 <div class="card-header">
     <div class="row g-3 align-items-end">
@@ -380,7 +380,7 @@
                                             <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
-                                    @can('vendors manage')
+                                              @can('vendors manage')
                                     <th wire:click="shortby('status')" style="cursor: pointer;">
                                         Status
                                         @if($sortBy === 'status')
@@ -401,10 +401,11 @@
                                             </span>
                                         </td>
 
-                                         <td class="px-3 py-1">
-                                            <span class="fw-500 text-dark">@if($item->country && $item->contact) +{{$item->country->phonecode }}-@endif{{ $item->contact ?? 'NA' }}</span>
+                                        <td class="align-middle py-1">
+                                             <span class="fw-500 text-dark">@if($item->country && $item->contact) +{{$item->country->phonecode }}-@endif{{ $item->contact ?? 'NA' }}</span>
                                         </td>
-                                                    @can('vendors manage')
+										                                                    @can('vendors manage')
+
                                         <td class="align-middle py-1">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="{{ $index + 1 }}"
@@ -421,7 +422,8 @@
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
                                         </td>
-                                        @endcan
+										        @endcan
+
                                     </tr>
                                 @empty
                                     <tr>
@@ -430,7 +432,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                         <x-pagination :paginator="$items" />
+						 <x-pagination :paginator="$items" />
                     </div>
                 </div>
             </div>

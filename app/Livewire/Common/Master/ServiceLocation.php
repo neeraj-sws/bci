@@ -16,9 +16,8 @@ class ServiceLocation extends Component
     public $name, $search = '';
     public $isEditing = false;
     public $pageTitle = "Vendor Service Location";
-    public $sortBy = 'updated_at';
+	public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
-
     public $model = Model::class;
     public $view = 'livewire.common.master.service-location';
 
@@ -38,7 +37,7 @@ class ServiceLocation extends Component
 
     public function render()
     {
-        $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
+         $items = $this->model::where('name', 'like', "%{$this->search}%")->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
         return view($this->view, compact('items'));
@@ -112,11 +111,9 @@ class ServiceLocation extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = $this->model::where('service_location_id', $this->itemId)->first();
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::where('service_location_id', $this->itemId)->update([
+            'soft_delete' => 1
+        ]);;
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -139,8 +136,8 @@ class ServiceLocation extends Component
 
         $this->dispatch('swal:toast', ['type' => 'success', 'title' => '', 'message' => 'Status Changed Successfully']);
     }
-
-    public function shortby($field)
+	
+	 public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

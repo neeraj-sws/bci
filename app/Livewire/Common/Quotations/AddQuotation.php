@@ -3,20 +3,28 @@
 namespace App\Livewire\Common\Quotations;
 
 use App\Helpers\SettingHelper;
+use App\Models\City;
 use App\Models\Tourists;
 use App\Models\Currency;
 use App\Models\Companies;
+use App\Models\Country;
+use App\Models\Hotel;
 use App\Models\QuotationItems;
 use App\Models\Quotations;
 use App\Models\QuotationSettings;
 use App\Models\Items;
 use App\Models\Leads;
+use App\Models\Parks;
+use App\Models\PeackDate;
+use App\Models\RoomCategory;
+use App\Models\States;
 use App\Models\Tours;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Season;
 
 #[Layout('components.layouts.common-app')]
 class AddQuotation extends Component
@@ -34,7 +42,7 @@ class AddQuotation extends Component
 
 
 
-    // NEW 
+    // NEW
     public $estimateId;
     public $leadId;
 
@@ -46,13 +54,41 @@ class AddQuotation extends Component
     public $withmarkup_total, $markupammount, $usdammount;
     public $item_id, $item_amount, $saveItem = false, $item_name;
 
-    //  NEW DEV 
+    //  NEW DEV
     public $revision_no, $version_of;
     public $tourDays;
 
-    // NEW DEV 
+    // NEW DEV
     public $companies, $company_id;
 
+    // NEW DEV HOTEL
+    public $countries = [];
+    public $states = [];
+    public $cities = [];
+    public $hotels = [];
+    public $roomCategories = [];
+    public $occupancies = [];
+    public $showHotelModal = false;
+    public $selectedCountry=101;
+    public $selectedState;
+    public $selectedCity;
+    public $selectedHotel;
+    public $roomRows = [];
+    public $savedHotelData = [];
+    public $selectedDays = [];
+    public array $selectedRoomOptions = []; // multi-select
+    // NEW EDIT
+    public $showEditHotelModal = false;
+    public $editDayIndex = null;
+    //
+    public $parks = [];
+    public $selectedPark = null;
+    //
+
+    // NEW DEV IF ERROR COMES REMOVE IT
+        public $tableDataJsonDraft = [];
+        public $tableDataJsonLatestChanges = [];
+    //
     public function loadRevised()
     {
         $estimate = Quotations::with('items')->findOrFail($this->version_of);
@@ -63,7 +99,7 @@ class AddQuotation extends Component
         $this->po_number = $estimate->po_number;
         $this->estimate_date = $estimate->quotation_date;
 
-        // NEW DEV 
+        // NEW DEV
         $this->company_id = $estimate->company_id;
         $this->subTotal = $estimate->sub_amount;
         $this->discount = $estimate->discount_amount;
@@ -94,7 +130,7 @@ class AddQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
-                        // NEW DEV 
+                        // NEW DEV
                         'inr_amount' => $tourJson->inr_amount,
                         'original_inr_amount' => $tourJson->inr_amount,
                         'usd_amount' => $tourJson->usd_amount,
@@ -105,13 +141,13 @@ class AddQuotation extends Component
                     ];
                 }
             }
-            // NEW DEV 
+            // NEW DEV
             else {
                 $this->selectedItems[] = [
                     'name' => $tourJson->item_name,
                     'description' => $tourJson->description ?? 'No description',
                     'amount' => $tourJson->amount,
-                    // NEW DEV 
+                    // NEW DEV
                     'inr_amount' => $tourJson->inr_amount,
                     'original_inr_amount' => $tourJson->inr_amount,
                     'usd_amount' => $tourJson->usd_amount,
@@ -121,7 +157,7 @@ class AddQuotation extends Component
                 ];
             }
         }
-        // NEW DEV 
+        // NEW DEV
         if (empty($this->tableDataJson) && !empty($this->selectedItems)) {
             $firstItem = collect($this->selectedItems)->firstWhere('is_tour', 0);
             if (!empty($firstItem['currency_label'])) {
@@ -147,7 +183,7 @@ class AddQuotation extends Component
         $this->end_date = $estimate->end_date;
         $this->start_date = $estimate->start_date;
 
-        // NEW DEV 
+        // NEW DEV
         $this->company_id = $estimate->company_id;
         $this->subTotal = $estimate->sub_amount;
         $this->discount = $estimate->discount_amount;
@@ -171,7 +207,7 @@ class AddQuotation extends Component
                         'name' => $tourJson->item_name,
                         'description' => $tourJson->description ?? 'No description',
                         'amount' => $tourJson->amount,
-                         // NEW DEV 
+                         // NEW DEV
                         'inr_amount' => $tourJson->inr_amount,
                         'original_inr_amount' => $tourJson->inr_amount,
                         'usd_amount' => $tourJson->usd_amount,
@@ -186,7 +222,7 @@ class AddQuotation extends Component
                     'name' => $tourJson->item_name,
                     'description' => $tourJson->description ?? 'No description',
                     'amount' => $tourJson->amount,
-                    // NEW DEV 
+                    // NEW DEV
                     'inr_amount' => $tourJson->inr_amount,
                     'original_inr_amount' => $tourJson->inr_amount,
                     'usd_amount' => $tourJson->usd_amount,
@@ -197,7 +233,7 @@ class AddQuotation extends Component
             }
         }
 
-        // NEW DEV 
+        // NEW DEV
         if (empty($this->tableDataJson) && !empty($this->selectedItems)) {
             $firstItem = collect($this->selectedItems)->firstWhere('is_tour', 0);
             if (!empty($firstItem['currency_label'])) {
@@ -234,7 +270,7 @@ class AddQuotation extends Component
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
         $this->items = Items::where('status', 1)->get()->pluck('full_name', 'id');
 
-        // NEW DEV 
+        // NEW DEV
         $this->companies = Companies::select('company_id', 'company_name', 'company_email')
             ->get()
             ->mapWithKeys(function ($tourist) {
@@ -251,7 +287,7 @@ class AddQuotation extends Component
             $this->estimateId = $estimate;
             $this->loadEstimate();
         } elseif ($revised_id) {
-            // NEW DEV 
+            // NEW DEV
             $this->version_of = base64_decode($revised_id);
             $this->loadRevised();
         } else {
@@ -262,7 +298,7 @@ class AddQuotation extends Component
             $this->notes = $this->estimateSettings?->customer_note ?? '';
             $this->company_id = Companies::where('is_primary', 1)?->first()?->company_id ?? null;
             $this->updatedCompanyId($this->company_id);
-            // NEW DEV 
+            // NEW DEV
             $this->start_date = Carbon::now()->format('Y-m-d');
         }
     }
@@ -288,11 +324,11 @@ class AddQuotation extends Component
             $this->tour_id = null;
             $this->markupammount = SettingHelper::getMarkup();
             $this->usdammount = SettingHelper::getUsdPrice();
-            // NEW DEV 
+            // NEW DEV
             $this->tableDataJson = []; // reset the tour JSON data
             $this->withmarkup_total = 0; // reset totals related to tou
 
-            // NEW DEV 
+            // NEW DEV
             $this->tourDays = null;
             $this->dispatch('tour-days-updated');
         };
@@ -303,6 +339,18 @@ class AddQuotation extends Component
     public function edit()
     {
         $this->showModal = !$this->showModal;
+        if($this->showModal){
+            // REMOVE IF IT ERROR
+            $this->tableDataJsonDraft = $this->tableDataJson;
+            //
+            $this->countries = Country::all();
+            $this->parks = Parks::orderBy('name')->get();
+            $this->updatedSelectedCountry();
+        } else{
+            // REMOVE IF ERROR
+            $this->tableDataJson = $this->tableDataJsonDraft;
+            //
+        }
         $this->dispatch('open-new-item-modal');
     }
     public function rules()
@@ -351,14 +399,14 @@ class AddQuotation extends Component
     }
     public function addEstimate()
     {
-        // dd($this->selectedItems);
+        // dd($this->tableDataJson);
         $this->validate($this->rules());
 
-        // NEW DEV 
+        // NEW DEV
         $currencyLabel = $this->currencys->get($this->currency, "INR");
         $tableDataArray = $this->tableDataJson;
 
-        // NEW EXTRA DEV 
+        // NEW EXTRA DEV
         $inrSummary = 0;
         $usdSummary = 0;
         foreach ((array) $this->selectedItems as $item) {
@@ -495,7 +543,7 @@ class AddQuotation extends Component
 
         $this->redirect(route($this->route . '.view-quotation', $estimate->uuid));
     }
-    // NEW 
+    // NEW
     public function updateEstimate()
     {
         // dd($this->selectedItems);
@@ -518,7 +566,7 @@ class AddQuotation extends Component
 
             'tourist_id' => $this->client_id,
 
-            // NEW DEV 
+            // NEW DEV
             'company_id' => $this->company_id,
 
             'sub_amount' => $this->subTotal,
@@ -534,7 +582,7 @@ class AddQuotation extends Component
         $tableDataArray['usdammount'] = $this->usdammount;
         $tableDataArray['currency'] = $this->currency;
         $tableData = json_encode($tableDataArray);
-        // NEW DEV 
+        // NEW DEV
         $currencyLabel = $this->currencys->get($this->currency, "INR(₹)");
         foreach ($this->selectedItems as $item) {
             QuotationItems::create([
@@ -585,7 +633,7 @@ class AddQuotation extends Component
             $tourJson = $tour->tourJsons->first();
             $this->tableDataJson = json_decode($tourJson->json, true);
             $this->estimate_title = $tour->name;
-            // NEW DEV 
+            // NEW DEV
             if (isset($this->tableDataJson['tourPackage']['summary']['Total + GST'])) {
 
                 $this->markupammount = $this->tableDataJson['markupammount'] ?? 1.25;
@@ -873,6 +921,8 @@ class AddQuotation extends Component
     {
         return [
             "particular" => "Day " . str_pad($dayNumber, 2, '0', STR_PAD_LEFT),
+            "hotel"     => '',
+            "rooms"     => '',
             "activitiesCovered" => "",
             "roomPerNight" => 0,
             "numberOfRooms" => 0,
@@ -915,17 +965,17 @@ class AddQuotation extends Component
         }
         $this->calculateTotals();
     }
-    public function restoreTourAmountsFromJson()
+    public function restoreTourAmountsFromJson($isClose = false)
     {
-        
+
         $rate = $this->usdammount ?? 80;
         foreach ($this->selectedItems as &$item) {
             if (!empty($item['is_tour'])) {
                 if ($this->currency === '$') {
                     $item['amount'] = $this->tableDataJson['tourPackage']['summary']['USD']['Total for the Day'] ?? 0;
                     $item['usd_amount'] = $item['amount'];
-                    $item['inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
-                    $item['original_inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0; 
+                    $item['inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
+                    $item['original_inr_amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
                     $item['tour_amount_locked'] = false;
                 } else {
                     $item['amount'] = $this->tableDataJson['tourPackage']['summary']['With Markup %']['Total for the Day'] ?? 0;
@@ -937,9 +987,14 @@ class AddQuotation extends Component
             }
         }
         $this->calculateTotals();
-        $this->showModal = !$this->showModal;
+        // $this->showModal = !$this->showModal;
+        $this->dispatch('swal:toast', [
+            'type' => 'success',
+            'title' => '',
+            'message' =>  'Tour JSON Saved Latest Amounts Successfully'
+        ]);
         $this->dispatch('open-new-item-modal');
-        // NEW DEV 
+        // NEW DEV
         $days = &$this->tableDataJson['tourPackage']['days'];
         $nextDayNumber = count($days);
         if ($this->start_date && $nextDayNumber) {
@@ -949,5 +1004,663 @@ class AddQuotation extends Component
             $this->end_date = $this->tourDays;
             $this->dispatch('tour-days-updated');
         }
+
+        if($isClose){
+            $this->showModal = !$this->showModal;
+        }
+        // REMOVE IF ERROR COMES
+        $this->tableDataJsonDraft = $this->tableDataJson;
+        //
     }
+    // NEW DEV HOTEL MODEL
+    public function openHotelModal()
+    {
+        try {
+            $this->reset([
+                'selectedCountry',
+                'selectedState',
+                'selectedCity',
+                'selectedHotel',
+                'roomRows',
+                'savedHotelData',
+                'selectedDays',
+                'selectedPark'
+            ]);
+            $this->resetErrorBag();
+            if (!empty($this->tableDataJson['tourPackage']['days'])) {
+                foreach ($this->tableDataJson['tourPackage']['days'] as $dayIndex => $day) {
+                    if (!empty($day['hotel']['hotel_id'])) {
+                        $this->selectedDays[] = $dayIndex;
+                    }
+                }
+            }
+            $this->showHotelModal = true;
+        } catch (\Exception $e) {
+            return;
+        }
+    }
+    public function closeHotelModal()
+    {
+        $this->showHotelModal = false;
+    }
+    public function updatedSelectedCountry()
+    {
+        $this->states = States::where('country_id', $this->selectedCountry)
+            ->orderBy('name', 'asc')
+            ->get();
+        $this->selectedState = null;
+        $this->selectedCity = null;
+        $this->selectedHotel = null;
+        $this->roomRows = [];
+    }
+    public function updatedSelectedState()
+    {
+        $this->cities = City::where('state_id', $this->selectedState)
+            ->orderBy('name', 'asc')
+            ->get();
+        $this->selectedCity = null;
+        $this->selectedHotel = null;
+        $this->roomRows = [];
+    }
+    public function updatedSelectedCity()
+    {
+        $this->selectedPark = null;
+        $this->hotels = Hotel::where('city_id', $this->selectedCity)->where('park_id',null)
+            ->orderBy('name', 'asc')
+            ->get();
+        $this->selectedHotel = null;
+        $this->roomRows = [];
+    }
+    public function updatedSelectedHotel()
+    {
+        $this->roomCategories = RoomCategory::where('hotel_id', $this->selectedHotel)
+            ->orderBy('title', 'asc')
+            ->get();
+        $this->roomRows = [];
+        // ✅ EDIT MODE: auto add one row
+        if ($this->showEditHotelModal && $this->editDayIndex !== null) {
+            $this->roomRows[] = [
+                'day_index'        => $this->editDayIndex,
+                'room_category_id' => null,
+                'occupancy_id'     => null,
+                'rate'             => null,
+                'occupancies_list' => [],
+                'is_peak_date'     => 0,
+            ];
+        }
+    }
+    public function removeRoomRow($index)
+    {
+        $day = $this->roomRows[$index]['day_index'];
+
+        unset($this->roomRows[$index]);
+
+        foreach ($this->roomRows as $r) {
+            if ($r['day_index'] == $day) return;
+        }
+
+        $this->selectedDays = array_values(
+            array_diff($this->selectedDays, [$day])
+        );
+    }
+    protected function rules2()
+    {
+        return [
+            'selectedHotel' => 'required',
+            'selectedDays'  => 'required|array|min:1',
+            'roomRows'      => 'required|array|min:1',
+
+            // Either park OR location
+            'selectedPark'    => 'nullable',
+            'selectedCountry' => 'required_without:selectedPark',
+            'selectedState'   => 'required_without:selectedPark',
+            'selectedCity'    => 'required_without:selectedPark',
+
+            'roomRows.*.room_category_id' => 'required',
+            'roomRows.*.occupancy_id'     => 'required',
+            'roomRows.*.rate'             => 'required|numeric|min:1',
+        ];
+    }
+    protected function messages2()
+    {
+        return [
+            'selectedCountry.required' => 'Country is required',
+            'selectedState.required'   => 'State is required',
+            'selectedCity.required'    => 'City is required',
+            'selectedHotel.required'   => 'Hotel is required',
+
+            'selectedDays.required'    => 'Please select at least one day',
+            'roomRows.required'        => 'Please add at least one room',
+
+            'roomRows.*.room_category_id.required' => 'Room category is required',
+            'roomRows.*.occupancy_id.required'     => 'Occupancy is required',
+            'roomRows.*.rate.required'              => 'Rate is required',
+            'roomRows.*.rate.min'                   => 'Rate must be greater than 0',
+        ];
+    }
+    public function saveHotelSelection($isClose = false)
+    {
+        $this->validate(
+            $this->rules2(),
+            $this->messages2()
+        );
+        try {
+            if (
+                empty($this->selectedDays) ||
+                !$this->selectedHotel ||
+                empty($this->roomRows)
+            ) {
+                return;
+            }
+            $this->tableDataJson['tourPackage']['days'] ??= [];
+
+            $grouped = collect($this->roomRows)->groupBy('day_index');
+
+            foreach ($grouped as $dayIndex => $rows) {
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['hotel'] = [
+                    'country_id'   => $this->selectedCountry,
+                    'country_name' => $this->safeFindNameById($this->countries, $this->selectedCountry),
+                    'state_id'     => $this->selectedState,
+                    'state_name'   => $this->safeFindNameById($this->states, $this->selectedState),
+                    'city_id'      => $this->selectedCity,
+                    'city_name'    => $this->safeFindNameById($this->cities, $this->selectedCity),
+                    'hotel_id'     => $this->selectedHotel,
+                    'hotel_name'   => $this->safeFindNameById($this->hotels, $this->selectedHotel),
+                    'park_id'   => $this->selectedPark,
+                    'park_name' => $this->safeFindNameById($this->parks, $this->selectedPark)
+                ];
+                $roomsPayload = $rows->map(function ($row) use ($dayIndex) {
+                    return [
+                        'room_category_id'   => $row['room_category_id'],
+                        'room_category_name' => $this->safeFindNameById(
+                            $this->roomCategories,
+                            $row['room_category_id']
+                        ),
+                        'occupancy_id'   => $row['occupancy_id'],
+                        'occupancy_name' => collect($row['occupancies_list'] ?? [])
+                                                ->firstWhere('id', $row['occupancy_id'])['name'] ?? null,
+                        'rate'           => $row['rate'],
+                        'is_peak_date'   => $row['is_peak_date'] ?? 0,
+
+                        'date'      => $this->tourDates[$dayIndex]->toDateString() ?? null,
+                        'day_label' => 'Day ' . str_pad($dayIndex + 1, 2, '0', STR_PAD_LEFT),
+                    ];
+                })->values()->toArray();
+
+                // ✅ SUM ROOM RATES
+                $roomTotal = collect($roomsPayload)->sum('rate');
+                $roomCount = count($roomsPayload);
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['roomPerNight']
+                    = $roomCount > 0
+                        ? $roomTotal / $roomCount
+                        : 0;
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['numberOfRooms'] = $roomCount;
+
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['rooms']   = $roomsPayload;
+
+                $this->recalculateDay($dayIndex);
+            }
+
+            $this->dispatch('swal:toast', [
+                'type' => 'success',
+                'title' => '',
+                'message' =>  'Hotel data saved successfully.'
+            ]);
+
+            // Reset modal state
+            $this->reset([
+                'selectedCountry',
+                'selectedState',
+                'selectedCity',
+                'selectedHotel',
+                'roomRows',
+                'savedHotelData',
+                'selectedDays',
+                'selectedPark'
+            ]);
+            if (!empty($this->tableDataJson['tourPackage']['days'])) {
+                foreach ($this->tableDataJson['tourPackage']['days'] as $dayIndex => $day) {
+                    if (!empty($day['hotel']['hotel_id'])) {
+                        $this->selectedDays[] = $dayIndex;
+                    }
+                }
+            }
+            if($isClose){
+                $this->showHotelModal = false;
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => '',
+                'message' =>  'Something went wrong while saving hotel data.'
+            ]);
+        }
+    }
+    public function safeFindNameById($list, $id)
+    {
+        if (empty($list) || empty($id)) {
+            return null;
+        }
+        $list = collect($list);
+        $item = $list->firstWhere('id', $id);
+        return $item->name ?? $item->title ?? null;
+    }
+    public function getTourDatesProperty()
+    {
+        if (!$this->start_date || !$this->end_date) {
+            return [];
+        }
+
+        $start = Carbon::parse($this->start_date);
+        $end   = Carbon::parse($this->end_date);
+
+        $dates = [];
+        for ($d = $start->copy(); $d->lte($end); $d->addDay()) {
+            $dates[] = $d->copy();
+        }
+
+        return $dates;
+    }
+   public function updatedSelectedDays($value)
+    {
+        try {
+            if (!is_array($this->roomRows)) {
+                $this->roomRows = [];
+            }
+
+
+            foreach ($this->selectedDays as $dayIndex) {
+                // 🚫 skip already saved days
+                if (isset($this->tableDataJson['tourPackage']['days'][$dayIndex]['hotel']['hotel_id'])) {
+                    continue;
+                }
+                $exists = collect($this->roomRows)
+                    ->where('day_index', $dayIndex)
+                    ->count();
+
+                if ($exists === 0) {
+                   $this->roomRows[] = [
+                        'day_index'        => $dayIndex,
+                        'room_category_id' => null,
+                        'occupancy_id'     => null,
+                        'rate'             => null,
+                        'occupancies_list' => [],
+                        'is_peak_date'     => 0,
+                    ];
+                }
+            }
+
+            $this->roomRows = array_values(
+                collect($this->roomRows)
+                    ->filter(fn ($row) =>
+                        in_array($row['day_index'], $this->selectedDays)
+                    )
+                    ->toArray()
+            );
+        } catch (\Exception $e) {
+        $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'title' => '',
+                'message' =>  'Something went wrong while updating selected days.'
+            ]);
+        }
+    }
+    public function updatedRoomRows($value, $name)
+    {
+        try {
+
+            // ===============================
+            // 1️⃣ ROOM CATEGORY CHANGE
+            // ===============================
+            if (str_contains($name, 'room_category_id')) {
+
+                [$rowIndex] = explode('.', $name);
+
+                if (!isset($this->roomRows[$rowIndex])) {
+                    return;
+                }
+
+                $roomCategoryId = $this->roomRows[$rowIndex]['room_category_id'];
+                $dayIndex       = $this->roomRows[$rowIndex]['day_index'] ?? null;
+
+                if (!$roomCategoryId || $dayIndex === null) {
+                    return;
+                }
+
+                $date = $this->tourDates[$dayIndex] ?? null;
+                if (!$date) {
+                    return;
+                }
+
+                // ===============================
+                // 🔥 SEASON CHECK (NEW LOGIC)
+                // ===============================
+
+                // $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
+                //     ->where('room_category_id', $roomCategoryId)
+                //     ->whereDate('start_date', '<=', $date)
+                //     ->whereDate('end_date', '>=', $date)
+                //     ->first();
+
+                // if ($peakDate) {
+                //     $this->roomRows[$rowIndex]['occupancies_list'] =
+                //         $peakDate->occupancies->map(fn ($o) => [
+                //             'id'   => $o->occupancy_id,
+                //             'name' => $o->occupancy->title,
+                //             'rate' => $o->rate ?? 0,
+                //         ])->toArray();
+
+                //     $this->roomRows[$rowIndex]['is_peak_date'] = 1;
+                // } else {
+                //     $this->roomRows[$rowIndex]['occupancies_list'] =
+                //         RoomCategory::find($roomCategoryId)
+                //             ?->occupancies
+                //             ->map(fn ($o) => [
+                //                 'id'   => $o->occupancy_id,
+                //                 'name' => $o->occupancy->title,
+                //                 'rate' => $o->rate ?? 0,
+                //             ])
+                //             ->toArray() ?? [];
+
+                //     $this->roomRows[$rowIndex]['is_peak_date'] = 0;
+                // }
+
+                $season = Season::where('status', 1)
+                    ->whereDate('start_date', '<=', $date)
+                    ->whereDate('end_date', '>=', $date)
+                    ->first();
+
+                $peakDate = null;
+
+                if ($season) {
+                    $peakDate = PeackDate::where('hotel_id', $this->selectedHotel)
+                        ->where('season_id', $season->id)
+                        ->where('room_category_id', $roomCategoryId)
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereDate('end_date', '>=', $date)
+                        ->first();
+
+                }
+
+                if ($peakDate) {
+                    $this->roomRows[$rowIndex]['occupancies_list'] =
+                        $peakDate->occupancies->map(fn ($o) => [
+                            'id'   => $o->occupancy_id,
+                            'name' => $o->occupancy->title,
+                            'rate' => $o->rate ?? 0,
+                        ])->toArray();
+                    $this->roomRows[$rowIndex]['is_peak_date'] = 1;
+                } elseif ($season) {
+                    $this->roomRows[$rowIndex]['occupancies_list'] =
+                        RoomCategory::find($roomCategoryId)
+                            ?->occupancies
+                            ->where('season_id', $season->id)
+                            ->map(fn ($o) => [
+                                'id'   => $o->occupancy_id,
+                                'name' => $o->occupancy->title,
+                                'rate' => $o->rate ?? 0,
+                            ])
+                            ->toArray() ?? [];
+
+                    $this->roomRows[$rowIndex]['is_peak_date'] = 0;
+                }
+                //
+
+                // reset when room category changes
+                $this->roomRows[$rowIndex]['occupancy_id'] = null;
+                $this->roomRows[$rowIndex]['rate'] = null;
+
+                return;
+            }
+
+            // ===============================
+            // 2️⃣ OCCUPANCY CHANGE → AUTO RATE
+            // ===============================
+            if (str_contains($name, 'occupancy_id')) {
+
+                [$rowIndex] = explode('.', $name);
+
+                if (!isset($this->roomRows[$rowIndex])) {
+                    return;
+                }
+
+                $occupancyId = $this->roomRows[$rowIndex]['occupancy_id'];
+                $list        = $this->roomRows[$rowIndex]['occupancies_list'] ?? [];
+
+                if (!$occupancyId || empty($list)) {
+                    return;
+                }
+
+                foreach ($list as $occ) {
+                    if ($occ['id'] == $occupancyId) {
+                        $this->roomRows[$rowIndex]['rate'] = $occ['rate'];
+                        break;
+                    }
+                }
+            }
+
+        } catch (\Exception $e) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Failed to load occupancy rates',
+            ]);
+        }
+    }
+    public function addRoomCategory($dayIndex)
+    {
+        $this->roomRows[] = [
+            'day_index'        => $dayIndex,
+            'room_category_id' => null,
+            'occupancy_id'     => null,
+            'rate'             => null,
+            'occupancies_list' => [],
+            'is_peak_date'     => 0,
+        ];
+    }
+    public function isDayAlreadyAdded($dayIndex)
+    {
+        try{
+            return isset($this->tableDataJson['tourPackage']['days'][$dayIndex]['hotel']);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    // NEW EDIT CODE
+    public function openEditHotelModal($dayIndex)
+    {
+        try {
+            $day = $this->tableDataJson['tourPackage']['days'][$dayIndex] ?? null;
+
+            if (!$day || empty($day['hotel']['hotel_id'])) {
+                return;
+            }
+
+            $this->reset([
+                'selectedCountry',
+                'selectedState',
+                'selectedCity',
+                'selectedHotel',
+                'roomRows',
+                'selectedDays',
+                'selectedPark'
+            ]);
+            $this->resetErrorBag();
+
+            $this->editDayIndex = $dayIndex;
+            $this->selectedDays = [$dayIndex];
+            if (!empty($day['hotel']['park_id'])) {
+                $this->selectedPark = $day['hotel']['park_id'];
+                $this->hotels = Hotel::where('park_id', $this->selectedPark)
+                    ->orderBy('name')
+                    ->get();
+            }
+            else {
+                $this->selectedCountry = $day['hotel']['country_id'];
+                $this->updatedSelectedCountry();
+                $this->selectedState = $day['hotel']['state_id'];
+                $this->updatedSelectedState();
+                $this->selectedCity = $day['hotel']['city_id'];
+                $this->updatedSelectedCity();
+            }
+            $this->selectedHotel = $day['hotel']['hotel_id'];
+            $this->updatedSelectedHotel();
+
+            foreach ($day['rooms'] as $room) {
+
+                $occupancies = [];
+                $date = $this->tourDates[$dayIndex] ?? null;
+
+                if ($date) {
+                    $peakDate = PeackDate::where('hotel_id', $day['hotel']['hotel_id'])
+                        ->where('room_category_id', $room['room_category_id'])
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereDate('end_date', '>=', $date)
+                        ->first();
+
+                    if ($peakDate) {
+                        $occupancies = $peakDate->occupancies->map(fn ($o) => [
+                            'id'   => $o->occupancy_id,
+                            'name' => $o->occupancy->title,
+                            'rate' => $o->rate ?? 0,
+                        ])->toArray();
+
+                        $isPeak = 1;
+                    } else {
+                        $occupancies = RoomCategory::find($room['room_category_id'])
+                            ?->occupancies
+                            ->map(fn ($o) => [
+                                'id'   => $o->occupancy_id,
+                                'name' => $o->occupancy->title,
+                                'rate' => $o->rate ?? 0,
+                            ])->toArray() ?? [];
+
+                        $isPeak = 0;
+                    }
+                }
+                $this->roomRows[] = [
+                    'day_index'        => $dayIndex,
+                    'room_category_id' => $room['room_category_id'],
+                    'occupancy_id'     => $room['occupancy_id'],
+                    'rate'             => $room['rate'],
+                    'occupancies_list' => $occupancies,
+                    'is_peak_date'     => $isPeak ?? 0,
+                ];
+            }
+            $this->showEditHotelModal = true;
+        } catch (\Exception $e) {
+            return;
+        }
+    }
+    public function updateHotelSelection()
+    {
+        $this->validate(
+            $this->rules2(),
+            $this->messages2()
+        );
+
+        try {
+            $dayIndex = $this->editDayIndex;
+
+            if ($dayIndex === null) return;
+
+            $grouped = collect($this->roomRows)->groupBy('day_index');
+
+            foreach ($grouped as $rows) {
+
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['hotel'] = [
+                    'country_id'   => $this->selectedCountry,
+                    'country_name' => $this->safeFindNameById($this->countries, $this->selectedCountry),
+                    'state_id'     => $this->selectedState,
+                    'state_name'   => $this->safeFindNameById($this->states, $this->selectedState),
+                    'city_id'      => $this->selectedCity,
+                    'city_name'    => $this->safeFindNameById($this->cities, $this->selectedCity),
+                    'hotel_id'     => $this->selectedHotel,
+                    'hotel_name'   => $this->safeFindNameById($this->hotels, $this->selectedHotel),
+                    'park_id'   => $this->selectedPark,
+                    'park_name' => $this->safeFindNameById($this->parks, $this->selectedPark)
+                ];
+
+                $roomsPayload = $rows->map(function ($row) use ($dayIndex) {
+                    return [
+                        'room_category_id'   => $row['room_category_id'],
+                        'room_category_name' => $this->safeFindNameById(
+                            $this->roomCategories,
+                            $row['room_category_id']
+                        ),
+                        'occupancy_id'   => $row['occupancy_id'],
+                        'occupancy_name' => collect($row['occupancies_list'] ?? [])
+                            ->firstWhere('id', $row['occupancy_id'])['name'] ?? null,
+                        'rate'           => $row['rate'],
+                        'is_peak_date'   => $row['is_peak_date'] ?? 0,
+                    ];
+                })->values()->toArray();
+
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['rooms'] = $roomsPayload;
+
+                $roomCount = count($roomsPayload);
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['roomPerNight']
+                    = $roomCount > 0
+                        ? collect($roomsPayload)->sum('rate') / $roomCount
+                        : 0;
+                $this->tableDataJson['tourPackage']['days'][$dayIndex]['numberOfRooms'] = $roomCount;
+
+                $this->recalculateDay($dayIndex);
+            }
+
+            $this->showEditHotelModal = false;
+
+            $this->dispatch('swal:toast', [
+                'type' => 'success',
+                'message' => 'Hotel updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('swal:toast', [
+                'type' => 'error',
+                'message' => 'Failed to update hotel'
+            ]);
+        }
+    }
+    public function closeEditHotelModal()
+    {
+        $this->showEditHotelModal = false;
+    }
+    //
+    public function updatedSelectedPark($value)
+    {
+        $this->hotels = [];
+        $this->selectedHotel = null;
+        $this->roomRows = [];
+
+        // REMOVE BELOW CODE IF ERROR COMES UP
+        if(!$this->showEditHotelModal){
+        $this->selectedDays = [];
+        if (!empty($this->tableDataJson['tourPackage']['days'])) {
+            foreach ($this->tableDataJson['tourPackage']['days'] as $dayIndex => $day) {
+                if (!empty($day['hotel']['hotel_id'])) {
+                    $this->selectedDays[] = $dayIndex;
+                }
+            }
+        }
+        }
+        //
+
+        $this->reset([
+            'selectedCountry',
+            'selectedState',
+            'selectedCity',
+        ]);
+        $this->hotels = Hotel::where('park_id', $value)
+            ->orderBy('name')
+            ->get();
+    }
+    public function removePark()
+    {
+        $this->selectedPark = null;
+        $this->hotels = [];
+        $this->selectedHotel = null;
+        $this->roomRows = [];
+        $this->resetErrorBag();
+    }
+    //
 }

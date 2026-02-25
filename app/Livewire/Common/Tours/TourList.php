@@ -17,7 +17,7 @@ class TourList extends Component
     public $search = '';
     public $tab = 'all';
     public $pageTitle = 'Tour Master';
-    public $sortBy = 'updated_at';
+	public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
 
     public $model = Model::class;
@@ -28,6 +28,7 @@ class TourList extends Component
     public function mount($id = null)
     {
         $this->route = 'common';
+         $this->tab = session('tour_master_filter', null);
     }
 
     public function render()
@@ -66,11 +67,7 @@ class TourList extends Component
     #[On('delete')]
     public function delete()
     {
-        $model = Model::find($this->itemId);
-        $model->soft_name = $model->name;
-        $model->name = null;
-        $model->save();
-        $model->delete();
+        $this->model::destroy($this->itemId);
 
         $this->dispatch('swal:toast', [
             'type' => 'success',
@@ -89,10 +86,11 @@ class TourList extends Component
 
     public function setTab($tab)
     {
+        session(['tour_master_filter' => $tab]);
         $this->tab = $tab;
     }
 
-    public function shortby($field)
+	public function shortby($field)
     {
         if ($this->sortBy === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';

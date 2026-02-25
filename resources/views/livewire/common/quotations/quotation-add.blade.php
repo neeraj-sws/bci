@@ -1,4 +1,4 @@
-<div class="container">
+<div class="mx-5 mt-sm-0 mt-3">
     <style>
         .excel-table {
             border-collapse: collapse;
@@ -125,7 +125,8 @@
 
 
     @if (!$showModal)
-        <form wire:submit.prevent="{{ $estimateId ? 'updateEstimate' : 'addEstimate' }}" onkeydown="return event.key != 'Enter'">
+        <form wire:submit.prevent="{{ $estimateId ? 'updateEstimate' : 'addEstimate' }}"
+            onkeydown="return event.key != 'Enter'">
 
             <div class="card">
                 <div class="card-body">
@@ -179,9 +180,8 @@
 
                                             @endif
                                         </label>
-                                        <select @disabled(!$company_id || $estimateId) id="tour_id"
-                                            class="form-select select2" wire:model="tour_id"
-                                            placeholder="Tour  Name">
+                                        <select @disabled(!$company_id || $estimateId) id="tour_id" class="form-select select2"
+                                            wire:model="tour_id" placeholder="Tour  Name">
                                             <option value=""></option>
                                             @foreach ($tours as $id => $company_name)
                                                 <option value="{{ $id }}"
@@ -196,30 +196,32 @@
                                 </div>
                                 {{-- NEW DEV --}}
                                 <div class="row">
-                                 <div class="col-6">
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Quotation Date <span
-                                                class="text-danger">*</span></label>
-                                        <input id="estimate_date" type="text" placeholder="Estimate Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
-                                            class="form-control datepicker @error('estimate_date') is-invalid @enderror"
-                                            wire:model="estimate_date">
-                                        @error('estimate_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Quotation Date <span
+                                                    class="text-danger">*</span></label>
+                                            <input id="estimate_date" type="text" placeholder="Estimate Date"
+                                                data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
+                                                class="form-control datepicker @error('estimate_date') is-invalid @enderror"
+                                                wire:model="estimate_date">
+                                            @error('estimate_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Quotation Expiry Date <span
-                                                class="text-danger">*</span></label>
-                                        <input id="expiry_date" type="text" placeholder="Expiry Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
-                                            class="form-control datepicker @error('expiry_date') is-invalid @enderror"
-                                            wire:model="expiry_date">
-                                        @error('expiry_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Quotation Expiry Date <span
+                                                    class="text-danger">*</span></label>
+                                            <input id="expiry_date" type="text" placeholder="Expiry Date"
+                                                data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
+                                                class="form-control datepicker @error('expiry_date') is-invalid @enderror"
+                                                wire:model="expiry_date">
+                                            @error('expiry_date')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                             </fieldset>
 
@@ -270,13 +272,14 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                              {{-- NEW DEV --}}
-                              <div class="row">
+                                {{-- NEW DEV --}}
+                                <div class="row">
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Tour Start Date <span
                                                     class="text-danger">*</span></label>
-                                            <input id="start_date" type="text" placeholder="Start Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
+                                            <input id="start_date" type="text" placeholder="Start Date"
+                                                data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                                 class="form-control datepicker @error('start_date') is-invalid @enderror"
                                                 wire:model.live="start_date" data-role="start" data-group="booking1">
                                             @error('start_date')
@@ -293,15 +296,17 @@
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Tour End Date <span
                                                     class="text-danger">*</span></label>
-                                            <input id="end_date" type="text" placeholder="End Date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
+                                            <input id="end_date" type="text" placeholder="End Date"
+                                                data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}"
                                                 class="form-control datepicker @error('end_date') is-invalid @enderror"
-                                                wire:model="end_date" @if($tour_id) disabled @endif>
+                                                wire:model="end_date"
+                                                @if ($tour_id) disabled @endif>
                                             @error('end_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
-                              </div>
+                                </div>
 
                                 @if (!$estimateId)
                                     <div class="row">
@@ -387,11 +392,9 @@
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text">{{ $currency }}</span>
 
-                                                        <input type="text"
-                                                            class="form-control text-end"
+                                                        <input type="text" class="form-control text-end"
                                                             wire:model.defer="selectedItems.{{ $index }}.amount"
-                                                            wire:change="handleItemAmount({{ $index }})"
-                                                        >
+                                                            wire:change="handleItemAmount({{ $index }})">
                                                     </div>
 
                                                     @error("selectedItems.$index.amount")
@@ -465,22 +468,22 @@
             </div>
             <fieldset @disabled(!$company_id)>
                 <div class="d-flex justify-content-between gap-3">
-                <div class="mb-1 w-50">
-                    <label class="form-label">Terms & Conditions <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('terms_and_condition') is-invalid @enderror" wire:model="terms_and_condition"
-                        rows="8"></textarea>
-                    @error('terms_and_condition')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <div class="mb-1 w-50">
+                        <label class="form-label">Terms & Conditions <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('terms_and_condition') is-invalid @enderror" wire:model="terms_and_condition"
+                            rows="8"></textarea>
+                        @error('terms_and_condition')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                <div class="mb-1 w-50">
-                    <label class="form-label">Booking Procedure <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('notes') is-invalid @enderror" wire:model="notes" rows="8"></textarea>
-                    @error('notes')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <div class="mb-1 w-50">
+                        <label class="form-label">Booking Procedure <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('notes') is-invalid @enderror" wire:model="notes" rows="8"></textarea>
+                        @error('notes')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </fieldset>
             <button @disabled(!$company_id) type="submit" class="btn bluegradientbtn my-3">
@@ -503,12 +506,18 @@
                 <div class="d-flex justify-content-end mb-2">
                     <button wire:click="addDay" class="btn btn-sm btn-success">
                         + Add Day
-                             <span wire:loading
-                                    wire:target="addDay">
-                                    <span class="spinner-border spinner-border-sm me-1" role="status"
-                                        aria-hidden="true"></span>
+                        <span wire:loading wire:target="addDay">
+                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
                     </button>
                 </div>
+                {{-- NEW DEV HOTEL MODULE --}}
+                <button type="button" class="btn btn-sm btn-primary" wire:click="openHotelModal">
+                    + Add Hotel <span wire:loading wire:target="openHotelModal">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    </span>
+                </button>
+                {{--  --}}
                 <table class="excel-table table table-bordered table-hover bg-white">
                     <thead class="thead-light">
                         <tr>
@@ -521,14 +530,16 @@
                         @foreach ($days as $index => $day)
                             <tr class="bg-day">
                                 @foreach ($day as $key => $value)
+                                    @if ($key === 'rooms')
+                                        @continue
+                                    @endif
                                     <td>
-                                       @if (in_array($key, ['particular', 'activitiesCovered']))
+                                        @if (in_array($key, ['particular', 'activitiesCovered']))
                                             @if ($key === 'particular')
                                                 <div style="position:relative;">
 
                                                     @if (count($days) > 1)
-                                                        <span
-                                                            type="button"
+                                                        <span type="button"
                                                             wire:click="removeDay({{ $index }})"
                                                             title="Remove Day"
                                                             style="
@@ -546,34 +557,57 @@
                                                                 color:#fff;
                                                                 font-size:16px;
                                                                 cursor:pointer;text-align:center">
-                                                            <span wire:loading.remove wire:target="removeDay({{ $index }})">x</span>
+                                                            <span wire:loading.remove
+                                                                wire:target="removeDay({{ $index }})">x</span>
                                                             <span wire:loading
-                                                                            wire:target="removeDay({{ $index }})">
-                                                                            <span class="spinner-border spinner-border-sm me-1" role="status"
-                                                                                aria-hidden="true"></span>
-                                                                        </span>
+                                                                wire:target="removeDay({{ $index }})">
+                                                                <span class="spinner-border spinner-border-sm me-1"
+                                                                    role="status" aria-hidden="true"></span>
+                                                            </span>
                                                         </span>
                                                     @endif
 
-                                                    <textarea
-                                                        class="form-control textarea-cell"
-                                                        wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
-                                                    ></textarea>
+                                                    <textarea class="form-control textarea-cell"
+                                                        wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
 
                                                 </div>
                                             @else
                                                 <textarea class="form-control textarea-cell"
                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
                                             @endif
-
-                                        @elseif (in_array($key, ['totalForTheDay', 'hotelTotal', 'hotelBalance']))
-                                            <input type="text" class="form-control short-input"
-                                                wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
-                                                disabled />
-                                        @else
-                                            <input type="text" class="form-control short-input"
-                                                wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
-                                                wire:change="recalculateDay({{ $index }})" />
+                                        @elseif ($key === 'hotel')
+                                            <span
+                                                class="fw-semibold text-primary text-decoration-underline d-flex overflow-x-auto"
+                                                style="cursor:pointer"
+                                                wire:click="openEditHotelModal({{ $index }})"
+                                                title="Edit Hotel">
+                                                {{ $value['hotel_name'] ?? 'No Hotel' }}
+                                                <span wire:loading
+                                                    wire:target="openEditHotelModal({{ $index }})">
+                                                    <span class="spinner-border spinner-border-sm me-1" role="status"
+                                                        aria-hidden="true"></span>
+                                                </span>
+                                                {{-- @elseif ($key === 'rooms')
+                                            @php
+                                                $roomNames = [];
+                                                if (is_array($value)) {
+                                                    $roomNames = array_filter(
+                                                        array_column($value, 'room_category_name')
+                                                    );
+                                                }
+                                            @endphp
+                                            <div class="small text-muted cursor-pointer"
+                                                title="{{ !empty($roomNames) ? implode(', ', $roomNames) : 'No rooms' }}">
+                                                {{ is_array($value) ? count($value) : 0 }} room(s)
+                                            </div> --}}
+                                            @elseif (in_array($key, ['numberOfRooms', 'totalForTheDay', 'hotelTotal', 'hotelBalance']))
+                                                <input type="text" class="form-control short-input"
+                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
+                                                    disabled />
+                                            @else
+                                                <input type="text" class="form-control short-input"
+                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
+                                                    wire:change="recalculateDay({{ $index }})" />
                                         @endif
                                     </td>
                                 @endforeach
@@ -613,18 +647,37 @@
                         @endforeach
 
                         <div class="d-flex justify-content-between">
-                            <a class="btn btn-dark my-3" wire:click='edit'>Back</a>
-                            <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
-                                    wire:target="restoreTourAmountsFromJson">
+                            <a class="btn btn-dark my-3" wire:click='edit'>Back & Cancel
+                                <span wire:loading wire:target="edit">
                                     <span class="spinner-border spinner-border-sm me-1" role="status"
                                         aria-hidden="true"></span>
-                                </span></a>
+                                </span>
+                            </a>
+                            <div>
+                                <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save
+                                    <span wire:loading wire:target="restoreTourAmountsFromJson">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status"
+                                            aria-hidden="true"></span>
+                                    </span></a>
+                                <a class="btn bluegradientbtn my-3 "
+                                    wire:click='restoreTourAmountsFromJson({{ 1 }})'>Save & Exit <span
+                                        wire:loading wire:target="restoreTourAmountsFromJson({{ 1 }})">
+                                        <span class="spinner-border spinner-border-sm me-1" role="status"
+                                            aria-hidden="true"></span>
+                                    </span></a>
+                            </div>
                         </div>
                     </tbody>
                 </table>
                 <div class="text-end">
-                    <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span wire:loading
-                            wire:target="restoreTourAmountsFromJson">
+                    <a class="btn bluegradientbtn my-3 " wire:click='restoreTourAmountsFromJson'>Save <span
+                            wire:loading wire:target="restoreTourAmountsFromJson">
+                            <span class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                        </span></a>
+                    <a class="btn bluegradientbtn my-3 "
+                        wire:click='restoreTourAmountsFromJson({{ 1 }})'>Save & Exit <span wire:loading
+                            wire:target="restoreTourAmountsFromJson({{ 1 }})">
                             <span class="spinner-border spinner-border-sm me-1" role="status"
                                 aria-hidden="true"></span>
                         </span></a>
@@ -646,7 +699,8 @@
                             <div class="form-group">
                                 <label for="title" class="form-label">Items</label>
                                 @if ($saveItem)
-                                    <input id="itemInput" type="text" class="form-control" wire:model="item_name">
+                                    <input id="itemInput" type="text" class="form-control"
+                                        wire:model="item_name">
                                     @error('item_name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -698,22 +752,499 @@
             </div>
         </div>
     </div>
+    {{-- NEW DEV HOTEL MODULE --}}
+    @if ($showHotelModal)
+        <div class="modal show d-block" style="background:rgba(0,0,0,0.5)">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content p-4">
 
+                    <h5 class="mb-4">Add Hotel</h5>
+
+                    <div class="row">
+
+                        {{-- Park --}}
+                        <div class="col-3 border-end-1">
+                            <label class="form-label fw-semibold">Park</label>
+                            <div class="d-flex gap-2">
+                                <select id="selectedPark" class="form-select select2" wire:model="selectedPark"
+                                    placeholder="Select an Park" data-clearable="true">
+                                    <option value="">Select Park</option>
+                                    @foreach ($parks as $p)
+                                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('selectedPark')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        {{-- OR --}}
+                        <div class="col-1 text-center">
+                            <div class="fw-bold text-muted mt-4">OR</div>
+                        </div>
+
+                        {{-- Country --}}
+                        <div class="col-2 mb-3">
+                            <label class="form-label fw-semibold">Country</label>
+                            <select id="selectedCountry" class="form-select select2" wire:model="selectedCountry"
+                                placeholder="Select an Country" @disabled($selectedPark)>
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $c)
+                                    <option value="{{ $c['id'] }}"
+                                        @if ($selectedCountry == $c['id']) selected @endif>{{ $c['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- State --}}
+                        <div class="col-3 mb-3">
+                            <label class="form-label fw-semibold">State</label>
+                            <select id="selectedState" class="form-select select2" wire:model="selectedState"
+                                placeholder="Select an State" @disabled($selectedPark)>
+                                <option value="">Select State</option>
+                                @foreach ($states as $s)
+                                    <option value="{{ $s['id'] }}">{{ $s['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('selectedState')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        {{-- City --}}
+                        <div class="col-3 mb-3">
+                            <label class="form-label fw-semibold">City</label>
+                            <select id="selectedCity" class="form-select select2" wire:model="selectedCity"
+                                placeholder="Select an City" @disabled($selectedPark)>
+                                <option value="">Select City</option>
+                                @foreach ($cities as $c)
+                                    <option value="{{ $c['id'] }}">{{ $c['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('selectedCity')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Hotel --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Hotel</label>
+                        <select id="selectedHotel" class="form-select select2" wire:model="selectedHotel"
+                            placeholder="Select an Hotel">
+                            <option value="">Select Hotel</option>
+                            @foreach ($hotels as $h)
+                                <option value="{{ $h['id'] }}">{{ $h['name'] }}</option>
+                            @endforeach
+                        </select>
+                        @error('selectedHotel')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Days --}}
+                    @if (!empty($this->tourDates))
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tour Days</label>
+
+                            <div class="d-flex flex-wrap gap-3">
+                                @foreach ($this->tourDates as $index => $date)
+                                    <label
+                                        class="border rounded p-2 d-flex align-items-center gap-2 {{ $loop->last ? 'd-none' : '' }}">
+                                        <input type="checkbox" class="form-check-input"
+                                            wire:model.live="selectedDays" value="{{ $index }}"
+                                            @if (isset($tableDataJson['tourPackage']['days'][$index]['hotel']['hotel_id'])) checked disabled
+                                    @elseif(!$selectedHotel)
+                                        disabled @endif>
+
+                                        <div>
+                                            <strong>Night {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</strong><br>
+                                            <small class="text-muted">
+                                                {{ $date->format('d M Y') }}
+                                            </small>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
+                            @error('selectedDays')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    @endif
+
+                    {{-- Room Rows --}}
+                    @if (!empty($roomRows))
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Room Rates</label>
+
+                            <div class="row g-3">
+                                @foreach (collect($roomRows)->groupBy('day_index', true) as $dayIndex => $rows)
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 mb-3">
+
+                                            <small class="text-muted">
+                                                Night {{ str_pad($dayIndex + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </small>
+                                            @if (!empty($rows->first()['is_peak_date']) && $rows->first()['is_peak_date'] == 1)
+                                                <div class="text-danger fw-semibold mt-1">
+                                                    ⚠ Peak date rate applied
+                                                </div>
+                                            @endif
+                                            @foreach ($rows as $realIndex => $row)
+                                                <div class="row g-2 mt-2 align-items-center">
+
+                                                    <div class="col-md-4" wire:ignore>
+                                                        <select id="roomRows.{{ $realIndex }}.room_category_id"
+                                                            class="form-select select2"
+                                                            wire:model="roomRows.{{ $realIndex }}.room_category_id"
+                                                            placeholder="Select an Room Category">
+                                                            <option value="">Room Category</option>
+                                                            @foreach ($roomCategories as $rc)
+                                                                <option value="{{ $rc['id'] }}">
+                                                                    {{ $rc['title'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <select id="roomRows.{{ $realIndex }}.occupancy_id"
+                                                            class="form-select select2"
+                                                            wire:model="roomRows.{{ $realIndex }}.occupancy_id"
+                                                            placeholder="Select an Occupancy">
+                                                            <option value="">Occupancy</option>
+                                                            @foreach ($row['occupancies_list'] ?? [] as $occ)
+                                                                <option value="{{ $occ['id'] }}">
+                                                                    {{ $occ['name'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <input type="number" class="form-control"
+                                                            wire:model="roomRows.{{ $realIndex }}.rate"
+                                                            placeholder="Rate">
+                                                    </div>
+
+                                                    <div class="col-md-1 text-end">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                            wire:click="removeRoomRow({{ $realIndex }})">
+                                                            ✕
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                                @if (
+                                                    $errors->has("roomRows.$realIndex.room_category_id") ||
+                                                        $errors->has("roomRows.$realIndex.occupancy_id") ||
+                                                        $errors->has("roomRows.$realIndex.rate"))
+                                                    <div class="border border-danger rounded p-2 mt-2">
+                                                        <ul class="mb-0 ps-3 text-danger small">
+                                                            @error("roomRows.$realIndex.room_category_id")
+                                                                <li>{{ $message }}</li>
+                                                            @enderror
+
+                                                            @error("roomRows.$realIndex.occupancy_id")
+                                                                <li>{{ $message }}</li>
+                                                            @enderror
+
+                                                            @error("roomRows.$realIndex.rate")
+                                                                <li>{{ $message }}</li>
+                                                            @enderror
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+
+                                            <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                                                wire:click="addRoomCategory({{ $dayIndex }})">
+                                                + Add Room Category
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+
+                    {{-- Actions --}}
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" wire:click="closeHotelModal">
+                            Cancel
+                            <span wire:loading wire:target="closeHotelModal">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </button>
+
+                        <button type="button" class="btn btn-primary" wire:click="saveHotelSelection">
+                            Save
+                            <span wire:loading wire:target="saveHotelSelection">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                            wire:click="saveHotelSelection({{ true }})">
+                            Save & Exit
+                            <span wire:loading wire:target="saveHotelSelection({{ true }})">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endif
+    {{--  --}}
+    {{-- NEW DEV EDIT HOTEl  --}}
+    @if ($showEditHotelModal)
+        <div class="modal show d-block" style="background:rgba(0,0,0,0.5)">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content p-4">
+
+                    <h5 class="mb-4">Edit Hotel</h5>
+
+                    {{-- LOCATION --}}
+                    <div class="row">
+
+                        {{-- Park --}}
+                        <div class="col-3 border-end-1">
+                            <label class="form-label fw-semibold">Park</label>
+                            <div class="d-flex gap-2">
+                                <select id="selectedPark" class="form-select select2" wire:model="selectedPark"
+                                    placeholder="Select an Park" data-clearable="true">
+                                    <option value="">Select Park</option>
+                                    @foreach ($parks as $p)
+                                        <option value="{{ $p->id }}" @selected($p['id'] == $selectedPark)>
+                                            {{ $p->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('selectedPark')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        {{-- OR --}}
+                        <div class="col-1 text-center">
+                            <div class="fw-bold text-muted mt-4">OR</div>
+                        </div>
+
+                        <div class="col-2 mb-3">
+                            <label class="form-label fw-semibold">Country</label>
+                            <select id="selectedCountry" class="form-select select2" wire:model="selectedCountry"
+                                placeholder="Select an Country" @disabled($selectedPark)>
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $c)
+                                    <option value="{{ $c['id'] }}" @selected($c['id'] == $selectedCountry)>
+                                        {{ $c['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('selectedCountry')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="col-3 mb-3">
+                            <label class="form-label fw-semibold">State</label>
+                            <select id="selectedState" class="form-select select2" wire:model="selectedState"
+                                placeholder="Select an State" @disabled($selectedPark)>
+                                <option value="">Select State</option>
+                                @foreach ($states as $s)
+                                    <option value="{{ $s['id'] }}" @selected($s['id'] == $selectedState)>
+                                        {{ $s['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('selectedState')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="col-3 mb-3">
+                            <label class="form-label fw-semibold">City</label>
+                            <select id="selectedCity" class="form-select select2" wire:model="selectedCity"
+                                placeholder="Select an City" @disabled($selectedPark)>
+                                <option value="">Select City</option>
+                                @foreach ($cities as $c)
+                                    <option value="{{ $c['id'] }}" @selected($c['id'] == $selectedCity)>
+                                        {{ $c['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('selectedCity')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- HOTEL --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Hotel</label>
+                        <select id="selectedHotel" class="form-select select2" wire:model="selectedHotel"
+                            placeholder="Select an Hotel">
+                            <option value="">Select Hotel</option>
+                            @foreach ($hotels as $h)
+                                <option value="{{ $h['id'] }}" @selected($h['id'] == $selectedHotel)>
+                                    {{ $h['name'] }}</option>
+                            @endforeach
+                        </select>
+                        @error('selectedHotel')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- DAY (LOCKED) --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Editing Day</label>
+                        <div class="border rounded p-2 bg-light">
+                            <strong>
+                                Night {{ str_pad($editDayIndex + 1, 2, '0', STR_PAD_LEFT) }}
+                            </strong>
+                            <small class="text-muted ms-2">
+                                {{ $this->tourDates[$editDayIndex]->format('d M Y') ?? '' }}
+                            </small>
+                        </div>
+                    </div>
+                    @error('selectedDays')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+
+                    {{-- ROOMS --}}
+                    @if (!empty($roomRows))
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Room Rates</label>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="border rounded p-3">
+
+                                        @foreach ($roomRows as $index => $row)
+                                            @if (!empty($row['is_peak_date']))
+                                                <div class="text-danger fw-semibold mb-1">
+                                                    ⚠ Peak date rate applied
+                                                </div>
+                                            @endif
+                                            <div class="row g-2 align-items-center mb-2">
+
+                                                <div class="col-md-4">
+                                                    <select id="roomRows.{{ $index }}.room_category_id"
+                                                        class="form-select select2"
+                                                        wire:model="roomRows.{{ $index }}.room_category_id"
+                                                        placeholder="Select an Room Category">
+                                                        <option value="">Room Category</option>
+                                                        @foreach ($roomCategories as $rc)
+                                                            <option value="{{ $rc['id'] }}"
+                                                                @selected($rc['id'] == $row['room_category_id'])>{{ $rc['title'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <select id="roomRows.{{ $index }}.occupancy_id"
+                                                        class="form-select select2"
+                                                        wire:model="roomRows.{{ $index }}.occupancy_id"
+                                                        placeholder="Select Occupancy">
+                                                        <option value="">Occupancy</option>
+                                                        @foreach ($row['occupancies_list'] ?? [] as $occ)
+                                                            <option value="{{ $occ['id'] }}"
+                                                                @selected($occ['id'] == $row['occupancy_id'])>{{ $occ['name'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <input type="number" class="form-control" placeholder="Rate"
+                                                        wire:model="roomRows.{{ $index }}.rate">
+                                                </div>
+
+                                                <div class="col-md-1 text-end">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        wire:click="removeRoomRow({{ $index }})">
+                                                        ✕
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                            @if (
+                                                $errors->has("roomRows.$index.room_category_id") ||
+                                                    $errors->has("roomRows.$index.occupancy_id") ||
+                                                    $errors->has("roomRows.$index.rate"))
+                                                <div class="border border-danger rounded p-2 mt-2">
+                                                    <ul class="mb-0 ps-3 text-danger small">
+                                                        @error("roomRows.$index.room_category_id")
+                                                            <li>{{ $message }}</li>
+                                                        @enderror
+
+                                                        @error("roomRows.$index.occupancy_id")
+                                                            <li>{{ $message }}</li>
+                                                        @enderror
+
+                                                        @error("roomRows.$index.rate")
+                                                            <li>{{ $message }}</li>
+                                                        @enderror
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        @endforeach
+
+                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                                            wire:click="addRoomCategory({{ $editDayIndex }})">
+                                            + Add Room Category
+                                            <span wire:loading wire:target="addRoomCategory({{ $editDayIndex }})">
+                                                <span class="spinner-border spinner-border-sm me-1" role="status"
+                                                    aria-hidden="true"></span>
+                                            </span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- ACTIONS --}}
+                    <div class="text-end">
+                        <button class="btn btn-secondary" wire:click="closeEditHotelModal">
+                            Cancel
+                            <span wire:loading wire:target="closeEditHotelModal">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </button>
+
+                        <button class="btn btn-primary" wire:click="updateHotelSelection">
+                            Update
+                            <span wire:loading wire:target="updateHotelSelection"
+                                class="spinner-border spinner-border-sm ms-1"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endif
+    {{--  --}}
 
 </div>
 @push('scripts')
     <script>
-            window.addEventListener('tour-days-updated', function () {
-                setTimeout(() => {
-                    const hiddenTour = document.querySelector('#tour_days_hidden');
-                    const endEl = document.querySelector('#end_date');
-                    const end = endEl?._flatpickr;
-                    if (!end || !hiddenTour?.value) return;
-                    const minDate = hiddenTour.value;
-                    end.set('minDate', minDate);
-                    end.setDate(minDate, true);
-                }, 100);
-            });
+        window.addEventListener('tour-days-updated', function() {
+            setTimeout(() => {
+                const hiddenTour = document.querySelector('#tour_days_hidden');
+                const endEl = document.querySelector('#end_date');
+                const end = endEl?._flatpickr;
+                if (!end || !hiddenTour?.value) return;
+                const minDate = hiddenTour.value;
+                end.set('minDate', minDate);
+                end.setDate(minDate, true);
+            }, 100);
+        });
 
         {{-- NEW DEV --}}
         Livewire.on('focus-item-input', () => {

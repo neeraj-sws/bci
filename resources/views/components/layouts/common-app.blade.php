@@ -48,7 +48,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
-    {{-- <link href="{{ asset('css/bootstrap-extended.css') }}" rel="stylesheet"> --}}
+   {{-- <link href="{{ asset('css/bootstrap-extended.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
@@ -177,8 +177,8 @@
   src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js">
 </script>
 
-    <script src="https://cdn.tiny.cloud/1/703e60ik4bbf0tgpid8nx2ir9yzwu22hdo6ab11waghkcofx/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
+{{-- <script src="https://cdn.tiny.cloud/1/703e60ik4bbf0tgpid8nx2ir9yzwu22hdo6ab11waghkcofx/tinymce/5/tinymce.min.js"
+referrerpolicy="origin"></script> --}}
         
     {{-- <script>
         function initAllTinyMCEEditors() {
@@ -237,9 +237,10 @@
         });
     </script> --}}
 
+
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
+	
     @include('components.includes.sweet-alert')
     @include('components.includes.select2')
     @include('components.includes.datepicker')
