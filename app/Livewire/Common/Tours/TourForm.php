@@ -30,62 +30,62 @@ class TourForm extends Component
     public $tableDataJson = [];
 
     public $route;
-    
-     public $markupammount, $usdammount;
-     
-    // NEW DEV 
+
+    public $markupammount, $usdammount;
+
+    // NEW DEV
     public $attachment;
     public $existingImage;
 
-    public function mount($id = null,$copy_id=null)
+    public function mount($id = null, $copy_id = null)
     {
-        if($copy_id){
+        if ($copy_id) {
             $this->copy($copy_id);
         }
         if ($id) {
             $this->isEditing = true;
             $this->edit($id);
-        }else{
+        } else {
             $this->markupammount = SettingHelper::getMarkup();
             $this->usdammount = SettingHelper::getUsdPrice();
         }
 
-        
+
         $this->route = 'common';
     }
 
-  public function rules()
-{
-    $table = (new $this->model)->getTable();
+    public function rules()
+    {
+        $table = (new $this->model)->getTable();
 
-    $nameRule = $this->isEditing
-        ? 'unique:' . $table . ',name,' . $this->itemId . ',tour_id'
-        : 'unique:' . $table . ',name';
-$attachmentRule = $this->existingImage ? 'nullable' : 'required';
-    return [
-        'name' => [
-            'required',
-            'string',
-            'max:255',
-            $nameRule
-        ],
-        'description' => 'required',
-        'file' => 'required',
-        'attachment' => $attachmentRule,
-    ];
-}
+        $nameRule = $this->isEditing
+            ? 'unique:' . $table . ',name,' . $this->itemId . ',tour_id'
+            : 'unique:' . $table . ',name';
+        $attachmentRule = $this->existingImage ? 'nullable' : 'required';
+        return [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                $nameRule
+            ],
+            'description' => 'required',
+            'file' => 'required',
+            'attachment' => $attachmentRule,
+        ];
+    }
 
-public function messages()
-{
-    return [
-        'name.required' => 'The Tour name field is required.',
-        'name.string' => 'The Tour name must be a string.',
-        'name.max' => 'The Tour name may not be greater than 255 characters.',
-        'name.unique' => 'The Tour name has already been taken.',
-        'description.required' => 'The Tour description field is required.',
-        'file.required' => 'The Tour .xlx is required.',
-    ];
-}
+    public function messages()
+    {
+        return [
+            'name.required' => 'The Tour name field is required.',
+            'name.string' => 'The Tour name must be a string.',
+            'name.max' => 'The Tour name may not be greater than 255 characters.',
+            'name.unique' => 'The Tour name has already been taken.',
+            'description.required' => 'The Tour description field is required.',
+            'file.required' => 'The Tour .xlx is required.',
+        ];
+    }
 
     public function render()
     {
@@ -97,7 +97,7 @@ public function messages()
     public function store()
     {
         $this->validate($this->rules());
-        
+
         $tour = $this->model::create([
             'name' => $this->name,
             'day' => $this->day,
@@ -105,7 +105,7 @@ public function messages()
             'description' => $this->description,
             'status' => $this->status,
         ]);
-        
+
         if ($this->attachment) {
             $path = "uploads/tours/{$tour->id}";
             if (!Storage::disk('public_root')->exists($path)) {
@@ -123,14 +123,14 @@ public function messages()
         $tour->update([
             'attachment' => $attachmentPath
         ]);
-        
+
         if ($this->tableDataJson) {
             // $tableData = json_encode($this->tableDataJson);
-        $tableDataArray = $this->tableDataJson;
-        $tableDataArray['markupammount'] = $this->markupammount ?? 25;
-        $tableDataArray['usdammount'] = $this->usdammount ?? 80;
-        $tableData = json_encode($tableDataArray);
-        
+            $tableDataArray = $this->tableDataJson;
+            $tableDataArray['markupammount'] = $this->markupammount ?? 25;
+            $tableDataArray['usdammount'] = $this->usdammount ?? 80;
+            $tableData = json_encode($tableDataArray);
+
             TourJsons::create([
                 'tour_id' => $tour->id,
                 'json' => $tableData
@@ -161,16 +161,16 @@ public function messages()
         $tourJson = $item->tourJsons()->first();
         if ($tourJson) {
             $this->tableDataJson = json_decode($tourJson->json, true);
-            
+
             $this->markupammount = $this->tableDataJson['markupammount'] ?? 1.25;
             $this->usdammount = $this->tableDataJson['usdammount'] ?? 80;
-            
+
             $this->file = true;
         }
         $this->isEditing = true;
     }
-    
-      public function copy($id)
+
+    public function copy($id)
     {
         $this->resetForm();
         $item = $this->model::findOrFail($id);
@@ -190,8 +190,8 @@ public function messages()
     public function update()
     {
         $this->validate($this->rules());
-        
-        
+
+
         $this->model::findOrFail($this->itemId)->update([
             'name' => $this->name,
             'day' => $this->day,
@@ -199,8 +199,8 @@ public function messages()
             'description' => $this->description,
             'status' => $this->status,
         ]);
-        
-         if ($this->attachment) {
+
+        if ($this->attachment) {
             $path = "uploads/tours/{$this->itemId}";
             if ($this->existingImage && file_exists(public_path($this->existingImage))) {
                 @unlink(public_path($this->existingImage));
@@ -213,23 +213,23 @@ public function messages()
         } else {
             $attachmentPath = null;
         }
-       
-       if($attachmentPath){
+
+        if ($attachmentPath) {
             $this->model::findOrFail($this->itemId)->update([
                 'attachment' => $attachmentPath
             ]);
-       }
-        
-        
+        }
+
+
         if ($this->tableDataJson) {
             $tourJson = TourJsons::where('tour_id', $this->itemId)->first();
             // $tableData = json_encode($this->tableDataJson);
-            
-        $tableDataArray = $this->tableDataJson;
-        $tableDataArray['markupammount'] = $this->markupammount ?? 25;
-        $tableDataArray['usdammount'] = $this->usdammount ?? 80;
-        $tableData = json_encode($tableDataArray);
-        
+
+            $tableDataArray = $this->tableDataJson;
+            $tableDataArray['markupammount'] = $this->markupammount ?? 25;
+            $tableDataArray['usdammount'] = $this->usdammount ?? 80;
+            $tableData = json_encode($tableDataArray);
+
             if ($tourJson) {
                 $tourJson->update([
                     'json' => $tableData
@@ -266,8 +266,8 @@ public function messages()
     #[On('delete')]
     public function delete()
     {
-                TourJsons::where('tour_id', $this->itemId)->delete();
-                
+        TourJsons::where('tour_id', $this->itemId)->delete();
+
         $this->model::destroy($this->itemId);
 
 
@@ -323,7 +323,7 @@ public function messages()
                     $rawHeaders = array_values($cells);
                     continue;
                 }
-                // NEW DEV 
+                // NEW DEV
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(false);
 
@@ -355,7 +355,7 @@ public function messages()
                     $days[] = [
                         'particular'        => $r['Particular'] ?? '',
                         'hotel'     => $r['Hotel'] ?? '',
-                        'rooms'     => $r['Rooms'] ?? '',
+                        // 'rooms'     => $r['Rooms'] ?? '',
                         'activitiesCovered' => $r['Activities Covered'] ?? '',
                         'roomPerNight'      => (int)($r['Room per Night'] ?? 0),
                         'numberOfRooms'     => (int)($r['No of Rooms'] ?? 0),
@@ -373,7 +373,7 @@ public function messages()
                     $key = $r['Particular'] ?? 'unknown';
                     $summary[$key] = [
                         'Hotel'          => $r['Hotel'] ?? '',
-                        'Rooms'          => $r['Rooms'] ?? '',
+                        // 'Rooms'          => $r['Rooms'] ?? '',
                         'Activities Covered'          => $r['Activities Covered'] ?? '',
                         'Room per Night'              => $r['Room per Night'] ?? '',
                         'No of Rooms'                 => $r['No of Rooms'] ?? '',
@@ -399,7 +399,7 @@ public function messages()
             ];
             $this->tableData = json_encode($finalJson, JSON_PRETTY_PRINT);
             $this->tableDataJson = $finalJson;
-             $this->calculateTotals();
+            $this->calculateTotals();
         } catch (\Exception $e) {
             $this->dispatch('swal:toast', [
                 'type' => 'error',
@@ -407,8 +407,8 @@ public function messages()
             ]);
         }
     }
-    
-        public function recalculateDay($index)
+
+    public function recalculateDay($index)
     {
         if (!isset($this->tableDataJson['tourPackage']['days'][$index])) {
             return;
@@ -439,11 +439,11 @@ public function messages()
     }
     public function calculateTotals()
     {
-          if (empty($this->tableDataJson['tourPackage']['days']) || !$this->usdammount) {
+        if (empty($this->tableDataJson['tourPackage']['days']) || !$this->usdammount) {
             return;
         }
-        
-        
+
+
         // Step 1: Calculate total from all days
         $total = collect($this->tableDataJson['tourPackage']['days'])
             ->sum('totalForTheDay');
@@ -470,8 +470,8 @@ public function messages()
         $this->tableDataJson['tourPackage']['summary']['USD']['Total for the Day'] = SettingHelper::conditionalRound($usd);
         // $this->tableDataJson['tourPackage']['summary']['Per Person for 2 Pax']['Total for the Day'] = round($perPerson, 2);
     }
-    
-       public function updatedMarkupammount($value)
+
+    public function updatedMarkupammount($value)
     {
         $this->calculateTotals();
     }
@@ -479,7 +479,7 @@ public function messages()
     {
         $this->calculateTotals();
     }
-    
+
     public function confirmRemove()
     {
         $this->dispatch('swal:confirm', [
@@ -495,18 +495,16 @@ public function messages()
     #[On('deleteImage')]
     public function deleteImage()
     {
-        if($this->existingImage){
-            $this->model::where('tour_id',$this->itemId)->update([
-            "attachment"=>null
-                ]);
+        if ($this->existingImage) {
+            $this->model::where('tour_id', $this->itemId)->update([
+                "attachment" => null
+            ]);
             if ($this->existingImage && file_exists(public_path($this->existingImage))) {
-            @unlink(public_path($this->existingImage));
+                @unlink(public_path($this->existingImage));
             }
         }
-        
+
         $this->existingImage = null;
         $this->attachment = null;
-        
-}
-
+    }
 }

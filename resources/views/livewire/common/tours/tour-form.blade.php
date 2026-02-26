@@ -35,7 +35,9 @@
             font-size: 12px;
             padding: 3px;
         }
-        .form-control:disabled, .form-control[readonly]{
+
+        .form-control:disabled,
+        .form-control[readonly] {
             background: #ead1dc
         }
 
@@ -88,15 +90,15 @@
             width: 100px;
         }
 
-         .excel-table th:nth-child(4) {
+        .excel-table th:nth-child(4) {
             width: 60px;
         }
 
-          .excel-table th:nth-child(7) {
+        .excel-table th:nth-child(7) {
             width: 60px;
         }
 
-          .excel-table th:nth-child(9) {
+        .excel-table th:nth-child(9) {
             width: 60px;
         }
 
@@ -117,7 +119,8 @@
                                 <label for="title" class="form-label">Tour Name <span
                                         class="text-danger">*</span></label>
                                 <input type="text" placeholder="Tour Name"
-                                    class="form-control text-capitalize @error('name') is-invalid @enderror" wire:model="name">
+                                    class="form-control text-capitalize @error('name') is-invalid @enderror"
+                                    wire:model="name">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -159,8 +162,8 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
-                            
+
+
                             <div class="mb-3">
                                 <label for="attachment" class="form-label fw-bold">+ Attachment <span
                                         class="text-danger">*</span></label>
@@ -185,7 +188,8 @@
                                         class="mt-2 alert alert-secondary d-flex justify-content-between align-items-center p-2">
                                         <span class="text-truncate"
                                             style="max-width: 90%;">{{ basename($existingImage) }}</span>
-                                        <a href="javascript:void(0)" wire:click="confirmRemove()" class="btn-close" aria-label="Delete"></a>
+                                        <a href="javascript:void(0)" wire:click="confirmRemove()" class="btn-close"
+                                            aria-label="Delete"></a>
                                     </div>
                                 @endif
                                 <div wire:loading wire:target="attachment" class="mt-2 text-primary">
@@ -194,10 +198,10 @@
                                 @if (!$attachment && !$existingImage)
                                     <p class="mt-2 text-muted">No file uploaded yet.</p>
                                 @endif
-                                
-                                      @error('attachment')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+
+                                @error('attachment')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
@@ -236,7 +240,8 @@
                                                             @if (in_array($key, ['particular', 'activitiesCovered']))
                                                                 <textarea class="form-control textarea-cell"
                                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
-                                                            @elseif (in_array($key, ['hotel','rooms']))
+                                                                {{-- @elseif (in_array($key, ['hotel','rooms'])) --}}
+                                                            @elseif (in_array($key, ['hotel']))
                                                                 <textarea class="form-control textarea-cell"
                                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
                                                             @elseif (in_array($key, ['totalForTheDay', 'hotelTotal', 'hotelBalance']))
@@ -245,9 +250,8 @@
                                                                     disabled />
                                                             @else
                                                                 <input type="text" class="form-control short-input"
-                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}" 
-                                                                    wire:change="recalculateDay({{ $index }})"
-                                                                    />
+                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
+                                                                    wire:change="recalculateDay({{ $index }})" />
                                                             @endif
                                                         </td>
                                                     @endforeach
@@ -269,11 +273,13 @@
                                                     @foreach ($summaryRow as $key => $value)
                                                         <td>
                                                             @if (in_array($key, ['Total for the Day', 'Hotel Total', 'Hotel Balance']))
-                                                                <input type="text" class="form-control short-input-2"
+                                                                <input type="text"
+                                                                    class="form-control short-input-2"
                                                                     wire:model="tableDataJson.tourPackage.summary.{{ $summaryKey }}.{{ $key }}"
                                                                     disabled />
                                                             @else
-                                                                <input type="text" class="form-control short-input-2"
+                                                                <input type="text"
+                                                                    class="form-control short-input-2"
                                                                     @if ($summaryKey === 'With Markup %' && $key == 'Entry Numbers') wire:model.live="markupammount"
                                                                     @elseif($summaryKey === 'USD' && $key == 'Entry Numbers')
                                                                         wire:model.live="usdammount"
@@ -296,7 +302,8 @@
                                 <i class="spinner-border spinner-border-sm" wire:loading.delay
                                     wire:target="{{ $isEditing ? 'update' : 'store' }}"></i>
                             </button>
-                            <a href="{{ route($route . '.tour') }}" class="btn btn-secondary greygradientbtn">Close</a>
+                            <a href="{{ route($route . '.tour') }}"
+                                class="btn btn-secondary greygradientbtn">Close</a>
                         </div>
                     </form>
                 </div>
