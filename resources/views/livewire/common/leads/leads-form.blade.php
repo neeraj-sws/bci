@@ -386,7 +386,15 @@ document.addEventListener('livewire:init', () => {
     const tom = new TomSelect("#select-tags", {
         plugins: ['remove_button'],
         create: true,
+        persist: false,
+        hideSelected: true,
+        closeAfterSelect: true,
         sortField: { field: "text", direction: "asc" },
+
+        onItemAdd: function () {
+            this.setTextboxValue('');  
+            this.refreshOptions(false); 
+        },
 
         render: {
             dropdown: function(data, escape) {
@@ -405,6 +413,7 @@ document.addEventListener('livewire:init', () => {
             }
         }
     });
+
     selectEl.addEventListener('change', function () {
         const componentId = selectEl.closest('[wire\\:id]').getAttribute('wire:id');
         Livewire.find(componentId).set('selectedTags', tom.getValue());

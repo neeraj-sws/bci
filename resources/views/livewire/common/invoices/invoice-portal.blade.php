@@ -231,11 +231,11 @@
                             $status = App\Helpers\SettingHelper::getInvoiceStatus($invoice->status);
                         @endphp
 
-                        @if ($status)
+                        {{-- @if ($status)
                             <div class="ribbon-wrapper">
                                 <div class="ribbon">{{ $status }}</div>
                             </div>
-                        @endif
+                        @endif --}}
                         
                                       <img src="{{ asset('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"
                     style="    position: absolute;

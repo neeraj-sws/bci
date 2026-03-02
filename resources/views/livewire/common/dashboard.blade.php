@@ -38,7 +38,7 @@
                                 <p class="mb-0">Follow-Up Queue</p>
                                 <h5 class="my-2">{{ count($followUps) }}</h5>
                             </div>
-                            <div class="dropdown ms-auto">
+                            {{-- <div class="dropdown ms-auto">
                                 <div class="dropdown-toggle dropdown-toggle-nocaret cursor-pointer"
                                     data-bs-toggle="dropdown"> <i class="bx bx-dots-horizontal-rounded font-22"></i>
                                 </div>
@@ -53,7 +53,7 @@
                                     <li><a class="dropdown-item" href="javascript:;">Something else here</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
 
 
@@ -145,10 +145,11 @@
                             <div>
                                 <p class="mb-0">Quotation Sent</p>
                                 <h5 class="my-2">
-                                    {{ \App\Helpers\SettingHelper::formatCurrency($qutoationSum ?? 0, 'comma_dot') }}
+                                    {{-- {{ \App\Helpers\SettingHelper::formatCurrency($qutoationSum ?? 0, 'comma_dot') }} --}}
+                                    {{ $SentCount }}
                                 </h5>
                             </div>
-                            <div class="dropdown ms-auto">
+                            {{-- <div class="dropdown ms-auto">
                                 <div class="dropdown-toggle dropdown-toggle-nocaret cursor-pointer"
                                     data-bs-toggle="dropdown"> <i class="bx bx-dots-horizontal-rounded font-22"></i>
                                 </div>
@@ -163,7 +164,7 @@
                                     <li><a class="dropdown-item" href="javascript:;">Something else here</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
 
 
