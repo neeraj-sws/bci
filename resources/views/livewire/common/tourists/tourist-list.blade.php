@@ -119,13 +119,31 @@
                                 <td class="px-3 py-1">
                                     {{ $item->country->name ?? 'NA' }}
                                 </td>
-                                <td class="px-3 py-1">
+                                {{-- <td class="px-3 py-1">
                                     {{ $item->birthday
                                         ? \Carbon\Carbon::parse($item->birthday)->format(
                                             App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'd M Y',
                                         )
                                         : 'NA' }}
-                                </td>
+                                      
+                                </td> --}}
+                                
+                                <td class="px-3 py-1">
+                                    @php
+                                        $birthday = $item->birthday;
+                                    @endphp
+                                
+                                    @if(is_numeric($birthday))
+                                        {{ \Carbon\Carbon::createFromDate(1899, 12, 30)
+                                            ->addDays((int) $birthday)
+                                            ->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'Y-m-d') }}
+                                    @elseif(!empty($birthday))
+                                        {{ \Carbon\Carbon::parse($birthday)
+                                            ->format(App\Helpers\SettingHelper::getGenrealSettings('date_format') ?? 'Y-m-d') }}
+                                    @else
+                                        NA
+                                    @endif
+                                </td> 
                                 @can('tourists manage')
                                 <td class="text-center px-3 py-1">
                                     <a href="{{ route($route . '.tourist-edit', $item->id) }}" title="Edit">

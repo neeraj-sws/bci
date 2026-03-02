@@ -11,7 +11,6 @@ use Carbon\Carbon;
 class PeakDates extends Component
 {
     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
     public $hotelId;
     public $roomCategories;
     public $expandedPeak = null;

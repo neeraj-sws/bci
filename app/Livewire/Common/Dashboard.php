@@ -111,10 +111,12 @@ class Dashboard extends Component
             ->get();
             
         $this->qutoations = Quotations::query()
-            ->whereIn('status',[0,1,2])
+            ->with('lastprinvoice')
+            ->whereIn('status',[0,1,2,6])
             ->orderBy('quotation_date', 'desc')
             ->take(10)
             ->get();
+            // dd($this->qutoations->toArray());
 
             $this->qutoationSum = $this->qutoations->sum('amount');
 

@@ -506,6 +506,21 @@ class Form extends Component
     public function updatedClientId($client_id)
     {
         $client = Tourists::find($client_id);
+        
+        if (!$client) {
+            // Reset all related fields if client not found
+            $this->email = '';
+            $this->contact = '';
+            $this->address = '';
+            $this->city = '';
+            $this->state = '';
+            $this->country_id = '';
+            $this->currency = '';
+            $this->client_id = '';
+    
+            return;
+        }
+    
         $this->email = $client->contact_email;
         $this->contact = $client->contact_phone;
         $this->address = $client->address;
@@ -536,6 +551,7 @@ class Form extends Component
     public function changeclient()
     {
         $this->addClient = !$this->addClient;
+        $this->updatedClientId(null);
     }
 
     public function updatedCountryId($id)

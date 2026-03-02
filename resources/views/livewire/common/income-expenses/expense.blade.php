@@ -1,4 +1,4 @@
-<div class="mx-5 mt-sm-0 mt-3" id="amanity">
+<div class="mx-4 mt-sm-0 mt-3" id="amanity">
 
     <div class="page-breadcrumb flex-wrap d-flex align-items-center mb-3">
         <div>
@@ -15,7 +15,7 @@
     <div class="row g-4">
         <!-- Form Card -->
         @can('expenses manage')
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -77,7 +77,7 @@
                                      <div class="mb-3">
                                         <div class="form-group">
                                             <label for="title" class="form-label">Trip#</label>
-                                            <select id="trip_id" class="form-select select2"
+                                            <select id="trip_id" class="form-select select2" data-clearable="true"
                                                 wire:model="trip_id" placeholder="Trip#">
                                                 <option value=""></option>
                                                 @foreach ($trips as $id => $company_name)
@@ -222,11 +222,9 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('expenses manage') col-md-8 @else col-md-12 @endcan">
+        <div class="@can('expenses manage') col-md-9 @else col-md-12 @endcan">
             <div class="card">
-
-
-                <div class="card-header d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap gap-3">
+                {{-- <div class="card-header d-flex justify-content-between align-items-center flex-xxl-nowrap flex-wrap gap-3">
 
                     <div class="form-group col-4">
                         <select id="catgorie_filter_id" class="form-select select2" wire:model="catgorie_filter_id"
@@ -259,6 +257,13 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    <div class="form-group col-4">
+                        <input type="text"
+                               wire:model.live="search"
+                               class="form-control"
+                               placeholder="Search Expense...">
+                    </div>
 
 
                         <div class="col-3 text-end">
@@ -268,17 +273,85 @@
                             </button>
                         </div>
 
+                </div> --}}
+                <div class="card-header">
+                    <div class="row g-3 align-items-end">
+                
+                        <!-- Category -->
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <select id="catgorie_filter_id"
+                                    class="form-select select2 w-100"
+                                    wire:model="catgorie_filter_id"
+                                    placeholder="Expense Category">
+                                <option value=""></option>
+                                @foreach ($categorys as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                
+                        <!-- Sub Category -->
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <select id="sub_catgorie_filter_id"
+                                    class="form-select select2 w-100"
+                                    wire:model="sub_catgorie_filter_id"
+                                    placeholder="Expense Sub Category">
+                                <option value=""></option>
+                                @foreach ($Filtersubcategorys as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                
+                        <!-- Search -->
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <input type="text"
+                                   wire:model.live="search"
+                                   class="form-control w-100"
+                                   placeholder="Search Expense...">
+                        </div>
+                
+                        <!-- Clear -->
+                        <div class="col-12 col-md-6 col-lg-3 text-md-end">
+                            <button class="btn bluegradientbtn w-100"
+                                    wire:click="clearFilters">
+                                Clear
+                            </button>
+                        </div>
+                
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive ecs-table">
                         <table class="table">
                             <thead class="lightgradient">
                                 <tr>
-                                    <th>Date</th>
+                                    <th wire:click="sortBy('date')" style="cursor:pointer;">
+                                        Date
+                                        @if ($sortField === 'date')
+                                            {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                                        @endif
+                                    </th>
                                     @if ($tab === 1)
-                                        <th>Quotation#</th>
+                                       <th wire:click="sortBy('quotation_no')" style="cursor:pointer;">
+                                            Quotation#
+                                            @if ($sortField === 'quotation_no')
+                                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                                            @endif
+                                        </th>
+                                        <th wire:click="sortBy('proforma_invoice_no')" style="cursor:pointer;">
+                                            Proforma#
+                                            @if ($sortField === 'proforma_invoice_no')
+                                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                                            @endif
+                                        </th>
                                     @endif
-                                    <th>Amount</th>
+                                    <th wire:click="sortBy('amount')" style="cursor:pointer;">
+                                        Amount
+                                        @if ($sortField === 'amount')
+                                            {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                                        @endif
+                                    </th>
                                     <th>Notes</th>
         @can('expenses manage')
                                     <th class="width80">Actions</th>
@@ -298,6 +371,16 @@
                                                     <a href="{{ route('common.view-quotation', $item?->quotation?->uuid) }}"
                                                         class="">
                                                         {{ $item?->quotation?->quotation_no }}
+                                                    </a>
+                                                @else
+                                                    <span>NA</span>
+                                                @endif
+                                            </td>
+                                             <td class="align-middle py-1">
+                                                @if ($item?->quotation?->lastprinvoice)
+                                                    <a href="{{ route('common.view-proformainvoice', $item?->quotation?->lastprinvoice?->uuid) }}"
+                                                        class="">
+                                                        {{ $item?->quotation?->lastprinvoice->proforma_invoice_no}}
                                                     </a>
                                                 @else
                                                     <span>NA</span>

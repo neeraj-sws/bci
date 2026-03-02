@@ -21,7 +21,7 @@ class Item extends Component
     public $sortDirection = 'asc';
 
     public $isEditing = false;
-    public $pageTitle = 'Items';
+    public $pageTitle = 'Item Master';
 
     public $model = Model::class;
     public $view = 'livewire.common.items.item';

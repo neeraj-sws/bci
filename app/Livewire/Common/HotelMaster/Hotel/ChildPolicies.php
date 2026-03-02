@@ -10,7 +10,6 @@ use App\Services\Season\HotelSeasonService;
 class ChildPolicies extends Component
 {
     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
     public $hotelId;
     public $selectedSeason = null;
 
@@ -33,6 +32,7 @@ class ChildPolicies extends Component
     public function getRegularPolicies()
     {
         $query = ChildPolicy::where('hotel_id', $this->hotelId)
+            ->where('status', 1)
             ->whereNull('peak_date_id');
 
         if ($this->selectedSeason && $this->selectedSeason !== '') {
@@ -40,6 +40,10 @@ class ChildPolicies extends Component
                 $q->where('season_id', $this->selectedSeason);
             });
         }
+        
+         $query->whereHas('roomCategory', function ($q) {
+            $q->where('status', 1);
+        });
 
         return $query
             ->with(['roomCategory'])
@@ -50,13 +54,20 @@ class ChildPolicies extends Component
     public function getPeakPolicies()
     {
         $query = ChildPolicy::where('hotel_id', $this->hotelId)
+            ->where('status', 1)
             ->whereNotNull('peak_date_id');
+            
+        $query->whereHas('peakDate', function ($query) {
+            $query->where('status', 1);
 
-        if ($this->selectedSeason && $this->selectedSeason !== '') {
-            $query->whereHas('peakDate', function ($query) {
+            if ($this->selectedSeason && $this->selectedSeason !== '') {
                 $query->where('season_id', $this->selectedSeason);
-            });
-        }
+            }
+        });
+
+        $query->whereHas('roomCategory', function ($q) {
+            $q->where('status', 1);
+        });
 
         $peakPolicies = $query
             ->with([
@@ -71,9 +82,9 @@ class ChildPolicies extends Component
 
     public function getAllChildPolicies()
     {
-        $regularPolicies = ChildPolicy::where('hotel_id', $this->hotelId)
-            ->whereNull('peak_date_id')
-            ->get();
+        return $this->getRegularPolicies()
+            ->flatten()
+            ->concat($this->getPeakPolicies()->flatten());
 
         $peakPolicies = $this->getPeakPolicies()->flatten();
 

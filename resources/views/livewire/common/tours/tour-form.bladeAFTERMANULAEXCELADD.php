@@ -126,15 +126,6 @@
                                 @enderror
                             </div>
 
-
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Total Night</label>
-                                <input type="number" class="form-control  @error('night') is-invalid @enderror"
-                                    wire:model="night">
-                                @error('night')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
                             <div class="mb-3">
                                 <label for="title" class="form-label">Total Days</label>
                                 <input type="number" class="form-control @error('day') is-invalid @enderror"
@@ -144,6 +135,14 @@
                                 @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Total Night</label>
+                                <input type="number" class="form-control  @error('night') is-invalid @enderror"
+                                    wire:model="night">
+                                @error('night')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <div class="mb-3">
                                 <label for="title" class="form-label">Status</label>
@@ -204,20 +203,7 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            {{-- NEW DEV --}}
-                                {{-- <div class="mb-3">
-                                    <label class="form-label">Tour Creation Mode</label>
-                                    <select id="creationMode" class="form-select select2" wire:model="creationMode">
-                                          <option value="excel" @if($creationMode == 'excel') selected @endif>
-                                            Import Excel
-                                        </option>
-                                        <option value="manual" @if($creationMode == 'manual') selected @endif>
-                                            Manual Create
-                                        </option>
-                                    </select>
-                                </div> --}}
-                            {{--  --}}
-                            {{-- @if($creationMode === 'excel')
+
                             <div class="mb-3">
                                 <label for="title" class="form-label">+ Tour Json<span
                                         class="text-danger">*</span></label>
@@ -228,62 +214,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            @endif --}}
-                            
-                            <div class="mb-3">
-                            
-                                <label class="form-label">
-                                    + Tour Json <span class="text-danger">*</span>
-                                </label>
-                            
-                                <div class="d-flex align-items-center gap-3">
-                            
-                                    {{-- File Upload --}}
-                                    <div>
-                                        <input type="file"
-                                               wire:model="file"
-                                               accept=".xls,.xlsx"
-                                               @if($creationMode === 'manual') disabled @endif>
-                            
-                                        @error('file')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                            
-                                    {{-- OR --}}
-                                    <div class="fw-bold text-muted">OR</div>
-                            
-                                    {{-- Manual / Cancel Button --}}
-                                    <div>
-                                        @if($creationMode !== 'manual')
-                                            <button type="button"
-                                                    class="btn bluegradientbtn"
-                                                    wire:click="$set('creationMode', 'manual')">
-                                                Manual Create
-                                            </button>
-                                        @else
-                                            <button type="button"
-                                                    class="btn bluegradientbtn"
-                                                    wire:click="$set('creationMode', 'excel')">
-                                                Cancel
-                                            </button>
-                                        @endif
-                                    </div>
-                            
-                                </div>
-                            </div>
 
-                            {{-- NEW DEV --}}
-                            @if(!empty($tableDataJson))
-                                <button type="button" class="btn bluegradientbtn" wire:click="addDay">
-                                    + Add Day
-                                    <span wire:loading
-                                        wire:target="addDay">
-                                        <span class="spinner-border spinner-border-sm me-1" role="status"
-                                            aria-hidden="true"></span>
-                                </button>
-                            @endif
-                            {{--  --}}
 
                             @if (!empty($tableDataJson))
                                 @php
@@ -307,49 +238,10 @@
                                                     @foreach ($day as $key => $value)
                                                         <td>
                                                             @if (in_array($key, ['particular', 'activitiesCovered']))
-                                                                 @if ($key === 'particular')
-                                                                    <div style="position:relative;">
-                    
-                                                                        @if (count($days) > 1)
-                                                                            <span
-                                                                                type="button"
-                                                                                wire:click="removeDay({{ $index }})"
-                                                                                title="Remove Day"
-                                                                                style="
-                                                                                    position:absolute;
-                                                                                    top:0;
-                                                                                    right:0;
-                                                                                    z-index:10;
-                                                                                    width:22px;
-                                                                                    height:22px;
-                                                                                    padding:0;
-                                                                                    line-height:18px;
-                                                                                    border-radius:50%;
-                                                                                    border:none;
-                                                                                    background:#dc3545;
-                                                                                    color:#fff;
-                                                                                    font-size:16px;
-                                                                                    cursor:pointer;text-align:center">
-                                                                                <span wire:loading.remove wire:target="removeDay({{ $index }})">x</span>
-                                                                                <span wire:loading
-                                                                                                wire:target="removeDay({{ $index }})">
-                                                                                                <span class="spinner-border spinner-border-sm me-1" role="status"
-                                                                                                    aria-hidden="true"></span>
-                                                                                            </span>
-                                                                            </span>
-                                                                        @endif
-                    
-                                                                        <textarea
-                                                                            class="form-control textarea-cell"
-                                                                            wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"
-                                                                        ></textarea>
-                    
-                                                                    </div>
-                                                                @else
-                                                                    <textarea class="form-control textarea-cell"
-                                                                        wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
-                                                                @endif
-                                                            @elseif (in_array($key, ['hotel','paymentDateAndMode','otherAdvancesPaid']))
+                                                                <textarea class="form-control textarea-cell"
+                                                                    wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
+                                                                {{-- @elseif (in_array($key, ['hotel','rooms'])) --}}
+                                                            @elseif (in_array($key, ['hotel']))
                                                                 <textarea class="form-control textarea-cell"
                                                                     wire:model="tableDataJson.tourPackage.days.{{ $index }}.{{ $key }}"></textarea>
                                                             @elseif (in_array($key, ['totalForTheDay', 'hotelTotal', 'hotelBalance']))

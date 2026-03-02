@@ -534,7 +534,7 @@
                                         @continue
                                     @endif
                                     <td>
-                                        @if (in_array($key, ['particular', 'activitiesCovered']))
+                                        @if (in_array($key, ['particular', 'activitiesCovered','paymentDateAndMode','otherAdvancesPaid']))
                                             @if ($key === 'particular')
                                                 <div style="position:relative;">
 

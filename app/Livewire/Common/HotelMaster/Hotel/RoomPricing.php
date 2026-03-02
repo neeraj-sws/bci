@@ -9,8 +9,7 @@ use App\Services\Season\HotelSeasonService;
 
 class RoomPricing extends Component
 {
-    private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
+     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
     public $hotelId;
     public $selectedSeason = '';
 
@@ -18,7 +17,7 @@ class RoomPricing extends Component
     {
         $this->hotelId = $hotelId;
         $defaultSeason = $seasonService->getDefaultSeason();
-        $this->selectedSeason = session(
+       $this->selectedSeason = session(
             self::SEASON_SESSION_KEY_PREFIX . $this->hotelId,
             $defaultSeason?->seasons_id ?? ''
         );

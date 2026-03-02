@@ -921,8 +921,8 @@ class AddQuotation extends Component
     {
         return [
             "particular" => "Day " . str_pad($dayNumber, 2, '0', STR_PAD_LEFT),
-            "hotel"     => '',
-            "rooms"     => '',
+            // "hotel"     => '',
+            // "rooms"     => '',
             "activitiesCovered" => "",
             "roomPerNight" => 0,
             "numberOfRooms" => 0,
@@ -935,6 +935,9 @@ class AddQuotation extends Component
             "hotelTotal" => 0,
             "hotelAdvance" => 0,
             "hotelBalance" => 0,
+            "paymentDateAndMode" => '',
+            "otherAdvancesPaid" => '',
+            "hotel"     => '',
         ];
     }
     public function addDay()

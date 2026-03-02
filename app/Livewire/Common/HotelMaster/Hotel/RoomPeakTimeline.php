@@ -10,8 +10,7 @@ use Carbon\Carbon;
 
 class RoomPeakTimeline extends Component
 {
-    private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
+     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
     public $hotelId;
     public $roomCategories;
     public $selectedSeason = null;

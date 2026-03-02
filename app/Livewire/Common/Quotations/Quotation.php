@@ -25,6 +25,10 @@ class Quotation extends Component
     public $companies, $company_id;
 	public $sortBy = 'created_at';
     public $sortDirection = 'desc';
+    public $leadSearch = '';
+    public $leadSortBy = 'created_at';
+    public $leadSortDirection = 'desc';
+    
 
     public function mount()
     {
@@ -56,6 +60,22 @@ class Quotation extends Component
     {
          session(['quotation_status_filter' => $status]);
         $this->statusFilter = $status;
+         $this->resetPage();
+    }
+    
+    public function updatingLeadSearch()
+    {
+        $this->resetPage();
+    }
+    
+    public function sortLeadsBy($field)
+    {
+        if ($this->leadSortBy === $field) {
+            $this->leadSortDirection = $this->leadSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->leadSortBy = $field;
+            $this->leadSortDirection = 'asc';
+        }
     }
 
     public function render()
@@ -88,10 +108,46 @@ class Quotation extends Component
         $counts = [
             'draft' => Model::where('status', 0)->count(),
             'sent' => Model::where('status', 1)->count(),
+            'accepted' => Model::where('status', 2)->count(),
+            'discarded' => Model::where('status', 3)->count(),
+            'revised' => Model::where('status', 4)->count(),
+            'superseded' => Model::where('status', 5)->count(),
             'prinvoiced' => Model::where('status', 6)->count(),
             'invoiced' => Model::where('status', 7)->count(),
             'all' => Model::count(),
         ];
+        
+
+        $leadQuery = Leads::with('tourist', 'type')
+            ->where('stage_id', 3);
+    
+       if (!empty($this->leadSearch) && $this->showModal) {
+
+            $search = $this->leadSearch;
+        
+            $leadQuery->where(function ($q) use ($search) {
+        
+                $q->whereHas('tourist', function ($tourist) use ($search) {
+                    $tourist->where('primary_contact', 'like', "%{$search}%");
+                })
+        
+                ->orWhere('contact', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+            
+        if ($this->leadSortBy === 'primary_contact') {
+
+            $leadQuery->leftJoin('tourists', 'leads.tourist_id', '=', 'tourists.tourist_id')
+                ->orderBy('tourists.primary_contact', $this->leadSortDirection)
+                ->select('leads.*');
+        
+        } else {
+        
+            $leadQuery->orderBy($this->leadSortBy, $this->leadSortDirection);
+        }
+        
+        $this->leads = $leadQuery->get();
 
         return view('livewire.common.quotations.quotation', compact('items', 'counts'));
     }

@@ -15,7 +15,7 @@ class TouristList extends Component
 
     public $pageTitle = 'Tourists';
 	public $sortBy = 'created_at';
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
     public $search = '';
     public $route;
     public $itemId;

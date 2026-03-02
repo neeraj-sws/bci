@@ -13,7 +13,6 @@ use App\Services\Season\HotelSeasonService;
 class KpiCards extends Component
 {
     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
     public $hotelId;
     public $selectedSeason = '';
     public $totalRoomCategories = 0;
@@ -27,7 +26,7 @@ class KpiCards extends Component
 
 
         $defaultSeason = $seasonService->getDefaultSeason();
-        $this->selectedSeason = session(
+         $this->selectedSeason = session(
             self::SEASON_SESSION_KEY_PREFIX . $this->hotelId,
             $defaultSeason?->seasons_id ?? ''
         );

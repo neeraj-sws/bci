@@ -15,7 +15,7 @@ class TourJsons extends Model
     
     protected $primaryKey = 'tour_json_id';
 
-    protected $fillable = ['tour_id', 'json'];
+    protected $fillable = ['tour_id', 'json','creation_mode'];
     // ID ALIAS 
     public function getIdAttribute()
     {

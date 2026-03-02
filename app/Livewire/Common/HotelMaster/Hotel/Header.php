@@ -9,7 +9,6 @@ use App\Services\Season\HotelSeasonService;
 class Header extends Component
 {
     private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
-
     public $hotelId;
     public $hotel;
     public $route;
@@ -38,7 +37,7 @@ class Header extends Component
 
     public function updatedSelectedSeason($value)
     {
-        session([self::SEASON_SESSION_KEY_PREFIX . $this->hotelId => $value]);
+         session([self::SEASON_SESSION_KEY_PREFIX . $this->hotelId => $value]);
         $this->dispatch('seasonChanged', seasonId: $value);
     }
 

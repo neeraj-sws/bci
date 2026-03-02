@@ -15,7 +15,7 @@
     <div class="row g-4">
         <!-- Form Card -->
 		        @can('income manage')
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
@@ -219,7 +219,7 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('income manage') col-md-8 @else col-md-12 @endcan">
+        <div class="@can('income manage') col-md-9 @else col-md-12 @endcan">
             <div class="card">
 
 
@@ -254,6 +254,7 @@
                                     @if ($tab === 1)
                                         <th>Quotation#</th>
                                         <th>Proforma#</th>
+                                        <th>Tourist#</th>
                                     @endif
                                     <th>Amount</th>
                                     <th>Notes</th>
@@ -289,6 +290,11 @@
                                                 @else
                                                     <span>NA</span>
                                                 @endif
+                                            </td>
+                                            <td class="align-middle py-1">
+                                            <span class="">
+                                                    {{ $item?->quotation?->tourist?->primary_contact ?? 'NA' }}
+                                                </span>
                                             </td>
                                         @endif
 
