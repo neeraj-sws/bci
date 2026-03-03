@@ -39,7 +39,7 @@ class IncomeExpenses extends Model
     }
     public function client()
     {
-        return $this->belongsTo(Tourists::class, 'client_id');
+        return $this->belongsTo(Tourists::class, 'tourist_id');
     }
     public function tour()
     {

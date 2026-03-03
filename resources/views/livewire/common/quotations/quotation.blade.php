@@ -49,66 +49,86 @@
         <div class="card-header d-flex justify-content-between align-items-center py-3">
 
 
-
-
             <ul class="nav nav-pills mb-3" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a wire:click="setStatusFilter(null)"
-                        class="nav-link @if (is_null($statusFilter)) active @endif" data-bs-toggle="pill"
-                        href="#primary-pills-home" role="tab" aria-selected="true">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="bx bx-home font-18 me-1"></i>
-                            </div>
-                            <div class="tab-title">All Quotations ({{ $counts['all'] }})</div>
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a wire:click="setStatusFilter(0)" class="nav-link @if ($statusFilter === 0) active @endif"
-                        data-bs-toggle="pill" href="#primary-pills-profile" role="tab" aria-selected="false"
-                        tabindex="-1">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="bx bx-user-pin font-18 me-1"></i>
-                            </div>
-                            <div class="tab-title">Draft ({{ $counts['draft'] }})</div>
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item " role="presentation">
-                    <a wire:click="setStatusFilter(1)" class="nav-link @if ($statusFilter === 1) active @endif"
-                        data-bs-toggle="pill" href="#primary-pills-contact" role="tab" aria-selected="false"
-                        tabindex="-1">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>
-                            </div>
-                            <div class="tab-title">Sent ({{ $counts['sent'] }})</div>
-                        </div>
-                    </a>
-                </li>
 
-                <li class="nav-item" role="presentation">
-                    <a wire:click="setStatusFilter(6)" class="nav-link @if ($statusFilter === 6) active @endif"
-                        data-bs-toggle="pill" href="#primary-pills-contact" role="tab" aria-selected="false"
-                        tabindex="-1">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>
+                    {{-- All --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(null)" style="cursor:pointer;"
+                           class="nav-link @if (is_null($statusFilter)) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-home font-18 me-1"></i>
+                                <span>All Quotations ({{ $counts['all'] }})</span>
                             </div>
-                            <div class="tab-title">Proforma Invoiced ({{ $counts['prinvoiced'] }})</div>
-                        </div>
-                    </a>
-                </li>
-                       <li class="nav-item" role="presentation">
-                    <a wire:click="setStatusFilter(7)" class="nav-link @if ($statusFilter === 7) active @endif"
-                        data-bs-toggle="pill" href="#primary-pills-contact" role="tab" aria-selected="false"
-                        tabindex="-1">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>
+                        </a>
+                    </li>
+                
+                    {{-- Draft --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(0)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 0) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-user-pin font-18 me-1"></i>
+                                <span>Draft ({{ $counts['draft'] }})</span>
                             </div>
-                            <div class="tab-title">Invoiced ({{ $counts['invoiced'] }})</div>
-                        </div>
-                    </a>
-                </li>
-            </ul>
+                        </a>
+                    </li>
+                
+                    {{-- Sent --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(1)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 1) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-send font-18 me-1"></i>
+                                <span>Sent ({{ $counts['sent'] }})</span>
+                            </div>
+                        </a>
+                    </li>
+                
+                    {{-- Accepted --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(2)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 2) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-check-circle font-18 me-1"></i>
+                                <span>Accepted ({{ $counts['accepted'] }})</span>
+                            </div>
+                        </a>
+                    </li>
+                
+                    {{-- Discarded --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(3)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 3) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-x-circle font-18 me-1"></i>
+                                <span>Discarded ({{ $counts['discarded'] }})</span>
+                            </div>
+                        </a>
+                    </li>
+                
+                    {{-- Proforma --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(6)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 6) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-receipt font-18 me-1"></i>
+                                <span>Proforma Invoiced ({{ $counts['prinvoiced'] }})</span>
+                            </div>
+                        </a>
+                    </li>
+                
+                    {{-- Invoiced --}}
+                    <li class="nav-item">
+                        <a wire:click="setStatusFilter(7)" style="cursor:pointer;"
+                           class="nav-link @if ($statusFilter === 7) active @endif">
+                            <div class="d-flex align-items-center">
+                                <i class="bx bx-credit-card font-18 me-1"></i>
+                                <span>Invoiced ({{ $counts['invoiced'] }})</span>
+                            </div>
+                        </a>
+                    </li>
+        
+             </ul>
 
 
 
@@ -342,14 +362,41 @@
                         <a wire:click="$set('showModal', false)" class="cursor-pointer"><i
                                 class="fs-4 fadeIn animated bx bx-x"></i></a>
                     </div>
+                    
+                    <div class="mx-3 mt-2">
+                        <input type="text" wire:model.live="leadSearch" class="form-control" placeholder="Search Lead by Name...">
+                    </div>
 
                     <div class="p-4" style="max-height:70vh; overflow-y:auto;">
                         @if ($leads && count($leads) > 0)
                             <table class="table align-middle table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Tourist</th>
-                                        <th>Created at</th>
+                                
+                                        {{-- Tourist Sorting --}}
+                                        <th wire:click="sortLeadsBy('primary_contact')" style="cursor:pointer;">
+                                            Tourist
+                                            @if ($leadSortBy === 'primary_contact')
+                                                {!! $leadSortDirection === 'asc' ? '↑' : '↓' !!}
+                                            @endif
+                                        </th>
+                                
+                                        {{-- Tag Sorting --}}
+                                        <th wire:click="sortLeadsBy('tags')" style="cursor:pointer;">
+                                            Tag
+                                            @if ($leadSortBy === 'tags')
+                                                {!! $leadSortDirection === 'asc' ? '↑' : '↓' !!}
+                                            @endif
+                                        </th>
+                                
+                                        {{-- Created At Sorting --}}
+                                        <th wire:click="sortLeadsBy('created_at')" style="cursor:pointer;">
+                                            Created at
+                                            @if ($leadSortBy === 'created_at')
+                                                {!! $leadSortDirection === 'asc' ? '↑' : '↓' !!}
+                                            @endif
+                                        </th>
+                                
                                         <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
@@ -370,6 +417,10 @@
                                                     <a
                                                         href="mailto:{{ $item->email ?? '' }}">{{ $item->email ?? 'NA' }}</a>
                                                 </div>
+                                            </td>
+                                            
+                                            <td class="px-3 py-1">
+                                                    <span class="fw-500 text-dark">{{ $item?->tags ? str_replace(',', ', ', $item->tags) : 'NA' }} </span>
                                             </td>
 
                                             <td class="px-3 py-2">

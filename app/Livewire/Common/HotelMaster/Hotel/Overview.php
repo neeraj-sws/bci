@@ -11,6 +11,7 @@ use App\Services\Season\HotelSeasonService;
 
 class Overview extends Component
 {
+    private const SEASON_SESSION_KEY_PREFIX = 'hotel_selected_season_';
     public $hotelId;
     public $hotel;
     public $marketingCompany;
@@ -27,7 +28,10 @@ class Overview extends Component
         $this->hotelId = $hotelId;
 
         $defaultSeason = $seasonService->getDefaultSeason();
-        $this->selectedSeason = $defaultSeason?->seasons_id ?? '';
+        $this->selectedSeason = session(
+            self::SEASON_SESSION_KEY_PREFIX . $this->hotelId,
+            $defaultSeason?->seasons_id ?? ''
+        );
 
         $this->loadData();
     }
@@ -56,6 +60,10 @@ class Overview extends Component
         $roomCategories = RoomCategory::where('hotel_id', $this->hotelId)
             ->where('status', 1)
             ->with(['occupancies' => function ($query) {
+                if ($this->selectedSeason) {
+                    $query->where('season_id', $this->selectedSeason);
+                }
+
                 return $query->with('occupancy');
             }])
             ->get();
@@ -73,6 +81,9 @@ class Overview extends Component
 
         $peakDates = PeackDate::where('hotel_id', $this->hotelId)
             ->where('status', 1)
+            ->when($this->selectedSeason, function ($query) {
+                $query->where('season_id', $this->selectedSeason);
+            })
             ->with(['occupancies.occupancy'])
             ->get();
 

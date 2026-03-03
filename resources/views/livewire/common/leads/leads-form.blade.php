@@ -86,7 +86,7 @@ input[type=number] {
                         <!-- Primary Contact -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Contact <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" wire:model="contact" placeholder="Contact">
+                            <input type="number" class="form-control" wire:model="contact" placeholder="Contact" @if($client_id && !empty($contact)) disabled @endif >
                             @error('contact')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -95,7 +95,7 @@ input[type=number] {
                         <!-- Contact Email -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" wire:model="email" placeholder="Email">
+                            <input type="email" class="form-control" wire:model="email" placeholder="Email"  @if($client_id && !empty($email)) disabled @endif >
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -162,17 +162,17 @@ input[type=number] {
 <div class="col-md-12 mb-3">
     <label class="form-label">Tags#</label>
 
-    <div wire:ignore>
-        <select id="select-tags" multiple data-placeholder="Select tags">
-            @foreach($tags as $id => $name)
-                <option value="{{ $name }}" 
-                    @if(in_array($name, $selectedTags ?? [])) selected @endif>
-                    {{ $name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-</div>
+                    <div wire:ignore>
+                        <select id="select-tags" multiple data-placeholder="Select tags">
+                            @foreach($tags as $id => $name)
+                                <option value="{{ $name }}" 
+                                    @if(in_array($name, $selectedTags ?? [])) selected @endif>
+                                    {{ $name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
 
                         <div class="col-12 mt-4">
@@ -182,14 +182,14 @@ input[type=number] {
                                 <!-- City/Suburb -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Address</label>
-                                    <input type="text" class="form-control" wire:model="address"
+                                    <input type="text" class="form-control" wire:model="address" @if($client_id && filled($address)) disabled @endif
                                         placeholder="Address">
                                 </div>
 
                                 <!-- Country -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Country</label>
-                                    <select id='country_id' class="form-select select2" wire:model="country_id">
+                                    <select id='country_id' class="form-select select2" wire:model="country_id"  @if($client_id && filled($country_id)) disabled @endif >
                                         <option value="">Select Country</option>
                                         @foreach ($countrys as $id => $name)
                                             <option value="{{ $id }}"
@@ -201,7 +201,7 @@ input[type=number] {
                                 
                                    <div class="col-md-6 mb-3">
                             <label class="form-label">State</label>
-                            <select id='state' class="form-select select2" wire:model="state">
+                            <select id='state' class="form-select select2" wire:model="state"  @if($client_id && filled($state)) disabled @endif >
                                 <option value="">Select State</option>
                                 @foreach($states as $id => $name)
                                     <option value="{{ $id }}" @if ($state ==  $id) selected @endif>{{ $name }}</option>
@@ -211,7 +211,7 @@ input[type=number] {
                         
                             <div class="col-md-6 mb-3">
                             <label class="form-label">City/Suburb</label>
-                            <select id='city' class="form-select select2" wire:model="city">
+                            <select id='city' class="form-select select2" wire:model="city" @if($client_id && filled($city)) disabled @endif >
                                 <option value="">Select City</option>
                                 @foreach($citys as $id => $name)
                                     <option value="{{ $id }}" @if ($city ==  $id) selected @endif>{{ $name }}</option>
@@ -386,7 +386,15 @@ document.addEventListener('livewire:init', () => {
     const tom = new TomSelect("#select-tags", {
         plugins: ['remove_button'],
         create: true,
+        persist: false,
+        hideSelected: true,
+        closeAfterSelect: true,
         sortField: { field: "text", direction: "asc" },
+
+        onItemAdd: function () {
+            this.setTextboxValue('');  
+            this.refreshOptions(false); 
+        },
 
         render: {
             dropdown: function(data, escape) {
@@ -405,6 +413,7 @@ document.addEventListener('livewire:init', () => {
             }
         }
     });
+
     selectEl.addEventListener('change', function () {
         const componentId = selectEl.closest('[wire\\:id]').getAttribute('wire:id');
         Livewire.find(componentId).set('selectedTags', tom.getValue());

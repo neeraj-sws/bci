@@ -112,7 +112,7 @@
                                                 title="Delete">
                                                 <i class="bx bx-trash text-danger fs-5"></i>
                                             </a>
-                                        </td>.
+                                        </td>
                                         @endcan
                                     </tr>
                                 @empty

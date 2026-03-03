@@ -376,8 +376,8 @@
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label"> <span class="text-danger">*</span> Payment Date</label>
-                            <input type="text" class="form-control datepicker" wire:model="payment_date"
-                                data-nostart="null" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" data-group="booking1">
+                            <input type="text" class="form-control datepicker" wire:model="payment_date" data-allow-past="{{ config('app.data_allow_past') ? 'true' : 'false' }}" data-start-from="{{ $item->created_at?->format('Y-m-d') }}" data-end-to="{{ date("Y-m-d") }}"
+                                data-nostart="null"  data-group="booking1">
                             @error('payment_date')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror

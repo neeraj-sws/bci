@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Form Card -->
 		        @can('vendors manage')
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
 
                 <div class="card-body">
@@ -51,7 +51,7 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            
 
                                       <div class="mt-3">
                                 <div class="form-group">
@@ -299,67 +299,82 @@
         @endcan
 
         <!-- Table Card -->
-        <div class="@can('vendors manage') col-md-8 @else col-md-12 @endcan">
+        <div class="@can('vendors manage') col-md-9 @else col-md-12 @endcan">
             <div class="card">
-<div class="card-header">
-    <div class="row g-3 align-items-end">
-
-        <!-- Search -->
-        <div class="col-md-3">
-            <label class="form-label">Search</label>
-            <div class="position-relative">
-                <input type="text" class="form-control ps-5"
-                       placeholder="Search..."
-                       wire:model.live.debounce.300ms="search">
-                <span class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
-                    <i class="bx bx-search fs-5"></i>
-                </span>
-            </div>
-        </div>
-
-        <!-- Vendor Type -->
-        <div class="col-md-3">
-            <label class="form-label">Vendor Type</label>
-            <select id="type" class="form-select select2" wire:model="type">
-                <option value="">Select Type</option>
-                @foreach ($types as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <!-- Service Location -->
-        <div class="col-md-3">
-            <label class="form-label">Service Location</label>
-            <select id="location" class="form-select select2" wire:model="location">
-                <option value="">Select City</option>
-                @foreach ($baseLocations as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <!-- Vehicle -->
-        <div class="col-md-3">
-            <label class="form-label">Vehicle</label>
-            <select id="vehicle" class="form-select select2" wire:model="vehicle">
-                <option value="">Select Vehicle</option>
-                @foreach ($vehicles as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                @endforeach
-            </select>
-        </div>
-
-          <div class="col-3">
-                 <button class="btn bluegradientbtn" wire:click="clearFilters">clear
-
-                            <i class="spinner-border spinner-border-sm" wire:loading.delay
-                                wire:target="clearFilters"></i>
-                        </button>
-          </div>
-
-    </div>
-</div>
+                <div class="card-header">
+                    <div class="row g-3 mb-2 align-items-end">
+                
+                        <!-- Search -->
+                        <div class="col-md-3">
+                            <label class="form-label">Search</label>
+                            <div class="position-relative">
+                                <input type="text" class="form-control ps-5"
+                                       placeholder="Search..."
+                                       wire:model.live.debounce.300ms="search">
+                                <span class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                                    <i class="bx bx-search fs-5"></i>
+                                </span>
+                            </div>
+                        </div>
+                
+                        <!-- Vendor Type -->
+                        <div class="col-md-3">
+                            <label class="form-label">Vendor Type</label>
+                            <select id="type" class="form-select select2" wire:model="type">
+                                <option value="">Select Type</option>
+                                @foreach ($types as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="title" class="form-label">Vendor Sub Type </label>
+                                <select id="filter_sub_type_id" class="form-select select2" wire:model="filter_sub_type_id"
+                                    placeholder="Select Type">
+                                    <option value=""></option>
+                                    @foreach ($filterSubCategories as $id => $name)
+                                        <option wire:key='{{ $id }}' value="{{ $id }}"
+                                            @if ($filter_sub_type_id === $id) selected @endif>{{ $name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                
+                        <!-- Service Location -->
+                        <div class="col-md-3">
+                            <label class="form-label">Service Location</label>
+                            <select id="location" class="form-select select2" wire:model="location">
+                                <option value="">Select City</option>
+                                @foreach ($baseLocations as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                
+                        <!-- Vehicle -->
+                        <div class="col-md-3">
+                            <label class="form-label">Vehicle</label>
+                            <select id="vehicle" class="form-select select2" wire:model="vehicle">
+                                <option value="">Select Vehicle</option>
+                                @foreach ($vehicles as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                
+                          <div class="col-3">
+                                 <button class="btn bluegradientbtn" wire:click="clearFilters">clear
+                
+                                            <i class="spinner-border spinner-border-sm" wire:loading.delay
+                                                wire:target="clearFilters"></i>
+                                        </button>
+                          </div>
+                
+                    </div>
+                </div>
 
 
                 <div class="card-body">
@@ -374,6 +389,8 @@
                                             <i class="bx bx-{{ $sortDirection === 'asc' ? 'up' : 'down' }}-arrow-alt"></i>
                                         @endif
                                     </th>
+                                    <th>Vendor Type</th>
+                                    <th>Vendor Sub Type</th>
                                     <th wire:click="shortby('contact')" style="cursor: pointer;">
                                         Primary Contact
                                         @if($sortBy === 'contact')
@@ -399,6 +416,13 @@
                                             <span class="">
                                                 {{ $item->name }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            {{ $item->expenseType->name ?? 'N/A' }}
+                                        </td>
+                                        
+                                        <td>
+                                            {{ $item->expenseSubType->name ?? 'N/A' }}
                                         </td>
 
                                         <td class="align-middle py-1">

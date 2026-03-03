@@ -121,37 +121,6 @@
                                 </li>
                             @endcan --}}
 
-                            @canany(['expenses list', 'income list'])
-                                <li class="mb-1">
-                                    <a class="has-arrow text-white" href="javascript:;">
-                                        <div class="parent-icon d-flex align-items-center justify-content-center me-2">
-                                           <i class="lni lni-control-panel"></i>
-                                        </div>
-                                        <div class="menu-title">
-                                            <span>Income / Expenses</span>
-                                        </div>
-                                    </a>
-                                    <ul class="mm-collapse ps-3 list-unstyled border-0">
-
-                                        @can('income list')
-                                            <li class="mt-1">
-                                                <a href="{{ route('common.income') }}" class="text-white ps-4">
-                                                   <i class="lni lni-coin"></i>Income
-                                                </a>
-                                            </li>
-                                        @endcan
-
-                                        @can('expenses list')
-                                            <li class="mt-1">
-                                                <a href="{{ route('common.expense') }}" class="text-white ps-4">
-                                                    <i class="lni lni-money-location"></i>Expenses
-                                                </a>
-                                            </li>
-                                        @endcan
-
-                                    </ul>
-                                </li>
-                            @endcanany
 
                             @canany(['users list', 'roles list', 'permissions list'])
                                 <li class="mb-1">

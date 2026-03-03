@@ -316,13 +316,13 @@
         $showStatus = $showStatus ?? true;
     @endphp
 
-<div class="ri-header">
+{{-- <div class="ri-header">
         @if ($showStatus && $status)
         <div class="ribbon-wrapper">
             <div class="ribbon">{{ $status }}</div>
         </div>
     @endif
-</div>
+</div> --}}
     
 <div class="header">
         <table style="width:100%; border-collapse:collapse;">

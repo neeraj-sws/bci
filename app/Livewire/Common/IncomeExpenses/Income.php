@@ -13,7 +13,7 @@ use App\Models\Vendors;
 use Livewire\Attributes\{Layout, On};
 use Livewire\{Component, WithPagination};
 
-#[Layout('components.layouts.setting-master-app')]
+#[Layout('components.layouts.common-app')]
 class Income extends Component
 {
     use WithPagination;
@@ -33,6 +33,8 @@ class Income extends Component
     public $proformas = [], $proforma_invoice_id;
     public $type;
     public $tab = 1;
+    public $sortField = 'updated_at';
+    public $sortDirection = 'desc';
 
 
     public function rules()
@@ -56,6 +58,17 @@ class Income extends Component
 
         return $rules;
     }
+    
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortDirection = 'asc';
+        }
+    
+        $this->sortField = $field;
+    }
 
 
     public function render()
@@ -66,24 +79,64 @@ class Income extends Component
 
         $query->where('soft_delete', 0);
 
-        if ($this->search) {
-            $query->where(function ($q) {
-                $q->orWhereHas('client', function ($clientQuery) {
-                    $clientQuery->where('name', 'like', "%{$this->search}%");
+        if (!empty($this->search)) {
+
+            $search = $this->search;
+        
+            $query->where(function ($q) use ($search) {
+        
+                // Client (Tourist)
+                $q->orWhereHas('client', function ($clientQuery) use ($search) {
+                    $clientQuery->where('primary_contact', 'like', "%{$search}%");
                 })
-                    ->orWhereHas('category', function ($categoryQuery) {
-                        $categoryQuery->where('name', 'like', "%{$this->search}%");
-                    })
-                    ->orWhereHas('tour', function ($tourQuery) {
-                        $tourQuery->where('name', 'like', "%{$this->search}%");
-                    })
-                    ->orWhereHas('vendor', function ($tourQuery) {
-                        $tourQuery->where('name', 'like', "%{$this->search}%");
-                    });
+        
+                // Category
+                ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                    $categoryQuery->where('name', 'like', "%{$search}%");
+                })
+        
+                // Tour
+                ->orWhereHas('tour', function ($tourQuery) use ($search) {
+                    $tourQuery->where('name', 'like', "%{$search}%");
+                })
+        
+                // uotation Number Search
+                ->orWhereHas('quotation', function ($quotationQuery) use ($search) {
+                    $quotationQuery->where('quotation_no', 'like', "%{$search}%");
+                })
+        
+                // poforma Invoice Number Search
+                ->orWhereHas('proforma', function ($proformaQuery) use ($search) {
+                    $proformaQuery->where('proforma_invoice_no', 'like', "%{$search}%");
+                })
+        
+                // Direct fields
+                ->orWhere('amount', 'like', "%{$search}%")
+                ->orWhere('payment_reference', 'like', "%{$search}%");
+        
             });
         }
+        
+                    // Sorting for related fields
+            if ($this->sortField === 'quotation_no') {
+            
+                $query->leftJoin('quotations', 'income_expenses.quotation_id', '=', 'quotations.quotation_id')
+                      ->orderBy('quotations.quotation_no', $this->sortDirection)
+                      ->select('income_expenses.*');
+            
+            } elseif ($this->sortField === 'proforma_invoice_no') {
+            
+                $query->leftJoin('proforma_invoices', 'income_expenses.proforma_invoice_id', '=', 'proforma_invoices.proforma_invoice_id')
+                      ->orderBy('proforma_invoices.proforma_invoice_no', $this->sortDirection)
+                      ->select('income_expenses.*');
+            
+            } else {
+            
+                $query->orderBy($this->sortField, $this->sortDirection);
+            }
 
-        $items = $query->orderBy('updated_at', 'desc')->paginate(10);
+        $items = $query->orderBy($this->sortField, $this->sortDirection)
+               ->paginate(10);
         $this->clients = Tourists::all()->pluck('primary_contact', 'id');
         $this->categorys = IncomeExpenseCategory::where('type', '2')->pluck('name', 'income_expense_category_id');
         $this->tours = Tours::all()->pluck('name', 'id');
@@ -286,5 +339,10 @@ class Income extends Component
         $this->subcategorys = IncomeExpenseSubCategory::where('category_id', $id)
             ->where('type', 2)
             ->pluck('name', 'income_expense_sub_category_id');
+    }
+    
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 }

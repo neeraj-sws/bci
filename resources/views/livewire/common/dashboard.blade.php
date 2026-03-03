@@ -1,5 +1,6 @@
 <div>
-    <div class="container  mt-sm-0 mt-3 pb-4" style="max-width: 1400px; margin: 0 auto;">
+    <!--<div class="container  mt-sm-0 mt-3 pb-4" style="max-width: 1400px; margin: 0 auto;">-->
+    <div class="  mt-sm-0 mt-3 pb-4" >
         <div class="dashboard-header pb-0 mb-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
             <h6 class="breadcrumb-title pe-2 fs-24  border-0 text-black fw-600 mb-0">Dashboard</h6>
             <div class="text-end text-muted small">
@@ -9,8 +10,9 @@
         </div>
 
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2">
-            <div class="col">
+        <!--<div class="row row-cols-1 row-cols-md-2 row-cols-xl-2">-->
+        <div class="row">
+            <div class="col-4">
                 
                 <!-- Legend -->
                 <div class="d-flex align-items-center my-3">
@@ -36,7 +38,7 @@
                                 <p class="mb-0">Follow-Up Queue</p>
                                 <h5 class="my-2">{{ count($followUps) }}</h5>
                             </div>
-                            <div class="dropdown ms-auto">
+                            {{-- <div class="dropdown ms-auto">
                                 <div class="dropdown-toggle dropdown-toggle-nocaret cursor-pointer"
                                     data-bs-toggle="dropdown"> <i class="bx bx-dots-horizontal-rounded font-22"></i>
                                 </div>
@@ -51,7 +53,7 @@
                                     <li><a class="dropdown-item" href="javascript:;">Something else here</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
 
 
@@ -63,9 +65,9 @@
                         <table class="table table-hover table-sm align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="px-3 py-2">Follow-Up Date</th>
-                                    <th class="px-3 py-2 text-center">Lead#</th>
-                                    <th class="px-3 py-2 text-center">Tourist#</th>
+                                    <th class="px-3 py-2" > Follow-Up Date </th>
+                                    <th class="px-3 py-2"> Lead# </th>
+                                    <th class="px-3 py-2"  > Tourist# </th>
                                 </tr>
                             </thead>
 
@@ -81,19 +83,19 @@
                                                 : 'table-danger');
                                     @endphp
                                     <tr class="{{ $rowClass }}">
-                                        <td class="px-3 py-2 fw-semibold">
+                                        <td class="px-2 py-2 fw-semibold">
                                             {{ $item?->followup_date ? Carbon\Carbon::parse($item->followup_date)->format('d M, Y') : '' }}
                                             {{ $item?->followup_time ? Carbon\Carbon::parse($item->followup_time)->format('h:i A') : '' }}
                                         </td>
-                                        <td class="px-3 py-2 text-center">
+                                        <td class=" py-2 ">
                                             <a href="{{ $item?->lead?->id ? route('common.lead-view', $item->lead->id) : '#' }}"
                                                 class="fw-500 text-primary">
                                                 #{{ $item?->lead?->id ?? '' }}
                                             </a>
                                         </td>
 
-                                        <td class="px-3 py-2 text-center">
-                                            <span>{{ $item?->lead?->tourist?->primary_contact . ' - ' . $item?->lead?->tourist?->contact_phone ?? '' }}</span>
+                                        <td class=" py-2">
+                                            <span>{{ $item?->lead?->tourist?->primary_contact.' - '.$item?->lead?->tourist?->contact_phone ?? '' }}</span>
                                         </td>
 
                                     </tr>
@@ -114,7 +116,7 @@
 
                 </div>
             </div>
-           <div class="col">
+           <div class="col-8">
                
                                <!-- Legend -->
                 <div class="d-flex align-items-center my-3">
@@ -130,18 +132,24 @@
                         <div class=" rounded-circle me-1" style="width: 15px; height: 15px;background:#eaeaea"></div>
                         <small>Draft Quotation</small>
                     </div>
+                   <div class="me-3 d-flex align-items-center">
+                        <div class="rounded-circle me-1" 
+                             style="width: 15px; height: 15px; background:#e2d9f3"></div>
+                        <small>Proforma Invoice</small>
+                    </div>
                 </div>
                 
                 <div class="card radius-10 ">
                     <div class="card-body" style="position: relative;">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0">Total Quotation</p>
+                                <p class="mb-0">Quotation Sent</p>
                                 <h5 class="my-2">
-                                    {{ \App\Helpers\SettingHelper::formatCurrency($qutoationSum ?? 0, 'comma_dot') }}
+                                    {{-- {{ \App\Helpers\SettingHelper::formatCurrency($qutoationSum ?? 0, 'comma_dot') }} --}}
+                                    {{ $SentCount }}
                                 </h5>
                             </div>
-                            <div class="dropdown ms-auto">
+                            {{-- <div class="dropdown ms-auto">
                                 <div class="dropdown-toggle dropdown-toggle-nocaret cursor-pointer"
                                     data-bs-toggle="dropdown"> <i class="bx bx-dots-horizontal-rounded font-22"></i>
                                 </div>
@@ -156,31 +164,39 @@
                                     <li><a class="dropdown-item" href="javascript:;">Something else here</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
 
 
                     </div>
-
+                    <style>
+                    .table-proforma {
+                        background-color: #e2d9f3 !important;
+                        border-color: #cbbbe8 !important; 
+                        }
+                    </style>
                     <div class="table-responsive">
                         <table class="table table-hover table-sm align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th class="px-3 py-2">Qutoation#</th>
+                                    <th class="px-3 py-2">Proforma Invoice#</th>
                                       <th class="px-3 py-2 text-center">Tourist#</th>
-                                    <th class="px-3 py-2 text-end">Amount</th>
+                                      <th class="px-3 py-2 text-center">Received AMT#</th>
+                                    <th class="px-3 py-2 text-end">Quotation AMT# </th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 @forelse ($qutoations as $index => $item)
-                                        @php
+                                       @php
                                             $status = $item->status ?? 0;
-                                    
+                                        
                                             $rowClass = match ($status) {
-                                                2 => 'table-info',
-                                                1 => 'table-warning',
-                                                default => 'table-light',
+                                                2 => 'table-info',        // Accepted
+                                                1 => 'table-warning',     // Sent
+                                                6 => 'table-proforma',     // Proforma
+                                                default => 'table-light', // Draft
                                             };
                                         @endphp
                                     <tr class="{{ $rowClass }}" >
@@ -188,13 +204,27 @@
                                         <td class="px-3 py-2 text-start">
                                             <a href="{{ $item?->id ? route('common.view-quotation', $item->uuid) : '#' }}"
                                                 class="fw-500 text-primary">
-                                                #{{ $item?->quotation_no ?? '' }}
+                                                #{{ $item?->quotation_no ?? 'NA' }}
+                                        </td>
+                                        <td class="px-3 py-2 text-start">
+                                            <a href="{{ $item?->id ? route('common.view-proformainvoice', $item?->lastprinvoice?->uuid ?? '#') : '#' }}"
+                                                class="fw-500 text-primary">
+                                                #{{ $item?->lastprinvoice?->proforma_invoice_no ?? 'NA' }}
                                         </td>
                                         
                                         <td class="px-3 py-2 text-center">
                                             <span>{{ $item?->tourist?->primary_contact . ' - ' . $item?->tourist?->contact_phone ?? '' }}</span>
                                         </td>
 
+                                        <td class="px-3 py-2 fw-semibold text-end">
+                                             @if ($item->total_paid_amount)
+                                            
+                                                {{ \App\Helpers\SettingHelper::formatCurrency($item->total_paid_amount ?? 0, 'comma_dot') }}
+                                            
+                                        @else
+                                            <span>0.00</span>
+                                        @endif
+                                        </td>
                                         <td class="px-3 py-2 fw-semibold text-end">
                                             {{ $item?->amount ? \App\Helpers\SettingHelper::formatCurrency($item->amount, 'comma_dot') : '0' }}
                                         </td>

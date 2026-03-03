@@ -36,9 +36,7 @@ class TourForm extends Component
     // NEW DEV
     public $attachment;
     public $existingImage;
-    // NEW DEV REMOVE IF ERRROR 
-    public $creationMode = 'excel';
-    // 
+
     public function mount($id = null, $copy_id = null)
     {
         if ($copy_id) {
@@ -56,44 +54,26 @@ class TourForm extends Component
         $this->route = 'common';
     }
 
-    // public function rules()
-    // {
-    //     $table = (new $this->model)->getTable();
-
-    //     $nameRule = $this->isEditing
-    //         ? 'unique:' . $table . ',name,' . $this->itemId . ',tour_id'
-    //         : 'unique:' . $table . ',name';
-    //     $attachmentRule = $this->existingImage ? 'nullable' : 'required';
-    //     return [
-    //         'name' => [
-    //             'required',
-    //             'string',
-    //             'max:255',
-    //             $nameRule
-    //         ],
-    //         'description' => 'required',
-    //         'file' => 'required',
-    //         'attachment' => $attachmentRule,
-    //     ];
-    // }
     public function rules()
     {
         $table = (new $this->model)->getTable();
-    
+
         $nameRule = $this->isEditing
             ? 'unique:' . $table . ',name,' . $this->itemId . ',tour_id'
             : 'unique:' . $table . ',name';
-    
         $attachmentRule = $this->existingImage ? 'nullable' : 'required';
-    
         return [
-            'name' => ['required','string','max:255',$nameRule],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                $nameRule
+            ],
             'description' => 'required',
-            'file' => $this->creationMode === 'excel' ? 'required' : 'nullable',
+            'file' => 'required',
             'attachment' => $attachmentRule,
         ];
     }
-
 
     public function messages()
     {
@@ -153,8 +133,7 @@ class TourForm extends Component
 
             TourJsons::create([
                 'tour_id' => $tour->id,
-                'json' => $tableData,
-                'creation_mode' => $this->creationMode,
+                'json' => $tableData
             ]);
         }
         $this->resetForm();
@@ -182,7 +161,6 @@ class TourForm extends Component
         $tourJson = $item->tourJsons()->first();
         if ($tourJson) {
             $this->tableDataJson = json_decode($tourJson->json, true);
-            $this->creationMode = $tourJson->creation_mode ?? null;
 
             $this->markupammount = $this->tableDataJson['markupammount'] ?? 1.25;
             $this->usdammount = $this->tableDataJson['usdammount'] ?? 80;
@@ -205,7 +183,6 @@ class TourForm extends Component
         $tourJson = $item->tourJsons()->first();
         if ($tourJson) {
             $this->tableDataJson = json_decode($tourJson->json, true);
-            $this->creationMode = $tourJson->creation_mode;
             $this->file = true;
         }
     }
@@ -260,8 +237,7 @@ class TourForm extends Component
             } else {
                 TourJsons::create([
                     'tour_id' => $this->itemId,
-                    'json' => $this->tableData,
-                    'creation_mode' => $this->creationMode,
+                    'json' => $this->tableData
                 ]);
             }
         }
@@ -345,12 +321,6 @@ class TourForm extends Component
 
                 if (!$rawHeaders) {
                     $rawHeaders = array_values($cells);
-
-                    // Add Hotel at end if not present
-                    if (!in_array('Hotel', $rawHeaders)) {
-                        $rawHeaders[] = 'Hotel';
-                    }
-
                     continue;
                 }
                 // NEW DEV
@@ -384,6 +354,7 @@ class TourForm extends Component
                 if (str_starts_with($particular, 'day')) {
                     $days[] = [
                         'particular'        => $r['Particular'] ?? '',
+                        'hotel'     => $r['Hotel'] ?? '',
                         // 'rooms'     => $r['Rooms'] ?? '',
                         'activitiesCovered' => $r['Activities Covered'] ?? '',
                         'roomPerNight'      => (int)($r['Room per Night'] ?? 0),
@@ -397,13 +368,11 @@ class TourForm extends Component
                         'hotelTotal'        => (float)($r['Hotel Total'] ?? 0),
                         'hotelAdvance'      => (float)($r['Hotel Advance Payment'] ?? 0),
                         'hotelBalance'      => (float)($r['Hotel Balance'] ?? 0),
-                        'paymentDateAndMode' => $r['Payment Date and Mode'] ?? '',
-                        'otherAdvancesPaid' => $r['Other Advances Paid with details'] ?? '',
-                        'hotel'     => $r['Hotel'] ?? '',
                     ];
                 } else {
                     $key = $r['Particular'] ?? 'unknown';
                     $summary[$key] = [
+                        'Hotel'          => $r['Hotel'] ?? '',
                         // 'Rooms'          => $r['Rooms'] ?? '',
                         'Activities Covered'          => $r['Activities Covered'] ?? '',
                         'Room per Night'              => $r['Room per Night'] ?? '',
@@ -417,9 +386,6 @@ class TourForm extends Component
                         'Hotel Total'                 => is_numeric($r['Hotel Total'] ?? null) ? round((float)$r['Hotel Total'], 2) : ($r['Hotel Total'] ?? ''),
                         'Hotel Advance Payment'       => is_numeric($r['Hotel Advance Payment'] ?? null) ? round((float)$r['Hotel Advance Payment'], 2) : ($r['Hotel Advance Payment'] ?? ''),
                         'Hotel Balance'               => is_numeric($r['Hotel Balance'] ?? null) ? round((float)$r['Hotel Balance'], 2) : ($r['Hotel Balance'] ?? ''),
-                        'Payment Date and Mode'       => $r['Payment Date and Mode'] ?? '',
-                        'Other Advances Paid with details' => $r['Other Advances Paid with details'] ?? '',
-                        'Hotel'          => $r['Hotel'] ?? '',
                     ];
                 }
             }
@@ -541,112 +507,4 @@ class TourForm extends Component
         $this->existingImage = null;
         $this->attachment = null;
     }
-    // NEW DEV MANULA EXCEL CREATE 
-    public function initManualTemplate()
-    {
-        $headers = [
-            'Particular',
-            'Activities Covered',
-            'Room per Night',
-            'No of Rooms',
-            'Vehicle for the day',
-            'Safari / Birding Excursion',
-            'Safari Number',
-            'Monument or Fort Entry Fee',
-            'Entry Numbers',
-            'Total for the Day',
-            'Hotel Total',
-            'Hotel Advance Payment',
-            'Hotel Balance',
-            'Payment Date and Mode',
-            'Other Advances Paid with details',
-            'Hotel',
-        ];
-
-        $emptySummaryRow = [
-            'Activities Covered' => '',
-            'Room per Night' => '',
-            'No of Rooms' => '',
-            'Vehicle for the day' => '',
-            'Safari / Birding Excursion' => '',
-            'Safari Number' => '',
-            'Monument or Fort Entry Fee' => '',
-            'Entry Numbers' => '',
-            'Total for the Day' => 0,
-            'Hotel Total' => '',
-            'Hotel Advance Payment' => '',
-            'Hotel Balance' => '',
-            'Payment Date and Mode' => '',
-            'Other Advances Paid with details' => '',
-            'Hotel' => '',
-        ];
-
-        $summary = [
-            'Total' => $emptySummaryRow,
-            'Total + GST' => $emptySummaryRow,
-            'With Markup %' => $emptySummaryRow,
-            'USD' => $emptySummaryRow,
-        ];
-
-        $this->tableDataJson = [
-            'headers' => $headers,
-            'tourPackage' => [
-                'days' => [],
-                'summary' => $summary,
-            ],
-        ];
-
-        // 🔥 ADD FIRST DAY AUTOMATICALLY
-        $this->addDay();
-
-        // 🔥 Initialize totals correctly
-        $this->calculateTotals();
-    }
-
-    public function updatedCreationMode($value)
-    {
-        if ($value === 'manual') {
-            $this->file = null;
-            $this->tableDataJson = [];
-            $this->initManualTemplate();
-        }
-
-        if ($value === 'excel') {
-            // Clear manual table data
-            $this->tableDataJson = [];
-        }
-    }
-    public function addDay()
-    {
-        $dayNumber = count($this->tableDataJson['tourPackage']['days']) + 1;
-
-        $this->tableDataJson['tourPackage']['days'][] = [
-            'particular' => 'Day ' . $dayNumber,
-            'activitiesCovered' => '',
-            'roomPerNight' => 0,
-            'numberOfRooms' => 0,
-            'vehicleCost' => 0,
-            'safariCost' => 0,
-            'safariNumber' => 0,
-            'monumentFee' => 0,
-            'entryNumbers' => 0,
-            'totalForTheDay' => 0,
-            'hotelTotal' => 0,
-            'hotelAdvance' => 0,
-            'hotelBalance' => 0,
-            'paymentDateAndMode' => '',
-            'otherAdvancesPaid' => '',
-            'hotel' => '',
-        ];
-    }
-    public function removeDay($index)
-    {
-        unset($this->tableDataJson['tourPackage']['days'][$index]);
-
-        $this->tableDataJson['tourPackage']['days'] =
-            array_values($this->tableDataJson['tourPackage']['days']);
-
-        $this->calculateTotals();
-    }
-    // 
 }

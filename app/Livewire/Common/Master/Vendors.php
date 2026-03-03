@@ -52,10 +52,9 @@ class Vendors extends Component
     public string $serviceAreaNames = '';
 
     public $type, $location, $vehicle;
-
-
-
+    
     public $subcategorys = [], $sub_type_id;
+    public $filterSubCategories =[],$filter_sub_type_id;
 
 
     public function mount()
@@ -65,7 +64,7 @@ class Vendors extends Component
         $this->types = IncomeExpenseCategory::where('type',1)
             ->where('status', 1)->pluck('name', 'income_expense_category_id');
 
-$this->updatedCountry($this->country);
+        $this->updatedCountry($this->country);
 
 
         $this->serviceAreas = ServiceLocations::where('soft_delete', 0)
@@ -118,6 +117,11 @@ $this->updatedCountry($this->country);
                 fn($q) =>
                 $q->where('type_id', $this->type)
             )
+            
+             ->when(
+                    $this->filter_sub_type_id,
+                    fn($q) => $q->where('sub_type_id', $this->filter_sub_type_id)
+                )
 
             ->when(
                 $this->vehicle,
@@ -139,7 +143,7 @@ $this->updatedCountry($this->country);
                 )
             )
             ->where('soft_delete', 0)
-            ->with(['vehicles', 'type'])
+            ->with(['vehicles', 'expenseType', 'expenseSubType'])
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
 
@@ -442,6 +446,12 @@ $this->updatedCountry($this->country);
             ->pluck('name', 'income_expense_sub_category_id');
     }
     
+    public function updatedType($id){
+        $this->filterSubCategories = IncomeExpenseSubCategory::where('category_id', $id)
+            ->where('type', 1)
+            ->pluck('name', 'income_expense_sub_category_id');
+    }
+    
         public function updatedSubTypeId($id)
     {
         $this->is_taxi = IncomeExpenseSubCategory::where('income_expense_sub_category_id', $id)
@@ -471,7 +481,7 @@ $this->updatedCountry($this->country);
 
     public function clearFilters()
     {
-        $this->reset(['type', 'vehicle', 'location', 'search']);
+        $this->reset(['type', 'vehicle', 'location', 'search','filter_sub_type_id','filterSubCategories']);
     }
 	
 	public function shortby($field)

@@ -231,11 +231,11 @@
                             $status = App\Helpers\SettingHelper::getProFormaInvoiceStatus($prinvoice->status);
                         @endphp
 
-                        @if ($status)
+                        {{-- @if ($status)
                             <div class="ribbon-wrapper">
                                 <div class="ribbon">{{ $status }}</div>
                             </div>
-                        @endif
+                        @endif --}}
                         
                                           @if ($prinvoice->status == 2)
                       <img src="{{ asset('assets/images/paid.png') }}" class="logo-icon" alt="logo icon"

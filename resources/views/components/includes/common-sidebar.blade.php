@@ -148,6 +148,38 @@
                                      </a>
                                  </li>
                              @endcan
+                             
+                             @canany(['expenses list', 'income list'])
+                                <li class="mb-1">
+                                    <a class="has-arrow text-white" href="javascript:;">
+                                        <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                           <i class="lni lni-control-panel"></i>
+                                        </div>
+                                        <div class="menu-title">
+                                            <span>Income / Expenses</span>
+                                        </div>
+                                    </a>
+                                    <ul class="mm-collapse ps-3 list-unstyled border-0">
+
+                                        @can('income list')
+                                            <li class="mt-1">
+                                                <a href="{{ route('common.income') }}" class="text-white ps-4">
+                                                   <i class="lni lni-coin"></i>Income
+                                                </a>
+                                            </li>
+                                        @endcan
+
+                                        @can('expenses list')
+                                            <li class="mt-1">
+                                                <a href="{{ route('common.expense') }}" class="text-white ps-4">
+                                                    <i class="lni lni-money-location"></i>Expenses
+                                                </a>
+                                            </li>
+                                        @endcan
+
+                                    </ul>
+                                </li>
+                            @endcanany
 
 
                              @can('income list')
@@ -199,8 +231,34 @@
                                      </a>
                                  </li>
                              @endcan
+                             
+                             
+                             @can('hotel-master manage')
+                                 <li class="mb-1">
+                                     <a href="{{ route('common.item') }}" class="text-white">
+                                         <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                             <i class="lni lni-apartment"></i>
+                                         </div>
+                                         <div class="menu-title"><span>Items Master</span></div>
+                                     </a>
+                                 </li>
+                             @endcan
 
-                             <li class="mb-1">
+
+
+                             @can('items list')
+                                 <li class="mb-1">
+                                     <a href="{{ route('common.calculator') }}" class="text-white">
+                                         <div class="parent-icon d-flex align-items-center justify-content-center me-2">
+                                             <i class="lni lni-apartment"></i>
+                                         </div>
+                                         <div class="menu-title"><span>Calculator</span></div>
+                                     </a>
+                                 </li>
+                             @endcan
+
+
+                            {{-- <li class="mb-1">
                                  <a class="has-arrow text-white mb-2" href="javascript:;">
                                      <div class="parent-icon d-flex align-items-center justify-content-center me-2">
                                          <i class="lni lni-control-panel"></i>
@@ -234,7 +292,7 @@
                                          </li>
                                      @endcan
                                  </ul>
-                             </li>
+                             </li> --}}
 
 
 

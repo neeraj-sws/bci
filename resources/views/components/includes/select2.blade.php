@@ -8,7 +8,8 @@
             if ($this.hasClass("select2-initialized")) return;
  
             $this.select2({
-                placeholder
+                placeholder,
+                // closeOnSelect: false
             }).on("change", function() {
                 const value = $(this).val();
                 const compId = $(this).closest("[wire\\:id]").attr("wire:id");

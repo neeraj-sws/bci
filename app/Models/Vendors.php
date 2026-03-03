@@ -33,8 +33,17 @@ class Vendors extends Model
     }
     
     public function serviceLocations()
-{
-    return $this->hasMany(VendorServiceLocations::class, 'vendor_id');
-}
+    {
+        return $this->hasMany(VendorServiceLocations::class, 'vendor_id');
+    }
 
+    public function expenseType()
+    {
+        return $this->belongsTo( IncomeExpenseCategory::class, 'type_id',  'income_expense_category_id');
+    }
+
+    public function expenseSubType()
+    {
+        return $this->belongsTo( IncomeExpenseSubCategory::class, 'sub_type_id', 'income_expense_sub_category_id');
+    }
 }
