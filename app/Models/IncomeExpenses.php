@@ -20,7 +20,8 @@ class IncomeExpenses extends Model
         'notes',
         'quotation_id',
         'type',
-        'entry_type','soft_delete','proforma_invoice_id','vendor_id','payment_reference','trip_id'
+        'entry_type','soft_delete','proforma_invoice_id','vendor_id','payment_reference','trip_id',
+        'is_add_by_proforma'
     ];
 
     // ID ALIAS

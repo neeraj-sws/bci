@@ -321,10 +321,10 @@
                         <th width="2%" class="tableheadingcolor px-3 py-2">S.No</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Tourist</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Destination</th>
+                        <th width="17%" class="tableheadingcolor px-3 py-2">Tags#</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Follow-up (Date)</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Budget</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Travel Date</th>
-                        <th width="17%" class="tableheadingcolor px-3 py-2">Tags#</th>
                         <th class="tableheadingcolor px-3 py-2">Created at</th>
                         <th class="tableheadingcolor px-3 py-2">Last updated at</th>
                         @if (in_array($statusFilter, [4, 5]))
@@ -367,6 +367,11 @@
                             <td>
                                  {{ $item->destination ?? "NA" }}
                             </td>
+                            <td class="px-3 py-1">
+                                <a href="{{ route($route . '.lead-view', $item->id) }}">
+                                    <span class="fw-500 text-dark">{{ $item?->tags ? str_replace(',', ', ', $item->tags) : 'NA' }} </span>
+                                </a>
+                            </td>
                             <td>
                                 @if($item->follow_up_date)
                                     <span class="fw-500 text-dark">
@@ -382,12 +387,6 @@
                             </td>
                             <td>
                                   {{ $item->travel_date ??"NA" }}
-                            </td>
-
-                            <td class="px-3 py-1">
-                                <a href="{{ route($route . '.lead-view', $item->id) }}">
-                                    <span class="fw-500 text-dark">{{ $item?->tags ? str_replace(',', ', ', $item->tags) : 'NA' }} </span>
-                                </a>
                             </td>
 
                             <td class="px-3 py-1">
