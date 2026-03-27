@@ -66,7 +66,7 @@ class ProformaInvoice extends Component
     {
         $query = ProformaInvoices::query();
 
-                if ($this->statusFilter !== null) {
+        if ($this->statusFilter !== null) {
             $query->where('status', $this->statusFilter);
         }
 
@@ -266,8 +266,7 @@ class ProformaInvoice extends Component
             'proforma_invoice_id' => $this->prinvoice->proforma_invoice_id,
             'notes' => $this->notes,
             'payment_reference' => $this->reference,
-            'category_id' => 5,
-            'is_add_by_proforma' => 1
+            'category_id' => 5
         ]);
 
         // 5) Recalculate Proforma totals from DB (THIS FIXES YOUR BUG)

@@ -320,11 +320,7 @@
                     <tr>
                         <th width="2%" class="tableheadingcolor px-3 py-2">S.No</th>
                         <th width="20%" class="tableheadingcolor px-3 py-2">Tourist</th>
-                        <th width="20%" class="tableheadingcolor px-3 py-2">Destination</th>
                         <th width="17%" class="tableheadingcolor px-3 py-2">Tags#</th>
-                        <th width="20%" class="tableheadingcolor px-3 py-2">Follow-up (Date)</th>
-                        <th width="20%" class="tableheadingcolor px-3 py-2">Budget</th>
-                        <th width="20%" class="tableheadingcolor px-3 py-2">Travel Date</th>
                         <th class="tableheadingcolor px-3 py-2">Created at</th>
                         <th class="tableheadingcolor px-3 py-2">Last updated at</th>
                         @if (in_array($statusFilter, [4, 5]))
@@ -332,7 +328,7 @@
                             <th class="tableheadingcolor px-3 py-2">Total</th>
                         @endif
                         <th width="10%" class="tableheadingcolor px-3 py-2">Stage</th>
-                        {{-- <th width="10%" class="tableheadingcolor px-3 py-2">Source</th> --}}
+                        <th width="10%" class="tableheadingcolor px-3 py-2">Source</th>
 						                                @can('leads manage')
                         <th class="tableheadingcolor px-3 py-2 width80">Actions</th>
 						                            @endcan
@@ -364,29 +360,12 @@
                                     </a>
                                 </div>
                             </td>
-                            <td>
-                                 {{ $item->destination ?? "NA" }}
-                            </td>
+
+
                             <td class="px-3 py-1">
                                 <a href="{{ route($route . '.lead-view', $item->id) }}">
                                     <span class="fw-500 text-dark">{{ $item?->tags ? str_replace(',', ', ', $item->tags) : 'NA' }} </span>
                                 </a>
-                            </td>
-                            <td>
-                                @if($item->follow_up_date)
-                                    <span class="fw-500 text-dark">
-                                       {{ $item?->follow_up_date && $item?->follow_up_time
-        ? \Carbon\Carbon::parse($item?->follow_up_date.' '.$item?->follow_up_time)->format('d M Y h:i A')
-        : 'N/A' }}
-                                    </span>
-                                @endif
-                                 
-                            </td>
-                            <td>
-                                  {{ $item->budget ??"NA" }}
-                            </td>
-                            <td>
-                                  {{ $item->travel_date ??"NA" }}
                             </td>
 
                             <td class="px-3 py-1">
@@ -429,10 +408,10 @@
                                         style="color:{{ optional($item->stage)->btn_text }};background:{{ optional($item->stage)->btn_bg }}">{{ $item->stage->name ?? 'NA' }}</span></a>
                             </td>
 
-                            {{-- <td class="px-3 py-1">
+                            <td class="px-3 py-1">
                                 <a href="{{ route($route . '.lead-view', $item->id) }}">
                                     <span class="fw-500 text-dark">{{ $item->source->name ?? 'NA' }}</span></a>
-                            </td> --}}
+                            </td>
 							                                @can('leads manage')
                             <td class="text-center px-3 py-1 align-items-center gap-3">
                                 @can('leads manage')

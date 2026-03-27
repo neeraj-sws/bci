@@ -82,7 +82,7 @@ use Livewire\Attributes\Title;
 class Dashboard extends Component
 {
 
-    public $followUps, $qutoations, $proformas,$proformaSum, $invoices,$invoicesSum,$qutoationSum,$SentCount=0;
+    public $followUps, $qutoations, $proformas,$proformaSum, $invoices,$invoicesSum,$qutoationSum;
 
     public function mount()
     {
@@ -117,7 +117,7 @@ class Dashboard extends Component
             ->take(10)
             ->get();
             // dd($this->qutoations->toArray());
-            $this->SentCount = $this->qutoations->where('status', 1)->count();  
+
             $this->qutoationSum = $this->qutoations->sum('amount');
 
         $this->proformas = ProformaInvoices::query()

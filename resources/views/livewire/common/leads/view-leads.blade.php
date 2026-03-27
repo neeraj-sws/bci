@@ -182,7 +182,6 @@
 						            </div>
 						            <h6 class="mb-3 fw-bold">Travel Information</h6>
 						            <div class="border-bottom mb-3 pb-2">
-                                        @if(!$leadData->quotation)
 						              <div class="d-flex align-items-center justify-content-between mb-2">
 										<p class="mb-0 text-secondary">Travel Date</p>
 										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->travel_date 
@@ -203,39 +202,6 @@
         ? \Carbon\Carbon::parse($leadData?->follow_up_date.' '.$leadData?->follow_up_time)->format('d M Y h:i A')
         : 'N/A' }}</p>
 									</div>
-                                    @else
-                                     <div class="d-flex align-items-center justify-content-between mb-2">
-										<p class="mb-0 text-secondary">Travel Date</p>
-										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->quotation?->start_date 
-                                        ? \Carbon\Carbon::parse($leadData?->quotation?->start_date)->format('d M Y') 
-                                        : 'N/A' }}</p>
-									</div>
-						              <div class="d-flex align-items-center justify-content-between mb-2">
-										<p class="mb-0 text-secondary">Travel Days</p>
-										<p class="mb-0 text-dark fw-normal"> 
-                                            @php
-                                                $start = $leadData?->quotation?->start_date;
-                                                $end = $leadData?->quotation?->end_date;
-                                            @endphp
-
-                                            @if($start && $end)
-                                                {{ \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1 }} Days
-                                            @else
-                                                N/A
-                                            @endif
-                                        </p>
-									</div>
-						              <div class="d-flex align-items-center justify-content-between mb-2">
-										<p class="mb-0 text-secondary">Budget</p>
-										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->quotation?->amount ?? 'N/A' }}</p>
-									</div>
-						              <div class="d-flex align-items-center justify-content-between mb-2">
-										<p class="mb-0 text-secondary">Follow Up</p>
-										<p class="mb-0 text-dark fw-normal"> {{ $leadData?->follow_up_date && $leadData?->follow_up_time
-        ? \Carbon\Carbon::parse($leadData?->follow_up_date.' '.$leadData?->follow_up_time)->format('d M Y h:i A')
-        : 'N/A' }}</p>
-									</div>
-                                    @endif
 						            </div>
 						             <h6 class="mb-3 fw-bold">Remark</h6>
 						            <div class="">
@@ -435,7 +401,7 @@
         <div class="row mb-3">
           <div class="col-md-6 mb-3">
             <label class="form-label">Follow up Date <span class="text-danger">*</span></label>
-            <input type="text" class="form-control datepicker @error('followup_date') is-invalid @enderror"
+            <input type="date" class="form-control datepicker @error('followup_date') is-invalid @enderror"
               wire:model="followup_date">
               @error('followup_date')
               <div class="invalid-feedback">{{ $message }}</div>
