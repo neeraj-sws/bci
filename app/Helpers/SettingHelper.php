@@ -262,8 +262,8 @@ class SettingHelper
 				}
 				$renderedMessage = nl2br($renderedMessage);
 				Mail::html($renderedMessage, function ($message) use ($to, $renderedSubject, $from, $attachment, $pdf) {
-					$message->to('bci.lead.module@yopmail.com')
-					// $message->to($to)
+					// $message->to('bci.lead.module@yopmail.com')
+					$message->to($to)
 						->subject($renderedSubject);
 
 					if ($from) {

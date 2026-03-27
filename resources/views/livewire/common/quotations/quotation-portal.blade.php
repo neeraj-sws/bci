@@ -226,11 +226,11 @@
                             $status = App\Helpers\SettingHelper::getStatus($estimate->status);
                         @endphp
 
-                        {{-- @if ($status)
+                        @if ($status)
                             <div class="ribbon-wrapper">
                                 <div class="ribbon">{{ $status }}</div>
                             </div>
-                        @endif --}}
+                        @endif
 
                         <div class="brand-row align-items-center">
                             <div class="logo-wrap mt-4">

@@ -46,13 +46,14 @@ class LeadsView extends Component
     }
     public function render()
     {
-        $this->stages = LeadStages::orderBy('order_by', 'asc')->pluck('name', 'lead_stage_id')->toArray();
+        $this->stages = LeadStages::pluck('name', 'lead_stage_id')->toArray();
         $this->status = LeadStatus::pluck('name', 'lead_status_id')->toArray();
-        $this->leadData = Leads::with('quotation')->findOrFail($this->leadId);
+        $this->leadData = Leads::findOrFail($this->leadId);
         // $this->users = User::role('sales')
         //             ->where('status', 1)
         //             ->pluck('name', 'user_id')
         //             ->toArray();
+        
        $this->users = User::whereHas('roles', fn($q) =>
             $q->where('id', self::SALES_ROLE_ID)
         )
